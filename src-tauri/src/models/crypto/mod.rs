@@ -1,4 +1,5 @@
 pub mod empresa;
+pub mod firmante;
 pub mod processing;
 pub mod transaction;
 

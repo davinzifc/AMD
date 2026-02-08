@@ -82,8 +82,10 @@ export class CryptoReportService {
   reset() {
     this._transactions.set([]);
     this._empresa.set(null);
+    this._loading.set(false);
     this._error.set(null);
     this._progress.set(null);
     this._processingResult.set(null);
+    this._isProcessing.set(false);
   }
 }

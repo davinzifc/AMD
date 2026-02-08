@@ -1,16 +1,18 @@
 # AMD Tools - Seguimiento de Progreso
 
-## Estado Actual (2026-02-07)
+## Estado Actual (2026-02-08)
 
-**TODAS LAS 6 FASES COMPLETADAS**
+**TODAS LAS 6 FASES + REQUERIMIENTOS 08-02-2026 COMPLETADOS**
 **Compilacion**: Angular OK, Rust OK (0 warnings)
 
 ### Para probar el flujo completo:
 1. **Desarrollo**: `brew install wkhtmltopdf` (solo necesario para desarrollo local)
 2. Ejecutar: `npm run dev` (o `cargo tauri dev` desde src-tauri/)
 3. Crear empresa en Config. Empresa (nombre, NIT, representante)
-4. Preparar Excel formato `NIT-nombre.xlsx` con 10 headers
-5. Cargar Excel → Revisar datos → Seleccionar → Procesar → Generar PDFs
+4. Crear firmante en Config. Firmante (nombre, CC, imagen de firma opcional)
+5. Preparar Excel formato `NIT-nombre.xlsx` con 10 headers
+6. Cargar Excel → Seleccionar Tercero → Revisar datos → Procesar → Seleccionar Firmante → Generar PDFs
+7. Usar boton "Cargar Nuevo Excel" para iterar sin recargar la app
 
 ### Para build de produccion:
 1. Descargar wkhtmltopdf binario para la plataforma target
@@ -21,6 +23,7 @@
 1. **Iteraciones Fase 4**: Probar procesamiento con datos reales y refinar reglas/formato
 2. **Iconos personalizados**: Reemplazar iconos default de Tauri
 3. **Prueba E2E completa**: Validar todo el flujo con un Excel real
+4. **wkhtmltopdf**: Instalar para probar generacion real de PDFs
 
 ---
 
@@ -299,6 +302,76 @@ src/app/
 - Iconos de aplicacion personalizados (actualmente usa los defaults de Tauri)
 - wkhtmltopdf aun no instalado para probar PDFs
 - Prueba E2E con datos reales
+
+---
+
+## Requerimientos 08-02-2026 - COMPLETADOS
+
+**Fecha**: 2026-02-08
+**Estado**: COMPLETADOS (4 fases)
+
+### Enhancement 1: CRUD de Firmantes con Imagen de Firma
+- Nueva tabla `crypto_firmantes` con BLOB para imagen de firma (migración v002)
+- Modelo Rust `Firmante` con `firma_imagen: Option<Vec<u8>>` + `firma_mime: Option<String>`
+- Servicio completo: create, get_by_id, update, delete, list (sin BLOB), get_firma_imagen
+- 6 comandos Tauri registrados en invoke_handler
+- Frontend: `FirmanteService` (signal-based), `ConfigFirmantePage` con formulario y file upload
+- Lista de firmantes con indicador de firma (icono), confirmación para eliminar
+- Sidebar: nuevo nav-item "Config. Firmante" con icono `pi pi-pen-to-square`
+
+### Enhancement 2: Selección de Firmante en PDF
+- Dropdown de firmante en `ResultsTableComponent` toolbar (PrimeNG Select)
+- `firmanteId` requerido para generar PDFs (validación en botón)
+- Backend: `generate_pdfs` recibe `firmante_id: Option<i64>`
+- `build_template_data()` usa firmante como signer (fallback a empresa representante)
+- Imagen de firma convertida a base64 data URI en template
+- Template actualizado: `<img>` de firma antes de la línea de firma
+- Crate `base64` agregada a Cargo.toml
+
+### US 1: Stepper de 5 Pasos
+- Paso 1: Cargar Excel (sin cambios)
+- Paso 2: **Seleccionar Tercero** (NUEVO) — tabla con checkboxes, búsqueda, contador
+- Paso 3: Revisar Datos — filtrado por terceros seleccionados
+- Paso 4: Procesamiento (sin cambios en lógica)
+- Paso 5: Resultados — con selector de firmante
+- Nuevo componente `ThirdPartySelectorComponent` con tabla multi-select
+
+### Bug 1: Limpiar Estado entre Iteraciones
+- `CryptoReportService.reset()` ahora limpia `_isProcessing` y `_loading`
+- Botón "Cargar Nuevo Excel" en esquina superior derecha del stepper (visible en steps 2-5)
+- `resetAll()` limpia: service, third parties, selected transactions, pdfSuccess, vuelve a step 1
+
+### Bug 2: Fix Exportación PDF
+- `html_to_pdf()` mejorada: verifica que PDF existe y tiene tamaño > 0 después de wkhtmltopdf
+- Logging mejorado con rutas completas de archivos
+- Eliminado flag `--quiet` para capturar errores de wkhtmltopdf
+- Exit code incluido en mensajes de error
+
+### Archivos creados:
+- `src-tauri/src/db/migrations/v002_create_firmantes.sql`
+- `src-tauri/src/models/crypto/firmante.rs`
+- `src-tauri/src/services/crypto/firmante_service.rs`
+- `src-tauri/src/commands/crypto/firmante_commands.rs`
+- `src/app/tools/certificados-crypto/models/firmante.model.ts`
+- `src/app/tools/certificados-crypto/services/firmante.service.ts`
+- `src/app/tools/certificados-crypto/pages/config-firmante/config-firmante.page.ts`
+- `src/app/tools/certificados-crypto/components/third-party-selector/third-party-selector.component.ts`
+
+### Archivos modificados:
+- `src-tauri/Cargo.toml` (+base64)
+- `src-tauri/src/db/connection.rs` (+v002 migration)
+- `src-tauri/src/models/crypto/mod.rs` (+firmante module)
+- `src-tauri/src/services/crypto/mod.rs` (+firmante_service)
+- `src-tauri/src/commands/crypto/mod.rs` (+firmante_commands)
+- `src-tauri/src/lib.rs` (+6 firmante commands)
+- `src-tauri/src/commands/crypto/report_commands.rs` (+firmante_id param)
+- `src-tauri/src/services/crypto/pdf_generator.rs` (+firmante, +base64, +verification)
+- `src-tauri/templates/crypto/certificate.hbs` (+firma image, +conditional styles)
+- `src/app/tools/certificados-crypto/certificados-crypto.routes.ts` (+config-firmante route)
+- `src/app/layout/sidebar/sidebar.component.ts` (+Config. Firmante nav item)
+- `src/app/tools/certificados-crypto/pages/main/main.page.ts` (5-step stepper, resetAll)
+- `src/app/tools/certificados-crypto/components/results-table/results-table.component.ts` (+firmante dropdown)
+- `src/app/tools/certificados-crypto/services/crypto-report.service.ts` (reset fix)
 
 ---
 

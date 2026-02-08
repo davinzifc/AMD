@@ -4,7 +4,7 @@ mod errors;
 mod models;
 mod services;
 
-use commands::crypto::{empresa_commands, report_commands};
+use commands::crypto::{empresa_commands, firmante_commands, report_commands};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -33,6 +33,15 @@ pub fn run() {
             report_commands::upload_excel,
             report_commands::process_selected_records,
             report_commands::generate_pdfs,
+            report_commands::prepare_pdf_htmls,
+            report_commands::write_pdf_file,
+            report_commands::get_temp_dir,
+            firmante_commands::create_firmante,
+            firmante_commands::get_firmante,
+            firmante_commands::update_firmante,
+            firmante_commands::delete_firmante,
+            firmante_commands::list_firmantes,
+            firmante_commands::get_firma_imagen,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

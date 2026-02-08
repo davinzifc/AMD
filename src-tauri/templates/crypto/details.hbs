@@ -1,133 +1,147 @@
-<!DOCTYPE html>
 <html lang="es">
-<head>
-<meta charset="UTF-8">
-<style>
-  @page {
-    size: letter;
-    margin: 2.5cm 2cm 2cm 2cm;
-  }
-  body {
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 11pt;
-    color: #1a1a1a;
-    line-height: 1.5;
-    margin: 0;
-    padding: 0;
-  }
-  .header {
-    text-align: center;
-    margin-bottom: 24px;
-    padding-bottom: 12px;
-    border-bottom: 2px solid #333;
-  }
-  .header h1 {
-    font-size: 14pt;
-    font-weight: bold;
-    margin: 0 0 4px 0;
-  }
-  .header h2 {
-    font-size: 12pt;
-    font-weight: normal;
-    color: #444;
-    margin: 0;
-  }
-  .info-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    font-size: 10pt;
-    color: #555;
-  }
-  .info-row span {
-    display: inline-block;
-  }
-  table.details {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 16px 0;
-    font-size: 10pt;
-  }
-  table.details th {
-    background: #f0f0f0;
-    border: 1px solid #999;
-    padding: 7px 10px;
-    text-align: left;
-    font-weight: bold;
-    font-size: 9pt;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-  table.details td {
-    border: 1px solid #999;
-    padding: 6px 10px;
-    font-size: 10pt;
-  }
-  table.details td.number {
-    text-align: right;
-    font-family: 'Courier New', monospace;
-  }
-  table.details td.code {
-    font-family: 'Courier New', monospace;
-    font-size: 9pt;
-  }
-  table.details tfoot td {
-    font-weight: bold;
-    background: #f8f8f8;
-    border-top: 2px solid #666;
-  }
-  .footer-note {
-    margin-top: 24px;
-    font-size: 9pt;
-    color: #888;
-    text-align: center;
-  }
-</style>
-</head>
-<body>
-  <div class="header">
-    <h1>Detalle de Movimientos</h1>
-    <h2>{{third_name}} ({{id}})</h2>
-  </div>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      :root {
+        --cert-paper: #fafaf9;
+        --cert-ink: #1c1917;
+        --cert-ink-muted: #57534e;
+        --cert-rule: #e7e5e4;
+        --cert-table-head: #f5f5f4;
+      }
+      @page {
+        size: letter;
+        margin: 2.2cm 2cm 2cm 2cm;
+      }
+      body {
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 11pt;
+        color: var(--cert-ink);
+        line-height: 1.5;
+        margin: 0;
+        padding: 0;
+        background: var(--cert-paper);
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--cert-rule);
+      }
+      .header h1 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0 0 0.25rem 0;
+        color: var(--cert-ink);
+      }
+      .header h2 {
+        font-size: 0.9rem;
+        font-weight: 400;
+        color: var(--cert-ink-muted);
+        margin: 0;
+      }
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        font-size: 0.85rem;
+        color: var(--cert-ink-muted);
+      }
+      .info-row span {
+        display: inline-block;
+      }
+      table.details {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        font-size: 0.85rem;
+      }
+      table.details th {
+        background: var(--cert-table-head);
+        border: 1px solid var(--cert-rule);
+        padding: 0.45rem 0.6rem;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.7rem;
+        letter-spacing: 0.02em;
+        color: var(--cert-ink-muted);
+      }
+      table.details td {
+        border: 1px solid var(--cert-rule);
+        padding: 0.45rem 0.6rem;
+        font-size: 0.85rem;
+        color: var(--cert-ink);
+      }
+      table.details td.number {
+        text-align: right;
+        font-family: "Consolas", "Monaco", monospace;
+        font-variant-numeric: tabular-nums;
+      }
+      table.details td.code {
+        font-family: "Consolas", "Monaco", monospace;
+        font-size: 0.8rem;
+      }
+      table.details tfoot td {
+        font-weight: 600;
+        background: var(--cert-table-head);
+        border-top: 1px solid var(--cert-rule);
+        color: var(--cert-ink);
+      }
+      .footer-note {
+        margin-top: 1.5rem;
+        font-size: 0.75rem;
+        color: var(--cert-ink-muted);
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Detalle de Movimientos</h1>
+      <h2>{{third_name}} ({{id}})</h2>
+    </div>
 
-  <div class="info-row">
-    <span><strong>Ciudad:</strong> {{city}}</span>
-    <span><strong>Periodo:</strong> {{date_range}}</span>
-  </div>
+    <div class="info-row">
+      <span><strong>Ciudad:</strong> {{city}}</span>
+      <span><strong>Periodo:</strong> {{date_range}}</span>
+    </div>
 
-  <table class="details">
-    <thead>
-      <tr>
-        <th>Fecha</th>
-        <th>Codigo Orden</th>
-        <th>Cantidad</th>
-        <th>TRM</th>
-        <th>Valor Total COP</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each transactions}}
-      <tr>
-        <td>{{this.date}}</td>
-        <td class="code">{{this.order_code}}</td>
-        <td class="number">{{this.amount}}</td>
-        <td class="number">{{this.trm}}</td>
-        <td class="number">{{this.total_price}}</td>
-      </tr>
-      {{/each}}
-    </tbody>
-    <tfoot>
-      <tr>
-        <td colspan="2">TOTALES</td>
-        <td class="number">{{total_amount}}</td>
-        <td></td>
-        <td class="number">{{total_price}}</td>
-      </tr>
-    </tfoot>
-  </table>
+    <table class="details">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Codigo Orden</th>
+          <th>Cantidad</th>
+          <th>TRM</th>
+          <th>Valor Total COP</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each transactions}}
+          <tr>
+            <td>{{this.date}}</td>
+            <td class="code">{{this.order_code}}</td>
+            <td class="number">{{this.amount}}</td>
+            <td class="number">{{this.trm}}</td>
+            <td class="number">{{this.total_price}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="2">TOTALES</td>
+          <td class="number">{{total_amount}}</td>
+          <td></td>
+          <td class="number">{{total_price}}</td>
+        </tr>
+      </tfoot>
+    </table>
 
-  <div class="footer-note">
-    Documento generado automaticamente — {{empresa_nombre}} — NIT {{empresa_nit}}
-  </div>
-</body>
+    <div class="footer-note">
+      Documento generado automaticamente —
+      {{empresa_nombre}}
+      — NIT
+      {{empresa_nit}}
+    </div>
+  </body>
 </html>

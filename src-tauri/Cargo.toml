@@ -29,3 +29,4 @@ handlebars = "6"
 chrono = { version = "0.4", features = ["serde"] }
 thiserror = "2"
 log = "0.4"
+base64 = "0.22"

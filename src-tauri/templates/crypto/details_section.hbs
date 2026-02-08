@@ -1,0 +1,46 @@
+<div class="details-section">
+  <div class="header">
+    <h1>Detalle de Movimientos</h1>
+    <h2>{{third_name}} ({{id}})</h2>
+  </div>
+  <div class="info-row">
+    <span><strong>Ciudad:</strong> {{city}}</span>
+    <span><strong>Periodo:</strong> {{date_range}}</span>
+  </div>
+  <table class="details">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Código Orden</th>
+        <th>Cantidad</th>
+        <th>TRM</th>
+        <th>Valor Total COP</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each transactions}}
+        <tr>
+          <td>{{this.date}}</td>
+          <td class="code">{{this.order_code}}</td>
+          <td class="number">{{this.amount}}</td>
+          <td class="number">{{this.trm}}</td>
+          <td class="number">{{this.total_price}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2">TOTALES</td>
+        <td class="number">{{total_amount}}</td>
+        <td></td>
+        <td class="number">{{total_price}}</td>
+      </tr>
+    </tfoot>
+  </table>
+  <div class="footer-note">
+    Documento generado automáticamente —
+    {{empresa_nombre}}
+    — NIT
+    {{empresa_nit}}
+  </div>
+</div>

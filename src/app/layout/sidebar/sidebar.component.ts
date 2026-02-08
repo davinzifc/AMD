@@ -27,6 +27,12 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
             <i class="pi pi-building"></i>
             <span>Config. Empresa</span>
           </a>
+          <a class="nav-item"
+             routerLink="/tools/certificados-crypto/config-firmante"
+             routerLinkActive="active">
+            <i class="pi pi-pen-to-square"></i>
+            <span>Config. Firmante</span>
+          </a>
         </div>
 
         <div class="nav-section">

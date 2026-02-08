@@ -1,15 +1,18 @@
-import { Component, ChangeDetectionStrategy, input, output, signal, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, input, output, signal, computed, OnInit } from '@angular/core';
 import { Table, TableModule } from 'primeng/table';
 import { Button } from 'primeng/button';
 import { InputNumber } from 'primeng/inputnumber';
+import { Select } from 'primeng/select';
 import { FormsModule } from '@angular/forms';
 import { ProcessedGroup } from '../../models/processing.model';
 import { TransactionDetailComponent } from '../transaction-detail/transaction-detail.component';
+import { FirmanteService } from '../../services/firmante.service';
+import { FirmanteListItem } from '../../models/firmante.model';
 
 @Component({
   selector: 'app-results-table',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TableModule, Button, InputNumber, FormsModule, TransactionDetailComponent],
+  imports: [TableModule, Button, InputNumber, Select, FormsModule, TransactionDetailComponent],
   template: `
     <div class="results-container">
       <div class="results-toolbar">
@@ -27,6 +30,17 @@ import { TransactionDetailComponent } from '../transaction-detail/transaction-de
             size="small"
             [disabled]="groups().length === 0"
             (onClick)="selectAll()" />
+          <div class="firmante-input">
+            <label for="firmante">Firmante:</label>
+            <p-select
+              id="firmante"
+              [(ngModel)]="selectedFirmante"
+              [options]="firmanteService.firmantes()"
+              optionLabel="nombre"
+              placeholder="Seleccionar firmante"
+              [style]="{ width: '220px' }"
+              [showClear]="true" />
+          </div>
           <div class="year-input">
             <label for="year">Año certificado:</label>
             <p-inputnumber
@@ -38,12 +52,22 @@ import { TransactionDetailComponent } from '../transaction-detail/transaction-de
               placeholder="2024"
               [style]="{ width: '100px' }" />
           </div>
-          <p-button
-            label="Generar PDFs"
-            icon="pi pi-file-pdf"
-            [disabled]="selectedGroups().length === 0 || !yearValue"
-            [badge]="selectedGroups().length.toString()"
-            (onClick)="onGenerate()" />
+          <div class="toolbar-actions">
+            <p-button
+              label="Vista previa"
+              icon="pi pi-eye"
+              [outlined]="true"
+              severity="secondary"
+              size="small"
+              [disabled]="selectedGroups().length === 0 || !yearValue || !selectedFirmante"
+              (onClick)="onPreview()" />
+            <p-button
+              label="Generar PDFs"
+              icon="pi pi-file-pdf"
+              [disabled]="selectedGroups().length === 0 || !yearValue || !selectedFirmante"
+              [badge]="selectedGroups().length.toString()"
+              (onClick)="onGenerate()" />
+          </div>
         </div>
       </div>
 
@@ -147,7 +171,23 @@ import { TransactionDetailComponent } from '../transaction-detail/transaction-de
     .toolbar-right {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 16px;
+      min-width: 0;
+    }
+    .toolbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 4px;
+    }
+
+    .firmante-input {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: #334155;
     }
 
     .year-input {
@@ -224,14 +264,22 @@ import { TransactionDetailComponent } from '../transaction-detail/transaction-de
     }
   `,
 })
-export class ResultsTableComponent {
+export class ResultsTableComponent implements OnInit {
+  firmanteService = inject(FirmanteService);
+
   groups = input.required<ProcessedGroup[]>();
-  generatePdfs = output<{ selectedIds: string[]; year: string; includeDetails: boolean }>();
+  generatePdfs = output<{ selectedIds: string[]; year: string; includeDetails: boolean; firmanteId: number }>();
+  previewPdf = output<{ selectedIds: string[]; year: string; includeDetails: boolean; firmanteId: number }>();
 
   selectedGroups = signal<ProcessedGroup[]>([]);
+  selectedFirmante: FirmanteListItem | null = null;
   yearValue: number | null = null;
   expandedRows: { [key: string]: boolean } = {};
   includeDetails = true;
+
+  ngOnInit() {
+    this.firmanteService.loadFirmantes();
+  }
 
   includeDetailsOption = computed(() => {
     return this.groups().some(g => g.has_multiple_transactions);
@@ -252,12 +300,23 @@ export class ResultsTableComponent {
     this.selectedGroups.set([...this.groups()]);
   }
 
+  onPreview() {
+    if (!this.yearValue || this.selectedGroups().length === 0 || !this.selectedFirmante) return;
+    this.previewPdf.emit({
+      selectedIds: this.selectedGroups().map(g => g.id),
+      year: this.yearValue.toString(),
+      includeDetails: this.includeDetails,
+      firmanteId: this.selectedFirmante.id,
+    });
+  }
+
   onGenerate() {
-    if (!this.yearValue || this.selectedGroups().length === 0) return;
+    if (!this.yearValue || this.selectedGroups().length === 0 || !this.selectedFirmante) return;
     this.generatePdfs.emit({
       selectedIds: this.selectedGroups().map(g => g.id),
       year: this.yearValue.toString(),
       includeDetails: this.includeDetails,
+      firmanteId: this.selectedFirmante.id,
     });
   }
 }

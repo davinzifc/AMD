@@ -50,6 +50,7 @@ fn run_migrations(conn: &Connection) -> Result<(), AppError> {
     // List of migrations in order
     let migrations: Vec<(&str, &str)> = vec![
         ("v001_create_empresas", include_str!("migrations/v001_create_empresas.sql")),
+        ("v002_create_firmantes", include_str!("migrations/v002_create_firmantes.sql")),
     ];
 
     for (name, sql) in migrations {

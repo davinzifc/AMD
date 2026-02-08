@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS crypto_firmantes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre TEXT NOT NULL,
+    cc_id TEXT NOT NULL,
+    firma_imagen BLOB,
+    firma_mime TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);

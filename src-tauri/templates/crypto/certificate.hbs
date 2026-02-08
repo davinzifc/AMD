@@ -1,165 +1,233 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<style>
-  @page {
-    size: letter;
-    margin: 2.5cm 2cm 2cm 2cm;
-  }
-  body {
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 12pt;
-    color: #1a1a1a;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-  }
-  .header {
-    text-align: center;
-    margin-bottom: 32px;
-  }
-  .header img {
-    max-height: 80px;
-    margin-bottom: 12px;
-  }
-  .header h1 {
-    font-size: 16pt;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin: 8px 0 4px 0;
-  }
-  .header h2 {
-    font-size: 13pt;
-    font-weight: normal;
-    margin: 0;
-    color: #333;
-  }
-  .empresa-info {
-    text-align: center;
-    font-size: 11pt;
-    color: #444;
-    margin-bottom: 24px;
-  }
-  .body-text {
-    text-align: justify;
-    margin-bottom: 24px;
-    font-size: 12pt;
-  }
-  .body-text p {
-    margin-bottom: 12px;
-  }
-  table.summary {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 11pt;
-  }
-  table.summary th {
-    background: #f0f0f0;
-    border: 1px solid #999;
-    padding: 8px 10px;
-    text-align: left;
-    font-weight: bold;
-    font-size: 10pt;
-  }
-  table.summary td {
-    border: 1px solid #999;
-    padding: 8px 10px;
-    font-size: 11pt;
-  }
-  table.summary td.number {
-    text-align: right;
-    font-family: 'Courier New', monospace;
-  }
-  .closing {
-    margin-top: 48px;
-  }
-  .closing p {
-    margin-bottom: 4px;
-  }
-  .signature {
-    margin-top: 48px;
-  }
-  .signature-line {
-    border-top: 1px solid #333;
-    width: 280px;
-    margin-top: 60px;
-    padding-top: 6px;
-  }
-  .signature-name {
-    font-weight: bold;
-    font-size: 11pt;
-  }
-  .signature-id {
-    font-size: 10pt;
-    color: #444;
-  }
-  .signature-role {
-    font-size: 10pt;
-    color: #666;
-  }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=210mm">
+  <style>
+    /* Línea de la app: #1e293b, #f8fafc, #e2e8f0, system UI. Sin cortes: overflow visible, evitar break dentro de bloques. */
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: visible;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #1e293b;
+      background: #fff !important;
+    }
+    body { padding: 24px 28px; min-height: auto; }
+
+    .cert-page { overflow: visible; page-break-after: auto; }
+    .cert-page .header {
+      text-align: center;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .cert-page .header img {
+      max-height: 64px;
+      margin-bottom: 12px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cert-page .header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      margin: 8px 0 4px 0;
+      color: #1e293b;
+    }
+    .cert-page .header h2 {
+      font-size: 14px;
+      font-weight: 400;
+      margin: 0;
+      color: #64748b;
+    }
+    .cert-page .empresa-info {
+      text-align: center;
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 20px;
+    }
+    .cert-page .body-text {
+      text-align: justify;
+      margin-bottom: 20px;
+      font-size: 14px;
+      line-height: 1.6;
+      page-break-inside: avoid;
+    }
+    .cert-page .body-text p { margin-bottom: 12px; }
+    .cert-page .summary-wrap { page-break-inside: avoid; margin: 20px 0; }
+    .cert-page table.summary {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      background: #fff;
+    }
+    .cert-page table.summary th {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 12px;
+      color: #475569;
+    }
+    .cert-page table.summary td {
+      border: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      color: #1e293b;
+    }
+    .cert-page table.summary td.number {
+      text-align: right;
+      font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    .cert-page .closing { margin-top: 28px; page-break-inside: avoid; }
+    .cert-page .closing p { margin-bottom: 4px; }
+    .cert-page .signature { margin-top: 28px; page-break-inside: avoid; }
+    .cert-page .signature-image { margin-bottom: 6px; }
+    .cert-page .signature-image img {
+      max-height: 64px;
+      max-width: 220px;
+      display: block;
+    }
+    .cert-page .signature-line {
+      border-top: 1px solid #334155;
+      width: 240px;
+      margin-top: 6px;
+      padding-top: 6px;
+    }
+    .cert-page .signature--no-image .signature-line { margin-top: 48px; }
+    .cert-page .signature-name { font-weight: 600; font-size: 13px; color: #1e293b; }
+    .cert-page .signature-id, .cert-page .signature-role { font-size: 12px; color: #64748b; }
+
+    /* Segunda página: detalle (mismo sistema de diseño) */
+    .details-section { overflow: visible; padding-top: 8px; }
+    .details-section .header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .details-section .header h1 { font-size: 16px; font-weight: 700; margin: 0 0 4px 0; color: #1e293b; }
+    .details-section .header h2 { font-size: 13px; font-weight: 400; color: #64748b; margin: 0; }
+    .details-section .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #64748b;
+    }
+    .details-section table.details {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13px;
+      background: #fff;
+    }
+    .details-section table.details th {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      padding: 8px 10px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 11px;
+      color: #475569;
+    }
+    .details-section table.details td {
+      border: 1px solid #e2e8f0;
+      padding: 8px 10px;
+      color: #1e293b;
+    }
+    .details-section table.details td.number {
+      text-align: right;
+      font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+      font-variant-numeric: tabular-nums;
+    }
+    .details-section table.details td.code { font-family: ui-monospace, Consolas, monospace; font-size: 12px; }
+    .details-section table.details tfoot td {
+      font-weight: 600;
+      background: #f1f5f9;
+      border-top: 1px solid #e2e8f0;
+    }
+    .details-section .footer-note {
+      margin-top: 20px;
+      font-size: 11px;
+      color: #64748b;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-  <div class="header">
-    {{#if empresa_imagen}}
-    <img src="{{empresa_imagen}}" alt="Logo">
-    {{/if}}
-    <h1>Certificado Tributario</h1>
-    <h2>AG {{year}}</h2>
-  </div>
+  <div class="cert-page">
+    <div class="header">
+      {{#if empresa_imagen}}
+      <img src="{{empresa_imagen}}" alt="Logo">
+      {{/if}}
+      <h1>Certificado Tributario</h1>
+      <h2>AG {{year}}</h2>
+    </div>
 
-  <div class="empresa-info">
-    <strong>{{empresa_nombre}}</strong><br>
-    NIT: {{empresa_nit}}
-  </div>
+    <div class="empresa-info">
+      <strong>{{empresa_nombre}}</strong><br>
+      NIT: {{empresa_nit}}
+    </div>
 
-  <div class="body-text">
-    <p>
-      La empresa <strong>{{empresa_nombre}}</strong>, identificada con NIT <strong>{{empresa_nit}}</strong>,
-      representada legalmente por <strong>{{representante_nombre}}</strong>, identificado(a) con cedula de ciudadania
-      No. <strong>{{representante_id}}</strong>, certifica que se realizo un pago a
-      <strong>{{third_name}}</strong>, identificado(a) con documento No. <strong>{{id}}</strong>,
-      en la ciudad de <strong>{{city}}</strong>, correspondiente al periodo <strong>{{date_range}}</strong>.
-    </p>
-    <p>
-      A continuacion se detalla el resumen de la operacion:
-    </p>
-  </div>
+    <div class="body-text">
+      <p>
+        La empresa <strong>{{empresa_nombre}}</strong>, identificada con NIT <strong>{{empresa_nit}}</strong>,
+        representada legalmente por <strong>{{representante_legal_nombre}}</strong>, identificado(a) con cédula de ciudadanía
+        No. <strong>{{representante_legal_id}}</strong>, certifica que se realizó un pago a
+        <strong>{{third_name}}</strong>, identificado(a) con documento No. <strong>{{id}}</strong>,
+        en la ciudad de <strong>{{city}}</strong>, correspondiente al periodo <strong>{{date_range}}</strong>.
+      </p>
+      <p>
+        A continuación se detalla el resumen de la operación:
+      </p>
+    </div>
 
-  <table class="summary">
-    <thead>
-      <tr>
-        <th>Ciudad</th>
-        <th>Fecha de Pago</th>
-        <th>Cantidad Adquirida</th>
-        <th>Valor Total COP</th>
-        <th>Retencion</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>{{city}}</td>
-        <td>{{date_range}}</td>
-        <td class="number">{{total_amount}}</td>
-        <td class="number">{{total_price}}</td>
-        <td>{{retencion}}</td>
-      </tr>
-    </tbody>
-  </table>
+    <div class="summary-wrap">
+      <table class="summary">
+        <thead>
+          <tr>
+            <th>Ciudad</th>
+            <th>Fecha de Pago</th>
+            <th>Cantidad Adquirida</th>
+            <th>Valor Total COP</th>
+            <th>Retención</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{city}}</td>
+            <td>{{date_range}}</td>
+            <td class="number">{{total_amount}}</td>
+            <td class="number">{{total_price}}</td>
+            <td>{{retencion}}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-  <div class="closing">
-    <p>Se expide el presente certificado a solicitud del interesado.</p>
-    <p>Atentamente,</p>
-  </div>
+    <div class="closing">
+      <p>Se expide el presente certificado a solicitud del interesado.</p>
+      <p>Atentamente,</p>
+    </div>
 
-  <div class="signature">
-    <div class="signature-line">
-      <div class="signature-name">{{representante_nombre}}</div>
-      <div class="signature-id">C.C. {{representante_id}}</div>
-      <div class="signature-role">Representante Legal - {{empresa_nombre}}</div>
+    <div class="signature {{#unless firmante_imagen}}signature--no-image{{/unless}}">
+      {{#if firmante_imagen}}
+      <div class="signature-image">
+        <img src="{{firmante_imagen}}" alt="Firma">
+      </div>
+      {{/if}}
+      <div class="signature-line">
+        <div class="signature-name">{{firma_nombre}}</div>
+        <div class="signature-id">T.P. {{firma_id}}</div>
+        <div class="signature-role">Representante Legal - {{empresa_nombre}}</div>
+      </div>
     </div>
   </div>
 </body>
