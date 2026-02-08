@@ -1,8 +1,21 @@
+use std::fs;
+use std::path::Path;
+
 use rusqlite::params;
 
 use crate::db::DbPool;
 use crate::errors::AppError;
 use crate::models::crypto::{CreateEmpresaDto, Empresa, UpdateEmpresaDto};
+
+fn infer_imagen_mime(path: &Path) -> &'static str {
+    let ext = path.extension().and_then(|e| e.to_str()).unwrap_or("");
+    match ext.to_lowercase().as_str() {
+        "png" => "image/png",
+        "gif" => "image/gif",
+        "webp" => "image/webp",
+        _ => "image/jpeg",
+    }
+}
 
 pub fn create(db: &DbPool, dto: CreateEmpresaDto) -> Result<Empresa, AppError> {
     let conn = db.0.lock().map_err(|e| AppError::Database(rusqlite::Error::ToSqlConversionFailure(Box::new(
@@ -81,9 +94,23 @@ pub fn update(db: &DbPool, nit: &str, dto: UpdateEmpresaDto) -> Result<Empresa, 
     let mut updates = Vec::new();
     let mut values: Vec<Box<dyn rusqlite::types::ToSql>> = Vec::new();
 
+    let new_nit = dto.nit.as_ref().filter(|n| n.as_str() != nit);
+
     if let Some(ref nombre) = dto.nombre {
         updates.push("nombre = ?");
         values.push(Box::new(nombre.clone()));
+    }
+    if let Some(ref new_n) = new_nit {
+        let exists: bool = conn.query_row(
+            "SELECT COUNT(*) > 0 FROM crypto_empresas WHERE nit = ?1 AND nit != ?2",
+            [new_n.as_str(), nit],
+            |row| row.get(0),
+        )?;
+        if exists {
+            return Err(AppError::DuplicateNit((*new_n).clone()));
+        }
+        updates.push("nit = ?");
+        values.push(Box::new((*new_n).clone()));
     }
     if let Some(ref imagen_path) = dto.imagen_path {
         updates.push("imagen_path = ?");
@@ -119,8 +146,23 @@ pub fn update(db: &DbPool, nit: &str, dto: UpdateEmpresaDto) -> Result<Empresa, 
     }
 
     drop(conn);
-    get_by_nit(db, nit)?
-        .ok_or_else(|| AppError::NotFound(format!("Empresa con NIT {} no encontrada", nit)))
+    let return_nit = new_nit.map(|s| s.as_str()).unwrap_or(nit);
+    get_by_nit(db, return_nit)?
+        .ok_or_else(|| AppError::NotFound(format!("Empresa con NIT {} no encontrada", return_nit)))
+}
+
+pub fn delete(db: &DbPool, nit: &str) -> Result<(), AppError> {
+    let conn = db.0.lock().map_err(|e| AppError::Database(rusqlite::Error::ToSqlConversionFailure(Box::new(
+        std::io::Error::new(std::io::ErrorKind::Other, e.to_string())
+    ))))?;
+
+    let rows_affected = conn.execute("DELETE FROM crypto_empresas WHERE nit = ?1", [nit])?;
+
+    if rows_affected == 0 {
+        return Err(AppError::NotFound(format!("Empresa con NIT {} no encontrada", nit)));
+    }
+
+    Ok(())
 }
 
 pub fn list(db: &DbPool) -> Result<Vec<Empresa>, AppError> {
@@ -146,4 +188,22 @@ pub fn list(db: &DbPool) -> Result<Vec<Empresa>, AppError> {
     .collect::<Result<Vec<_>, _>>()?;
 
     Ok(empresas)
+}
+
+/// Lee la imagen del logo de la empresa desde imagen_path.
+/// Devuelve (bytes, mime) si la ruta existe y se puede leer; None en caso contrario.
+pub fn get_imagen_bytes(empresa: &Empresa) -> Option<(Vec<u8>, String)> {
+    let path_str = empresa.imagen_path.as_ref()?;
+    let path = Path::new(path_str);
+    let abs = if path.is_absolute() {
+        path.to_path_buf()
+    } else {
+        std::env::current_dir().ok()?.join(path)
+    };
+    if !abs.exists() {
+        return None;
+    }
+    let bytes = fs::read(&abs).ok()?;
+    let mime = infer_imagen_mime(&abs).to_string();
+    Some((bytes, mime))
 }

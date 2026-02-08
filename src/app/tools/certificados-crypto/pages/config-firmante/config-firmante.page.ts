@@ -5,6 +5,7 @@ import { Button } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
 import { Message } from 'primeng/message';
 import { ConfirmDialog } from 'primeng/confirmdialog';
+import { Dialog } from 'primeng/dialog';
 import { ConfirmationService } from 'primeng/api';
 import { FileUploadComponent } from '../../../../shared/components/file-upload/file-upload.component';
 import { NotificationService } from '../../../../shared/services/notification.service';
@@ -14,7 +15,7 @@ import { FirmanteListItem } from '../../models/firmante.model';
 @Component({
   selector: 'app-config-firmante',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, InputText, Button, FloatLabel, Message, FileUploadComponent, ConfirmDialog],
+  imports: [FormsModule, InputText, Button, FloatLabel, Message, FileUploadComponent, ConfirmDialog, Dialog],
   providers: [ConfirmationService],
   template: `
     <div class="page">
@@ -57,9 +58,14 @@ import { FirmanteListItem } from '../../models/firmante.model';
               @if (firmaPreview()) {
                 <div class="firma-preview">
                   <img [src]="firmaPreview()" alt="Vista previa firma" />
-                  <button class="firma-remove" (click)="removeFirma()" title="Quitar imagen">
-                    <i class="pi pi-times"></i>
-                  </button>
+                  <div class="firma-preview-actions">
+                    <button type="button" class="firma-btn-preview" (click)="openFirmaPreview(firmaPreview()!)" title="Ver en grande">
+                      <i class="pi pi-eye"></i>
+                    </button>
+                    <button class="firma-remove" (click)="removeFirma()" title="Quitar imagen">
+                      <i class="pi pi-times"></i>
+                    </button>
+                  </div>
                 </div>
               }
             </div>
@@ -100,7 +106,13 @@ import { FirmanteListItem } from '../../models/firmante.model';
                 </div>
                 <div class="firmante-actions">
                   @if (f.has_firma) {
-                    <i class="pi pi-image firma-badge" title="Tiene imagen de firma"></i>
+                    <p-button
+                      icon="pi pi-eye"
+                      [rounded]="true"
+                      [text]="true"
+                      size="small"
+                      title="Vista previa de la firma"
+                      (onClick)="openFirmaPreviewByFirmante($event, f)" />
                   }
                   <p-button
                     icon="pi pi-trash"
@@ -116,6 +128,21 @@ import { FirmanteListItem } from '../../models/firmante.model';
           </div>
         </div>
       }
+
+      <p-dialog
+        header="Vista previa de la firma"
+        [visible]="previewFirmaVisible()"
+        (visibleChange)="onFirmaPreviewVisibleChange($event)"
+        [modal]="true"
+        [dismissableMask]="true"
+        [style]="{ width: '420px' }"
+        styleClass="firma-preview-dialog">
+        @if (previewFirmaUrl()) {
+          <div class="firma-preview-dialog-content">
+            <img [src]="previewFirmaUrl()" alt="Firma del firmante" />
+          </div>
+        }
+      </p-dialog>
 
       <p-confirmDialog />
     </div>
@@ -187,6 +214,9 @@ import { FirmanteListItem } from '../../models/firmante.model';
       border-radius: 4px;
       padding: 4px;
       background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
 
       img {
         display: block;
@@ -196,23 +226,46 @@ import { FirmanteListItem } from '../../models/firmante.model';
       }
     }
 
-    .firma-remove {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
+    .firma-preview-actions {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .firma-btn-preview {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
       border: 1px solid #e2e8f0;
-      background: #ffffff;
+      background: #fff;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 0;
+      i { font-size: 12px; color: #3b82f6; }
+      &:hover { background: #eff6ff; }
+    }
 
-      i { font-size: 10px; color: #64748b; }
+    .firma-preview-dialog-content img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
+    }
 
+    .firma-remove {
+      width: 24px;
+      height: 24px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+      background: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      i { font-size: 12px; color: #64748b; }
       &:hover {
         background: #fef2f2;
         border-color: #fca5a5;
@@ -305,6 +358,8 @@ export class ConfigFirmantePage implements OnInit {
   successMessage = signal<string | null>(null);
   errorMessage = signal<string | null>(null);
   firmaPreview = signal<string | null>(null);
+  previewFirmaVisible = signal(false);
+  previewFirmaUrl = signal<string | null>(null);
 
   private firmaImagenBytes: number[] | null = null;
   private firmaMime: string | null = null;
@@ -328,6 +383,30 @@ export class ConfigFirmantePage implements OnInit {
     this.firmaImagenBytes = null;
     this.firmaMime = null;
     this.firmaPreview.set(null);
+  }
+
+  openFirmaPreview(dataUrl: string) {
+    this.previewFirmaUrl.set(dataUrl);
+    this.previewFirmaVisible.set(true);
+  }
+
+  onFirmaPreviewVisibleChange(visible: boolean) {
+    this.previewFirmaVisible.set(visible);
+    if (!visible) this.previewFirmaUrl.set(null);
+  }
+
+  async openFirmaPreviewByFirmante(event: Event, firmante: FirmanteListItem) {
+    event.stopPropagation();
+    if (!firmante.has_firma) return;
+    try {
+      const img = await this.firmanteService.getFirmaImagen(firmante.id);
+      if (img) {
+        const url = FirmanteService.imageBytesToDataUri(img.imagen, img.mime);
+        this.openFirmaPreview(url);
+      }
+    } catch {
+      this.notify.error('Error', 'No se pudo cargar la imagen de la firma');
+    }
   }
 
   async loadFirmante(item: FirmanteListItem) {

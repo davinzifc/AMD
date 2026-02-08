@@ -22,6 +22,7 @@ pub struct CreateEmpresaDto {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UpdateEmpresaDto {
     pub nombre: Option<String>,
+    pub nit: Option<String>,
     pub imagen_path: Option<String>,
     pub representante_nombre: Option<String>,
     pub representante_id: Option<String>,

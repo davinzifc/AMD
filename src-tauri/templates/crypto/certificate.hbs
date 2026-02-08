@@ -173,12 +173,12 @@
 
     <div class="empresa-info">
       <strong>{{empresa_nombre}}</strong><br>
-      NIT: {{empresa_nit}}
+      NIT: {{empresa_nit_formatted}}
     </div>
 
     <div class="body-text">
       <p>
-        La empresa <strong>{{empresa_nombre}}</strong>, identificada con NIT <strong>{{empresa_nit}}</strong>,
+        La empresa <strong>{{empresa_nombre}}</strong>, identificada con NIT <strong>{{empresa_nit_formatted}}</strong>,
         representada legalmente por <strong>{{representante_legal_nombre}}</strong>, identificado(a) con cédula de ciudadanía
         No. <strong>{{representante_legal_id}}</strong>, certifica que se realizó un pago a
         <strong>{{third_name}}</strong>, identificado(a) con documento No. <strong>{{id}}</strong>,
@@ -226,7 +226,6 @@
       <div class="signature-line">
         <div class="signature-name">{{firma_nombre}}</div>
         <div class="signature-id">T.P. {{firma_id}}</div>
-        <div class="signature-role">Representante Legal - {{empresa_nombre}}</div>
       </div>
     </div>
   </div>

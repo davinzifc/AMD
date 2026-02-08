@@ -6,6 +6,7 @@ import { Message } from 'primeng/message';
 import { Select } from 'primeng/select';
 import { InputNumber } from 'primeng/inputnumber';
 import { FormsModule } from '@angular/forms';
+import { formatNit } from '../../../../shared/pipes/format-nit.pipe';
 import { CryptoReportService } from '../../services/crypto-report.service';
 import { DataTableComponent } from '../../components/data-table/data-table.component';
 import { ExcelUploadZoneComponent } from '../../components/excel-upload-zone/excel-upload-zone.component';
@@ -629,12 +630,16 @@ export class CryptoMainPage {
   onStepChange(event: number | undefined) {
     if (event !== undefined) {
       this.activeStep.set(event);
+      // Al volver al paso de selección de tercero, limpiar la selección para elegir de nuevo
+      if (event === 2) {
+        this.selectedThirdParties.set([]);
+      }
     }
   }
 
   empresaInfo = computed(() => {
     const emp = this.reportService.empresa();
-    return emp ? `${emp.nombre} (NIT: ${emp.nit})` : null;
+    return emp ? `${emp.nombre} (NIT: ${formatNit(emp.nit)})` : null;
   });
 
   filteredTransactions = computed(() => {

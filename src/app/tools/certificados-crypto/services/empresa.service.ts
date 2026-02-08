@@ -20,6 +20,7 @@ export interface CreateEmpresaDto {
 
 export interface UpdateEmpresaDto {
   nombre?: string;
+  nit?: string;
   imagen_path?: string;
   representante_nombre?: string;
   representante_id?: string;
@@ -60,9 +61,41 @@ export class EmpresaService {
 
   async updateEmpresa(nit: string, dto: UpdateEmpresaDto): Promise<Empresa> {
     const result = await invoke<Empresa>('update_empresa', { nit, empresa: dto });
-    this._empresas.update((list) =>
-      list.map((e) => (e.nit === nit ? result : e))
-    );
+    this._empresas.update((list) => {
+      const withoutOld = list.filter((e) => e.nit !== nit);
+      return [...withoutOld, result].sort((a, b) => a.nombre.localeCompare(b.nombre));
+    });
     return result;
+  }
+
+  async deleteEmpresa(nit: string): Promise<void> {
+    await invoke('delete_empresa', { nit });
+    this._empresas.update((list) => list.filter((e) => e.nit !== nit));
+  }
+
+  /** Obtiene la imagen del logo de la empresa (base64 + mime) si existe. */
+  async getEmpresaImagen(nit: string): Promise<{ imagenBase64: string; mime: string } | null> {
+    const result = await invoke<{ imagen_base64: string; mime: string } | null>(
+      'get_empresa_imagen',
+      { nit }
+    );
+    if (!result) return null;
+    return {
+      imagenBase64: result.imagen_base64,
+      mime: result.mime,
+    };
+  }
+
+  /** Guarda la imagen del logo en disco y devuelve la ruta para guardar en la empresa. */
+  async saveEmpresaImagen(
+    nit: string,
+    contentsBase64: string,
+    mime: string
+  ): Promise<string> {
+    return invoke<string>('save_empresa_imagen', {
+      nit,
+      contentsBase64,
+      mime,
+    });
   }
 }
