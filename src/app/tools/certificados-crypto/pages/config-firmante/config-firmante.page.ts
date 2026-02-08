@@ -49,26 +49,33 @@ import { FirmanteListItem } from '../../models/firmante.model';
 
           <div class="form-field form-field--full">
             <label class="field-label">Imagen de firma</label>
-            <div class="firma-upload-row">
-              <app-file-upload
-                accept=".png,.jpg,.jpeg"
-                label="Seleccionar imagen de firma (PNG, JPG, max 2MB)"
-                [maxSizeMb]="2"
-                (fileSelected)="onFirmaSelected($event)" />
-              @if (firmaPreview()) {
-                <div class="firma-preview">
+            <app-file-upload
+              accept=".png,.jpg,.jpeg"
+              label="Seleccionar imagen de firma (PNG, JPG, max 2MB)"
+              [maxSizeMb]="2"
+              (fileSelected)="onFirmaSelected($event)" />
+            @if (firmaPreview()) {
+              <div class="firma-inline-preview">
+                <div class="firma-inline-image">
                   <img [src]="firmaPreview()" alt="Vista previa firma" />
-                  <div class="firma-preview-actions">
-                    <button type="button" class="firma-btn-preview" (click)="openFirmaPreview(firmaPreview()!)" title="Ver en grande">
-                      <i class="pi pi-eye"></i>
-                    </button>
-                    <button class="firma-remove" (click)="removeFirma()" title="Quitar imagen">
-                      <i class="pi pi-times"></i>
-                    </button>
-                  </div>
                 </div>
-              }
-            </div>
+                <div class="firma-inline-actions">
+                  <p-button
+                    icon="pi pi-eye"
+                    label="Ver"
+                    [text]="true"
+                    size="small"
+                    (onClick)="openFirmaPreview(firmaPreview()!)" />
+                  <p-button
+                    icon="pi pi-times"
+                    label="Quitar"
+                    [text]="true"
+                    severity="danger"
+                    size="small"
+                    (onClick)="removeFirma()" />
+                </div>
+              </div>
+            }
           </div>
         </div>
 
@@ -93,19 +100,28 @@ import { FirmanteListItem } from '../../models/firmante.model';
 
       @if (firmanteService.firmantes().length > 0) {
         <div class="list-card">
-          <h2>Firmantes registrados</h2>
+          <div class="list-card-header">
+            <h2>Firmantes registrados</h2>
+            <span class="list-count">{{ firmanteService.firmantes().length }}</span>
+          </div>
           <div class="firmante-list">
             @for (f of firmanteService.firmantes(); track f.id) {
               <div
                 class="firmante-item"
                 [class.active]="editingId() === f.id"
                 (click)="loadFirmante(f)">
+                <div class="firmante-avatar">
+                  <i class="pi pi-user"></i>
+                </div>
                 <div class="firmante-info">
                   <span class="firmante-name">{{ f.nombre }}</span>
-                  <span class="firmante-cc">CC: {{ f.cc_id }}</span>
+                  <span class="firmante-cc">CC {{ f.cc_id }}</span>
                 </div>
                 <div class="firmante-actions">
                   @if (f.has_firma) {
+                    <span class="firma-indicator" title="Tiene firma">
+                      <i class="pi pi-check-circle"></i>
+                    </span>
                     <p-button
                       icon="pi pi-eye"
                       [rounded]="true"
@@ -117,11 +133,11 @@ import { FirmanteListItem } from '../../models/firmante.model';
                   <p-button
                     icon="pi pi-trash"
                     severity="danger"
-                    [outlined]="true"
                     [rounded]="true"
                     [text]="true"
                     size="small"
                     (onClick)="confirmDelete($event, f)" />
+                  <i class="pi pi-chevron-right chevron"></i>
                 </div>
               </div>
             }
@@ -135,11 +151,14 @@ import { FirmanteListItem } from '../../models/firmante.model';
         (visibleChange)="onFirmaPreviewVisibleChange($event)"
         [modal]="true"
         [dismissableMask]="true"
-        [style]="{ width: '420px' }"
+        [style]="{ width: '440px' }"
         styleClass="firma-preview-dialog">
         @if (previewFirmaUrl()) {
-          <div class="firma-preview-dialog-content">
-            <img [src]="previewFirmaUrl()" alt="Firma del firmante" />
+          <div class="firma-dialog-content">
+            <div class="firma-dialog-image-wrap">
+              <img [src]="previewFirmaUrl()" alt="Firma del firmante" />
+            </div>
+            <span class="firma-dialog-hint">Esta imagen se utilizara en los certificados generados</span>
           </div>
         }
       </p-dialog>
@@ -198,81 +217,6 @@ import { FirmanteListItem } from '../../models/firmante.model';
       width: 100%;
     }
 
-    .firma-upload-row {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-
-    .firma-upload-row app-file-upload {
-      flex: 1;
-    }
-
-    .firma-preview {
-      position: relative;
-      border: 1px solid #e2e8f0;
-      border-radius: 4px;
-      padding: 4px;
-      background: #ffffff;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-
-      img {
-        display: block;
-        max-width: 160px;
-        max-height: 80px;
-        object-fit: contain;
-      }
-    }
-
-    .firma-preview-actions {
-      display: flex;
-      gap: 4px;
-      align-items: center;
-    }
-
-    .firma-btn-preview {
-      width: 24px;
-      height: 24px;
-      border-radius: 4px;
-      border: 1px solid #e2e8f0;
-      background: #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      i { font-size: 12px; color: #3b82f6; }
-      &:hover { background: #eff6ff; }
-    }
-
-    .firma-preview-dialog-content img {
-      max-width: 100%;
-      height: auto;
-      display: block;
-      margin: 0 auto;
-    }
-
-    .firma-remove {
-      width: 24px;
-      height: 24px;
-      border-radius: 4px;
-      border: 1px solid #e2e8f0;
-      background: #fff;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0;
-      i { font-size: 12px; color: #64748b; }
-      &:hover {
-        background: #fef2f2;
-        border-color: #fca5a5;
-        i { color: #dc2626; }
-      }
-    }
-
     .form-actions {
       display: flex;
       gap: 8px;
@@ -281,66 +225,175 @@ import { FirmanteListItem } from '../../models/firmante.model';
       border-top: 1px solid #f1f5f9;
     }
 
-    .list-card h2 {
-      font-size: 16px;
+    /* --- Inline firma preview --- */
+    .firma-inline-preview {
+      margin-top: 12px;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #fafbfc;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .firma-inline-image {
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      background: #ffffff;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      img {
+        display: block;
+        max-width: 160px;
+        max-height: 80px;
+        object-fit: contain;
+      }
+    }
+
+    .firma-inline-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    /* --- Preview dialog --- */
+    .firma-dialog-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .firma-dialog-image-wrap {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      background: #fafbfc;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      img {
+        max-width: 100%;
+        max-height: 200px;
+        object-fit: contain;
+        display: block;
+      }
+    }
+
+    .firma-dialog-hint {
+      font-size: 12px;
+      color: #94a3b8;
+      text-align: center;
+    }
+
+    /* --- List card --- */
+    .list-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+
+      h2 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #0f172a;
+      }
+    }
+
+    .list-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 11px;
+      background: #f1f5f9;
+      font-size: 12px;
       font-weight: 600;
-      color: #0f172a;
-      margin-bottom: 12px;
+      color: #475569;
     }
 
     .firmante-list {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
     }
 
     .firmante-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 12px;
       padding: 10px 12px;
       border-radius: 6px;
       cursor: pointer;
       transition: background 0.15s ease;
 
       &:hover { background: #f8fafc; }
-      &.active { background: #f0f7ff; }
+      &.active {
+        background: #eff6ff;
+        .firmante-avatar { background: #3b82f6; color: #fff; }
+      }
     }
+
+    .firmante-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s ease, color 0.15s ease;
+      i { font-size: 16px; color: #64748b; }
+    }
+    .firmante-item.active .firmante-avatar i { color: #fff; }
 
     .firmante-info {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 1px;
+      flex: 1;
+      min-width: 0;
     }
 
     .firmante-name {
       font-size: 14px;
       font-weight: 500;
       color: #1e293b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .firmante-cc {
       font-size: 12px;
       color: #64748b;
+      font-variant-numeric: tabular-nums;
     }
 
     .firmante-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 2px;
+      flex-shrink: 0;
+      .chevron { color: #cbd5e1; font-size: 12px; }
     }
 
-    .firma-badge {
-      font-size: 14px;
-      color: #3b82f6;
+    .firma-indicator {
+      display: flex;
+      align-items: center;
+      i { font-size: 14px; color: #22c55e; }
     }
 
     @media (max-width: 640px) {
       .form-grid {
         grid-template-columns: 1fr;
-      }
-      .firma-upload-row {
-        flex-direction: column;
       }
     }
   `,

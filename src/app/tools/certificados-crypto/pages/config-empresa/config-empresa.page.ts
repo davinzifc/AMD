@@ -123,16 +123,22 @@ import { EmpresaService, Empresa, UpdateEmpresaDto } from '../../services/empres
 
       @if (empresaService.empresas().length > 0) {
         <div class="list-card">
-          <h2>Empresas registradas</h2>
+          <div class="list-card-header">
+            <h2>Empresas registradas</h2>
+            <span class="list-count">{{ empresaService.empresas().length }}</span>
+          </div>
           <div class="empresa-list">
             @for (emp of empresaService.empresas(); track emp.nit) {
               <div
                 class="empresa-item"
                 [class.active]="form.nit === emp.nit"
                 (click)="loadEmpresa(emp)">
+                <div class="empresa-avatar">
+                  <i class="pi pi-building"></i>
+                </div>
                 <div class="empresa-info">
                   <span class="empresa-name">{{ emp.nombre }}</span>
-                  <span class="empresa-nit">NIT: {{ emp.nit | formatNit }}</span>
+                  <span class="empresa-nit">NIT {{ emp.nit | formatNit }}</span>
                 </div>
                 <div class="empresa-item-actions">
                   <p-button
@@ -150,7 +156,7 @@ import { EmpresaService, Empresa, UpdateEmpresaDto } from '../../services/empres
                     size="small"
                     title="Eliminar"
                     (onClick)="confirmDelete($event, emp)" />
-                  <i class="pi pi-chevron-right"></i>
+                  <i class="pi pi-chevron-right chevron"></i>
                 </div>
               </div>
             }
@@ -159,32 +165,47 @@ import { EmpresaService, Empresa, UpdateEmpresaDto } from '../../services/empres
       }
 
       <p-dialog
-        header="Vista previa de la empresa"
+        [header]="''"
         [visible]="previewVisible()"
         (visibleChange)="onPreviewVisibleChange($event)"
         [modal]="true"
         [dismissableMask]="true"
-        [style]="{ width: '420px' }"
+        [style]="{ width: '440px' }"
+        [showHeader]="false"
         styleClass="empresa-preview-dialog">
-        <div class="empresa-preview-content">
-          <dl class="preview-meta">
-            <dt>Nombre</dt>
-            <dd>{{ previewEmpresa()?.nombre }}</dd>
-            <dt>NIT</dt>
-            <dd>{{ previewEmpresa()?.nit | formatNit }}</dd>
-            <dt>Representante legal</dt>
-            <dd>{{ previewEmpresa()?.representante_nombre }}</dd>
-            <dt>Identificación representante</dt>
-            <dd>{{ previewEmpresa()?.representante_id }}</dd>
-          </dl>
-          @if (previewLogoUrl()) {
-            <div class="preview-logo-wrap">
-              <label>Logo</label>
-              <img [src]="previewLogoUrl()" alt="Logo" />
+        <div class="preview-card">
+          <div class="preview-card-header">
+            @if (previewLogoUrl()) {
+              <div class="preview-logo-container">
+                <img [src]="previewLogoUrl()" alt="Logo" />
+              </div>
+            } @else {
+              <div class="preview-logo-placeholder">
+                <i class="pi pi-building"></i>
+              </div>
+            }
+            <h3 class="preview-company-name">{{ previewEmpresa()?.nombre }}</h3>
+            <span class="preview-nit">NIT {{ previewEmpresa()?.nit | formatNit }}</span>
+          </div>
+          <div class="preview-card-body">
+            <div class="preview-row">
+              <div class="preview-row-icon"><i class="pi pi-user"></i></div>
+              <div class="preview-row-content">
+                <span class="preview-row-label">Representante legal</span>
+                <span class="preview-row-value">{{ previewEmpresa()?.representante_nombre }}</span>
+              </div>
             </div>
-          } @else if (previewEmpresa()?.imagen_path) {
-            <p class="preview-no-image">Imagen no disponible (ruta: {{ previewEmpresa()!.imagen_path }})</p>
-          }
+            <div class="preview-row">
+              <div class="preview-row-icon"><i class="pi pi-id-card"></i></div>
+              <div class="preview-row-content">
+                <span class="preview-row-label">Identificacion</span>
+                <span class="preview-row-value">{{ previewEmpresa()?.representante_id }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="preview-card-footer">
+            <p-button label="Cerrar" [text]="true" size="small" (onClick)="onPreviewVisibleChange(false)" />
+          </div>
         </div>
       </p-dialog>
 
@@ -238,13 +259,6 @@ import { EmpresaService, Empresa, UpdateEmpresaDto } from '../../services/empres
       margin-bottom: 8px;
     }
 
-    .field-hint {
-      display: block;
-      margin-top: 4px;
-      font-size: 11px;
-      color: #94a3b8;
-    }
-
     .w-full {
       width: 100%;
     }
@@ -257,56 +271,103 @@ import { EmpresaService, Empresa, UpdateEmpresaDto } from '../../services/empres
       border-top: 1px solid #f1f5f9;
     }
 
-    .list-card h2 {
-      font-size: 16px;
+    /* --- List card --- */
+    .list-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+
+      h2 {
+        font-size: 16px;
+        font-weight: 600;
+        color: #0f172a;
+      }
+    }
+
+    .list-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 11px;
+      background: #f1f5f9;
+      font-size: 12px;
       font-weight: 600;
-      color: #0f172a;
-      margin-bottom: 12px;
+      color: #475569;
     }
 
     .empresa-list {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
     }
 
     .empresa-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      gap: 12px;
       padding: 10px 12px;
       border-radius: 6px;
       cursor: pointer;
       transition: background 0.15s ease;
 
       &:hover { background: #f8fafc; }
-      &.active { background: #f0f7ff; }
+      &.active {
+        background: #eff6ff;
+        .empresa-avatar { background: #3b82f6; color: #fff; }
+      }
     }
 
-    .empresa-item-actions {
+    .empresa-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #f1f5f9;
       display: flex;
       align-items: center;
-      gap: 4px;
-      i { color: #94a3b8; font-size: 12px; }
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s ease, color 0.15s ease;
+      i { font-size: 16px; color: #64748b; }
+      &:has(+ .empresa-info) i { color: inherit; }
     }
+    .empresa-item.active .empresa-avatar i { color: #fff; }
 
     .empresa-info {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 1px;
+      flex: 1;
+      min-width: 0;
     }
 
     .empresa-name {
       font-size: 14px;
       font-weight: 500;
       color: #1e293b;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .empresa-nit {
       font-size: 12px;
       color: #64748b;
+      font-variant-numeric: tabular-nums;
     }
 
+    .empresa-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      flex-shrink: 0;
+      .chevron { color: #cbd5e1; font-size: 12px; }
+    }
+
+    /* --- Inline preview section --- */
     .preview-section {
       padding-top: 8px;
       border-top: 1px solid #f1f5f9;
@@ -321,15 +382,17 @@ import { EmpresaService, Empresa, UpdateEmpresaDto } from '../../services/empres
 
     .logo-preview-small {
       border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      padding: 8px;
-      display: inline-block;
-      background: #f8fafc;
+      border-radius: 8px;
+      padding: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #fafbfc;
     }
     .logo-preview-small img {
       display: block;
-      max-width: 120px;
-      max-height: 60px;
+      max-width: 140px;
+      max-height: 70px;
       object-fit: contain;
     }
 
@@ -339,50 +402,123 @@ import { EmpresaService, Empresa, UpdateEmpresaDto } from '../../services/empres
       margin: 0;
     }
 
-    .empresa-preview-content {
+    /* --- Preview dialog (business card) --- */
+    :host ::ng-deep .empresa-preview-dialog {
+      .p-dialog-content {
+        padding: 0 !important;
+      }
+    }
+
+    .preview-card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-card-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 24px 20px;
+      background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+      border-bottom: 1px solid #f1f5f9;
+      text-align: center;
+    }
+
+    .preview-logo-container {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      margin-bottom: 14px;
+      img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+      }
+    }
+
+    .preview-logo-placeholder {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      i { font-size: 28px; color: #94a3b8; }
+    }
+
+    .preview-company-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+    }
+
+    .preview-nit {
+      font-size: 13px;
+      color: #64748b;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .preview-card-body {
+      padding: 20px 24px;
       display: flex;
       flex-direction: column;
       gap: 16px;
     }
 
-    .preview-meta {
-      margin: 0;
-      font-size: 13px;
-      display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 4px 16px;
+    .preview-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
     }
-    .preview-meta dt {
-      font-weight: 600;
-      color: #475569;
+
+    .preview-row-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      i { font-size: 14px; color: #64748b; }
     }
-    .preview-meta dd {
-      margin: 0;
+
+    .preview-row-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      padding-top: 2px;
+    }
+
+    .preview-row-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .preview-row-value {
+      font-size: 14px;
+      font-weight: 500;
       color: #1e293b;
     }
 
-    .preview-logo-wrap {
-      margin-top: 8px;
-    }
-    .preview-logo-wrap label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: #475569;
-      margin-bottom: 6px;
-    }
-    .preview-logo-wrap img {
-      max-width: 100%;
-      max-height: 160px;
-      object-fit: contain;
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-    }
-
-    .preview-no-image {
-      font-size: 12px;
-      color: #94a3b8;
-      margin: 0;
+    .preview-card-footer {
+      display: flex;
+      justify-content: flex-end;
+      padding: 12px 24px 16px;
+      border-top: 1px solid #f1f5f9;
     }
 
     @media (max-width: 640px) {
