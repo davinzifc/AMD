@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node:*)",
+      "Bash(npm --version:*)",
+      "Bash(rustc:*)",
+      "Bash(cargo --version:*)",
+      "Bash(ng:*)",
+      "Bash(cargo install:*)",
+      "Bash(npx @angular/cli version)",
+      "Bash(wkhtmltopdf:*)",
+      "Bash(npm view:*)",
+      "WebSearch",
+      "Bash(cargo tauri:*)",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(cargo check:*)",
+      "Bash(npx ng build:*)",
+      "Bash(ls:*)",
+      "Bash(npm ls:*)",
+      "Bash(find:*)",
+      "Bash(chmod:*)"
+    ]
+  }
+}

@@ -1,0 +1,318 @@
+# AMD Tools - Seguimiento de Progreso
+
+## Estado Actual (2026-02-07)
+
+**TODAS LAS 6 FASES COMPLETADAS**
+**Compilacion**: Angular OK, Rust OK (0 warnings)
+
+### Para probar el flujo completo:
+1. **Desarrollo**: `brew install wkhtmltopdf` (solo necesario para desarrollo local)
+2. Ejecutar: `npm run dev` (o `cargo tauri dev` desde src-tauri/)
+3. Crear empresa en Config. Empresa (nombre, NIT, representante)
+4. Preparar Excel formato `NIT-nombre.xlsx` con 10 headers
+5. Cargar Excel → Revisar datos → Seleccionar → Procesar → Generar PDFs
+
+### Para build de produccion:
+1. Descargar wkhtmltopdf binario para la plataforma target
+2. Colocarlo en `src-tauri/binaries/wkhtmltopdf-{TARGET_TRIPLE}`
+3. `npm run build:desktop` — Tauri empaqueta el binario dentro del instalador
+
+### Pendiente para perfeccionar:
+1. **Iteraciones Fase 4**: Probar procesamiento con datos reales y refinar reglas/formato
+2. **Iconos personalizados**: Reemplazar iconos default de Tauri
+3. **Prueba E2E completa**: Validar todo el flujo con un Excel real
+
+---
+
+## Stack Tecnologico
+- **Frontend**: Angular 20.1.5 + PrimeNG 21 (tema Aura)
+- **Backend**: Rust 1.89 + Tauri v2.10
+- **Base de datos**: SQLite via rusqlite (bundled)
+- **PDF**: wkhtmltopdf + Handlebars templates
+- **Arquitectura**: Modular por herramienta
+
+---
+
+## Fase 0: Scaffolding del Proyecto - COMPLETADA
+
+**Fecha**: 2026-02-07
+**Estado**: COMPLETADA
+
+### Plan:
+1. Instalar Tauri CLI v2
+2. Crear proyecto Angular 20 con SCSS y routing
+3. Inicializar Tauri v2 dentro del proyecto
+4. Instalar dependencias npm (primeng, @primeng/themes, @angular/cdk, @angular/animations, primeicons, @tauri-apps/api, plugins dialog/fs/shell)
+5. Instalar dependencias Rust (tauri plugins, rusqlite bundled, calamine, handlebars, chrono, thiserror, serde)
+6. Configurar tauri.conf.json (ventana 1280x800, titulo "AMD Tools")
+7. Configurar PrimeNG con tema Aura en app.config.ts
+8. Crear .gitignore global
+9. Verificar que Angular y Rust compilen
+
+### Resultado:
+- Angular compila a `dist/browser`
+- Rust compila (cargo check OK)
+- Tauri CLI v2.10.0 instalado
+- Todos los plugins registrados en lib.rs
+- Permisos configurados en capabilities/default.json
+
+### Estructura creada:
+```
+AMD/
+├── .gitignore
+├── angular.json
+├── package.json
+├── tsconfig.json
+├── src/                    # Angular frontend
+│   ├── app/
+│   │   ├── app.ts
+│   │   ├── app.config.ts   # PrimeNG Aura theme
+│   │   └── app.routes.ts
+│   ├── styles.scss
+│   └── index.html
+├── src-tauri/              # Rust backend
+│   ├── Cargo.toml
+│   ├── tauri.conf.json
+│   ├── capabilities/default.json
+│   └── src/
+│       ├── main.rs
+│       └── lib.rs
+└── PROGRESS.md
+```
+
+---
+
+## Fase 1: Layout, Navegacion y Arquitectura Modular - COMPLETADA
+
+**Fecha**: 2026-02-07
+**Estado**: COMPLETADA
+**HUs cubiertas**: HU-012, HU-014
+
+### Plan:
+1. Crear componente SidebarComponent con navegacion personalizada (sidebar oscura tipo panel financiero)
+2. Crear componente HeaderComponent con boton toggle para mobile
+3. Crear componente LayoutComponent con CSS Grid (sidebar fija + main content)
+4. Configurar rutas con lazy loading por herramienta
+5. Crear rutas internas de certificados-crypto (main + config-empresa)
+6. Crear paginas stub para cada ruta
+7. Crear componente stub ConfigUsuarioComponent
+8. Implementar responsive (sidebar colapsable en mobile con overlay)
+
+### Resultado:
+- Layout funcional con sidebar oscura profesional
+- Navegacion SPA con RouterLink/RouterLinkActive
+- Lazy loading: certificados-crypto y config-usuario se cargan por separado
+- Responsive: sidebar se oculta en < 768px con boton hamburger
+- Todos los componentes con ChangeDetectionStrategy.OnPush
+
+### Diseno:
+- **Estrategia de profundidad**: Borders-only (sin shadows, profesional contable)
+- **Sidebar**: Fondo #0f172a (slate-900), items con border-left azul en activo
+- **Acento**: #3b82f6 (azul institucional)
+- **Tipografia**: System fonts, condensada, 13px para nav items
+- **Espaciado**: Base 8px
+
+### Archivos creados:
+```
+src/app/
+├── layout/
+│   ├── layout.component.ts
+│   ├── sidebar/sidebar.component.ts
+│   └── header/header.component.ts
+├── app.routes.ts (lazy loading)
+└── tools/
+    ├── certificados-crypto/
+    │   ├── certificados-crypto.routes.ts
+    │   └── pages/
+    │       ├── main/main.page.ts
+    │       └── config-empresa/config-empresa.page.ts
+    └── config-usuario/
+        └── config-usuario.component.ts
+```
+
+---
+
+## Fase 2: Base de Datos, Migraciones y CRUD Empresa - COMPLETADA
+
+**Fecha**: 2026-02-07
+**Estado**: COMPLETADA
+**HUs cubiertas**: HU-001, HU-015
+
+### Plan detallado:
+
+#### Backend (Rust):
+1. `src-tauri/src/errors.rs` — AppError enum con thiserror (Database, NotFound, Validation, DuplicateNit, Excel, Pdf, Io)
+2. `src-tauri/src/db/connection.rs` — SQLite init en app_data_dir, migraciones, DbPool(Mutex<Connection>)
+3. `src-tauri/src/db/migrations/v001_create_empresas.sql` — Tabla crypto_empresas con NIT UNIQUE
+4. `src-tauri/src/models/crypto/empresa.rs` — Structs Empresa, CreateEmpresaDto, UpdateEmpresaDto
+5. `src-tauri/src/services/crypto/empresa_service.rs` — CRUD completo con rusqlite directo
+6. `src-tauri/src/commands/crypto/empresa_commands.rs` — 4 Tauri commands registrados
+7. Archivos mod.rs para todos los directorios
+
+#### Frontend (Angular):
+8. `src/app/tools/certificados-crypto/services/empresa.service.ts` — Signal-based service
+9. `src/app/shared/components/file-upload/file-upload.component.ts` — Drag-and-drop con validacion
+10. `src/app/tools/certificados-crypto/pages/config-empresa/config-empresa.page.ts` — Formulario completo
+
+### Resultado:
+- CRUD empresa funcional (crear, listar, editar por NIT)
+- SQLite con WAL mode y migraciones automaticas
+- Formulario PrimeNG con FloatLabel inputs
+- File upload reutilizable con drag-and-drop
+
+---
+
+## Fase 3: Carga de Excel y Visualizacion de Datos - COMPLETADA
+
+**Fecha**: 2026-02-07
+**Estado**: COMPLETADA
+**HUs cubiertas**: HU-002, HU-003
+
+### Plan detallado:
+
+#### Backend (Rust):
+1. `src-tauri/src/models/crypto/transaction.rs` — RawTransaction struct con row_number + REQUIRED_HEADERS const
+2. `src-tauri/src/services/crypto/excel_processor.rs` — Parseo calamine: extract_nit_from_filename, validate_headers, parse_rows, parse_excel
+3. `src-tauri/src/commands/crypto/report_commands.rs` — Command upload_excel (parsea + valida NIT en DB)
+
+#### Frontend (Angular):
+4. `src/app/tools/certificados-crypto/models/raw-transaction.model.ts` — Interfaz RawTransaction
+5. `src/app/tools/certificados-crypto/models/excel-upload-result.model.ts` — Interfaz ExcelUploadResult
+6. `src/app/tools/certificados-crypto/services/crypto-report.service.ts` — Signal-based service con uploadExcel
+7. `src/app/tools/certificados-crypto/components/data-table/data-table.component.ts` — PrimeNG p-table con paginacion, filtro, multi-seleccion
+8. `src/app/tools/certificados-crypto/pages/main/main.page.ts` — Stepper de 4 pasos con dialog file open
+
+### Resultado:
+- Excel upload end-to-end (dialog → Rust parsing → Angular table)
+- PrimeNG p-table con paginacion (50 filas), filtro global, checkboxes
+- Stepper funcional con navegacion lineal
+- Validacion de formato NIT-nombre.xlsx y 10 headers obligatorios
+
+---
+
+## Fase 4: Procesamiento de Datos con Progreso Real-Time - COMPLETADA
+
+**Fecha**: 2026-02-07
+**Estado**: COMPLETADA (v1 — iteraciones de refinamiento pendientes)
+**HUs cubiertas**: HU-004, HU-005, HU-006, HU-007
+
+### Plan detallado:
+
+#### Backend (Rust):
+1. `src-tauri/src/models/crypto/processing.rs` — ProcessedGroup, TransactionDetail, ValidationError, ProgressPayload, ProcessingResult
+2. `src-tauri/src/services/crypto/data_processor.rs` — Pipeline completo:
+   - filter_selected, group_by_id, validate_groups (ciudad consistente)
+   - process_single_group (ordena por fecha, suma totales, date_range en espanol)
+   - build_date_range, format_date_spanish_full, parse_date (6 formatos + Excel serial)
+   - emit_progress via Tauri events ("processing-progress")
+3. Command `process_selected_records` en report_commands.rs
+
+#### Frontend (Angular):
+4. `crypto-report.service.ts` extendido — signals para progress, processingResult, isProcessing + listen Tauri events
+5. `processing-progress.component.ts` — PrimeNG p-progressBar con etapa, ID, ORDER_CODE, porcentaje
+6. `validation-errors.component.ts` — Lista de errores con filas afectadas del Excel
+7. `main.page.ts` Step 3 integrado — boton Procesar, progreso real-time, resultados con stats, errores
+
+### Resultado:
+- Pipeline de procesamiento 100% en Rust con 4 etapas y progreso en tiempo real
+- Agrupacion por ID, validacion de ciudad consistente
+- Fechas en espanol ("Del X de mes hasta el Y de mes de anno")
+- Valores redondeados a 2 decimales
+- Errores de validacion claros con numero de fila Excel
+- Frontend muestra stats (validos/invalidos/procesados) y errores detallados
+
+### Reglas implementadas:
+- Procesamiento 100% en Rust (NO frontend/Node)
+- Validacion de ciudad obligatoria — grupo con ciudades distintas = invalido
+- Grupo invalido = NO genera reporte (sin parciales)
+- Valores numericos redondeados a 2 decimales
+- Fechas en formato espanol legible
+
+---
+
+## Fase 5: Vista de Resultados y Generacion de PDF - COMPLETADA
+
+**Fecha**: 2026-02-07
+**Estado**: COMPLETADA
+**HUs cubiertas**: HU-008, HU-009, HU-010, HU-011, HU-013
+
+### Plan detallado:
+
+#### Backend (Rust):
+1. `src-tauri/templates/crypto/certificate.hbs` — Plantilla Hoja 1: logo, titulo "CERTIFICADO TRIBUTARIO AG {AÑO}", parrafo certificatorio, tabla resumen, firma representante legal
+2. `src-tauri/templates/crypto/details.hbs` — Plantilla Hoja 2: tabla detalle movimientos con totales
+3. `src-tauri/src/services/crypto/pdf_generator.rs` — Pipeline completo:
+   - `format_colombian()` — formato numerico con puntos/comas (1.234.567,89)
+   - `build_template_data()` — construye JSON para Handlebars
+   - `find_wkhtmltopdf()` — busca binario en PATH y ubicaciones comunes
+   - `html_to_pdf()` — ejecuta wkhtmltopdf como subprocess
+   - `generate_pdfs()` — orquestador con progreso via eventos "pdf-progress"
+4. Command `generate_pdfs` en report_commands.rs — recibe groups, empresa_nit, year, output_dir, include_details
+
+#### Frontend (Angular):
+5. `src/app/tools/certificados-crypto/components/results-table/results-table.component.ts` — PrimeNG p-table con checkboxes, row expansion, input anno, boton "Generar PDFs"
+6. `src/app/tools/certificados-crypto/components/transaction-detail/transaction-detail.component.ts` — Sub-tabla detalle para row expansion
+7. `src/app/tools/config-usuario/user-config.service.ts` — Signal-based, persiste en localStorage
+8. `src/app/tools/config-usuario/config-usuario.component.ts` — Formulario con nombre y cedula
+9. `main.page.ts` Step 4 integrado — results table + dialog carpeta + invoke generate_pdfs + mensaje exito
+
+### Resultado:
+- Templates Handlebars profesionales para Hoja 1 (certificado) y Hoja 2 (detalle)
+- PDF generator con formato colombiano (puntos miles, coma decimales)
+- wkhtmltopdf como subprocess (busca automaticamente en PATH)
+- Eventos "pdf-progress" para feedback de generacion
+- Results table con row expansion para ver transacciones individuales
+- Checkbox para incluir/excluir hoja de detalle
+- Config usuario funcional con localStorage
+- Flujo: seleccionar IDs + anno → dialog carpeta → generar PDFs → mensaje exito
+
+### wkhtmltopdf (sidecar empaquetado):
+- Configurado como **sidecar de Tauri** en `bundle.externalBin` — se empaqueta dentro del instalador
+- El usuario final NO necesita instalar nada — el binario va incluido en la app
+- Resolucion: primero busca sidecar (produccion), luego PATH (desarrollo)
+- Para **desarrollo**: `brew install wkhtmltopdf` en macOS
+- Para **produccion**: colocar binario en `src-tauri/binaries/wkhtmltopdf-{TARGET_TRIPLE}`
+  - macOS ARM: `wkhtmltopdf-aarch64-apple-darwin`
+  - macOS Intel: `wkhtmltopdf-x86_64-apple-darwin`
+  - Windows: `wkhtmltopdf-x86_64-pc-windows-msvc.exe`
+- Templates HTML/CSS con Handlebars para control total de estilos
+- Archivos generados: `NIT_ID_AG{YEAR}.pdf` y opcionalmente `NIT_ID_AG{YEAR}_detalle.pdf`
+
+---
+
+## Fase 6: Pulido y Produccion - COMPLETADA
+
+**Fecha**: 2026-02-07
+**Estado**: COMPLETADA
+**HUs cubiertas**: HU-016
+
+### Implementado:
+
+1. **Notificaciones toast** — PrimeNG `p-toast` global en app.ts, `NotificationService` con metodos success/error/info/warn, integrado en config-empresa y generacion de PDFs
+2. **Responsive** — Content padding reducido en mobile, tablas con overflow-x scroll, sidebar colapsable ya existia desde Fase 1, formulario empresa con grid 1-col en <640px
+3. **Pipe formato colombiano** — `ColombianCurrencyPipe` creado (puntos miles, coma decimales), aplicado en data-table reemplazando DecimalPipe
+4. **Build scripts** — `npm run build:desktop` (tauri build), `npm run build:debug` (tauri build --debug)
+5. **Permisos Tauri** — capabilities/default.json actualizado con permisos especificos: core:event, dialog:allow-open, dialog:allow-save, fs:allow-read/write/exists/mkdir
+6. **Logging** — tauri-plugin-log ya configurado desde Fase 0 (solo en debug mode)
+
+### Pendientes menores (no bloquean):
+- Iconos de aplicacion personalizados (actualmente usa los defaults de Tauri)
+- wkhtmltopdf aun no instalado para probar PDFs
+- Prueba E2E con datos reales
+
+---
+
+## Decisiones Arquitectonicas
+
+| Decision | Eleccion | Razon |
+|----------|----------|-------|
+| DB access | rusqlite directo | Toda la logica en Rust, no JS API |
+| PDF engine | wkhtmltopdf subprocess | Fidelidad CSS completa, sin limitaciones de bindings |
+| State management | Angular Signals | Simple, performante, sin overhead de NgRx |
+| Module loading | Lazy loading | Escalable, cada herramienta independiente |
+| Component strategy | Standalone + OnPush | Default Angular 20+, mejor performance |
+| Depth strategy | Borders-only | Profesional, limpio, contable |
+| Tabla prefix | crypto_ | Modularidad BD por herramienta |
+| NIT | Inmutable post-creacion | Integridad referencial |
+| Procesamiento | 100% Rust | Requisito de negocio, performance |
+| Progreso real-time | Tauri events (emit/listen) | Push pattern nativo de Tauri v2 |

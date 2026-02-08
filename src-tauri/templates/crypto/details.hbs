@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page {
+    size: letter;
+    margin: 2.5cm 2cm 2cm 2cm;
+  }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 11pt;
+    color: #1a1a1a;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #333;
+  }
+  .header h1 {
+    font-size: 14pt;
+    font-weight: bold;
+    margin: 0 0 4px 0;
+  }
+  .header h2 {
+    font-size: 12pt;
+    font-weight: normal;
+    color: #444;
+    margin: 0;
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    font-size: 10pt;
+    color: #555;
+  }
+  .info-row span {
+    display: inline-block;
+  }
+  table.details {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 10pt;
+  }
+  table.details th {
+    background: #f0f0f0;
+    border: 1px solid #999;
+    padding: 7px 10px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 9pt;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  table.details td {
+    border: 1px solid #999;
+    padding: 6px 10px;
+    font-size: 10pt;
+  }
+  table.details td.number {
+    text-align: right;
+    font-family: 'Courier New', monospace;
+  }
+  table.details td.code {
+    font-family: 'Courier New', monospace;
+    font-size: 9pt;
+  }
+  table.details tfoot td {
+    font-weight: bold;
+    background: #f8f8f8;
+    border-top: 2px solid #666;
+  }
+  .footer-note {
+    margin-top: 24px;
+    font-size: 9pt;
+    color: #888;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <h1>Detalle de Movimientos</h1>
+    <h2>{{third_name}} ({{id}})</h2>
+  </div>
+
+  <div class="info-row">
+    <span><strong>Ciudad:</strong> {{city}}</span>
+    <span><strong>Periodo:</strong> {{date_range}}</span>
+  </div>
+
+  <table class="details">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Codigo Orden</th>
+        <th>Cantidad</th>
+        <th>TRM</th>
+        <th>Valor Total COP</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each transactions}}
+      <tr>
+        <td>{{this.date}}</td>
+        <td class="code">{{this.order_code}}</td>
+        <td class="number">{{this.amount}}</td>
+        <td class="number">{{this.trm}}</td>
+        <td class="number">{{this.total_price}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="2">TOTALES</td>
+        <td class="number">{{total_amount}}</td>
+        <td></td>
+        <td class="number">{{total_price}}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <div class="footer-note">
+    Documento generado automaticamente — {{empresa_nombre}} — NIT {{empresa_nit}}
+  </div>
+</body>
+</html>

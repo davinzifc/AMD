@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<style>
+  @page {
+    size: letter;
+    margin: 2.5cm 2cm 2cm 2cm;
+  }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 12pt;
+    color: #1a1a1a;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .header img {
+    max-height: 80px;
+    margin-bottom: 12px;
+  }
+  .header h1 {
+    font-size: 16pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin: 8px 0 4px 0;
+  }
+  .header h2 {
+    font-size: 13pt;
+    font-weight: normal;
+    margin: 0;
+    color: #333;
+  }
+  .empresa-info {
+    text-align: center;
+    font-size: 11pt;
+    color: #444;
+    margin-bottom: 24px;
+  }
+  .body-text {
+    text-align: justify;
+    margin-bottom: 24px;
+    font-size: 12pt;
+  }
+  .body-text p {
+    margin-bottom: 12px;
+  }
+  table.summary {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 11pt;
+  }
+  table.summary th {
+    background: #f0f0f0;
+    border: 1px solid #999;
+    padding: 8px 10px;
+    text-align: left;
+    font-weight: bold;
+    font-size: 10pt;
+  }
+  table.summary td {
+    border: 1px solid #999;
+    padding: 8px 10px;
+    font-size: 11pt;
+  }
+  table.summary td.number {
+    text-align: right;
+    font-family: 'Courier New', monospace;
+  }
+  .closing {
+    margin-top: 48px;
+  }
+  .closing p {
+    margin-bottom: 4px;
+  }
+  .signature {
+    margin-top: 48px;
+  }
+  .signature-line {
+    border-top: 1px solid #333;
+    width: 280px;
+    margin-top: 60px;
+    padding-top: 6px;
+  }
+  .signature-name {
+    font-weight: bold;
+    font-size: 11pt;
+  }
+  .signature-id {
+    font-size: 10pt;
+    color: #444;
+  }
+  .signature-role {
+    font-size: 10pt;
+    color: #666;
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    {{#if empresa_imagen}}
+    <img src="{{empresa_imagen}}" alt="Logo">
+    {{/if}}
+    <h1>Certificado Tributario</h1>
+    <h2>AG {{year}}</h2>
+  </div>
+
+  <div class="empresa-info">
+    <strong>{{empresa_nombre}}</strong><br>
+    NIT: {{empresa_nit}}
+  </div>
+
+  <div class="body-text">
+    <p>
+      La empresa <strong>{{empresa_nombre}}</strong>, identificada con NIT <strong>{{empresa_nit}}</strong>,
+      representada legalmente por <strong>{{representante_nombre}}</strong>, identificado(a) con cedula de ciudadania
+      No. <strong>{{representante_id}}</strong>, certifica que se realizo un pago a
+      <strong>{{third_name}}</strong>, identificado(a) con documento No. <strong>{{id}}</strong>,
+      en la ciudad de <strong>{{city}}</strong>, correspondiente al periodo <strong>{{date_range}}</strong>.
+    </p>
+    <p>
+      A continuacion se detalla el resumen de la operacion:
+    </p>
+  </div>
+
+  <table class="summary">
+    <thead>
+      <tr>
+        <th>Ciudad</th>
+        <th>Fecha de Pago</th>
+        <th>Cantidad Adquirida</th>
+        <th>Valor Total COP</th>
+        <th>Retencion</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{city}}</td>
+        <td>{{date_range}}</td>
+        <td class="number">{{total_amount}}</td>
+        <td class="number">{{total_price}}</td>
+        <td>{{retencion}}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="closing">
+    <p>Se expide el presente certificado a solicitud del interesado.</p>
+    <p>Atentamente,</p>
+  </div>
+
+  <div class="signature">
+    <div class="signature-line">
+      <div class="signature-name">{{representante_nombre}}</div>
+      <div class="signature-id">C.C. {{representante_id}}</div>
+      <div class="signature-role">Representante Legal - {{empresa_nombre}}</div>
+    </div>
+  </div>
+</body>
+</html>

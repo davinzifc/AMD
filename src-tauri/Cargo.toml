@@ -1,0 +1,31 @@
+[package]
+name = "amd-tools"
+version = "0.1.0"
+description = "AMD Tools - Herramientas contables de escritorio"
+authors = ["AMD Tools Team"]
+license = ""
+repository = ""
+edition = "2021"
+rust-version = "1.77.2"
+
+[lib]
+name = "app_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-log = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-shell = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.31", features = ["bundled"] }
+calamine = "0.26"
+handlebars = "6"
+chrono = { version = "0.4", features = ["serde"] }
+thiserror = "2"
+log = "0.4"

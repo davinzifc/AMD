@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Angular build output
+dist/
+.angular/
+
+# Rust build output
+src-tauri/target/
+src-tauri/gen/schemas
+
+# IDE
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+*.local
+
+# Logs
+*.log
+npm-debug.log*
