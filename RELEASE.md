@@ -24,7 +24,7 @@ Esta versión se centra en el módulo **Certificados Crypto**: carga de datos de
 - **Aplicación de escritorio** (Tauri 2 + Angular): instalador nativo para macOS (Intel y Apple Silicon), Windows y Linux.
 - **Módulo Certificados Crypto**: flujo completo desde la carga del Excel hasta la generación de los PDF.
 - **Base de datos local** (SQLite): configuración de empresas y firmantes almacenada en el equipo del usuario.
-- **Generación de PDF**: certificados con Hoja 1 (resumen) y Hoja 2 (detalle de movimientos), usando plantillas HTML y wkhtmltopdf.
+- **Generación de PDF**: certificados con Hoja 1 (resumen) y Hoja 2 (detalle de movimientos), usando plantillas HTML en el backend y jsPDF/html2canvas en el frontend.
 
 ---
 
@@ -98,7 +98,7 @@ Esta versión se centra en el módulo **Certificados Crypto**: carga de datos de
 
 - Esta versión es un **producto mínimo viable (MVP)**; no se considera estable 1.0.
 - Pueden existir ajustes en el formato del Excel o en las reglas de validación en versiones futuras.
-- La generación de PDF depende del binario **wkhtmltopdf** incluido en el instalador; en entornos muy restringidos podría requerir revisión.
+- La generación de PDF se realiza en el frontend (jsPDF + html2canvas); no se requieren binarios externos.
 - El módulo _Configuración de Usuario_ puede tener comportamiento limitado o mock en esta beta.
 
 ---
