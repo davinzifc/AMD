@@ -1,0 +1,18 @@
+<div class="step-content">
+  @if (error()) {
+    <p-message severity="error" [text]="error()!" styleClass="msg-block" />
+  }
+
+  <div class="upload-area">
+    <app-excel-upload-zone
+      [loading]="loading()"
+      (fileRequest)="fileRequested.emit()" />
+  </div>
+
+  @if (empresaInfo()) {
+    <div class="empresa-badge">
+      <i class="pi pi-building"></i>
+      <span>Empresa: <strong>{{ empresaInfo() }}</strong></span>
+    </div>
+  }
+</div>

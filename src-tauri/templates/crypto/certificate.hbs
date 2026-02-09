@@ -179,10 +179,10 @@
     <div class="body-text">
       <p>
         La empresa <strong>{{empresa_nombre}}</strong>, identificada con NIT <strong>{{empresa_nit_formatted}}</strong>,
-        representada legalmente por <strong>{{representante_legal_nombre}}</strong>, identificado(a) con cédula de ciudadanía
+        y representada legalmente por <strong>{{representante_legal_nombre}}</strong>, identificado(a) con cédula de ciudadanía
         No. <strong>{{representante_legal_id}}</strong>, certifica que se realizó un pago a
         <strong>{{third_name}}</strong>, identificado(a) con documento No. <strong>{{id}}</strong>,
-        en la ciudad de <strong>{{city}}</strong>, correspondiente al periodo <strong>{{date_range}}</strong>.
+        {{#if city}}en la ciudad de <strong>{{city}}</strong>,{{/if}} correspondiente al periodo <strong>{{date_range}}</strong>.
       </p>
       <p>
         A continuación se detalla el resumen de la operación:
@@ -193,8 +193,6 @@
       <table class="summary">
         <thead>
           <tr>
-            <th>Ciudad</th>
-            <th>Fecha de Pago</th>
             <th>Cantidad Adquirida</th>
             <th>Valor Total COP</th>
             <th>Retención</th>
@@ -202,8 +200,6 @@
         </thead>
         <tbody>
           <tr>
-            <td>{{city}}</td>
-            <td>{{date_range}}</td>
             <td class="number">{{total_amount}}</td>
             <td class="number">{{total_price}}</td>
             <td>{{retencion}}</td>

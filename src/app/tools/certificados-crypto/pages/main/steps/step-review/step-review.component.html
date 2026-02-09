@@ -1,0 +1,31 @@
+<div class="step-content">
+  @if (transactions().length > 0) {
+    <app-data-table
+      [transactions]="transactions()"
+      [(selected)]="selected" />
+
+    <div class="step-actions">
+      <p-button
+        label="Volver"
+        icon="pi pi-arrow-left"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="navigate.emit(2)" />
+      <p-button
+        label="Procesar"
+        icon="pi pi-cog"
+        [disabled]="selected().length === 0"
+        [badge]="selected().length.toString()"
+        (onClick)="navigate.emit(4)" />
+    </div>
+  } @else {
+    <div class="empty-state">
+      <p>No hay datos para los terceros seleccionados.</p>
+      <p-button
+        label="Volver"
+        icon="pi pi-arrow-left"
+        severity="secondary"
+        (onClick)="navigate.emit(2)" />
+    </div>
+  }
+</div>

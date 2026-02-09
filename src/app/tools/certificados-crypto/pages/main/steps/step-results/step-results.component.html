@@ -1,0 +1,76 @@
+<div class="step-content">
+  @if (error()) {
+    <p-message severity="error" [text]="error()!" styleClass="msg-block" />
+  }
+
+  @if (pdfSuccess()) {
+    <div class="pdf-success">
+      <i class="pi pi-check-circle"></i>
+      <span>{{ pdfSuccess() }}</span>
+    </div>
+  }
+
+  @if (processingResult(); as result) {
+    <div class="results-step-toolbar">
+      <div class="pdf-options-row">
+        <div class="pdf-options">
+          <label for="pdf-page-size">Tamaño de hoja:</label>
+          <p-select
+            id="pdf-page-size"
+            [options]="pdfService.pageSizeOptions"
+            [(ngModel)]="pdfPageSizeKey"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="Carta"
+            [style]="{ width: '180px' }" />
+        </div>
+        <div class="pdf-margins">
+          <span class="margins-label">Márgenes (mm):</span>
+          <div class="margins-inputs">
+            <div class="margin-field" title="Arriba"><label for="pdf-margin-top">Arriba</label><p-inputnumber inputId="pdf-margin-top" [(ngModel)]="pdfMarginTop" [min]="0" [max]="50" [useGrouping]="false" styleClass="margin-input" /></div>
+            <div class="margin-field" title="Abajo"><label for="pdf-margin-bottom">Abajo</label><p-inputnumber inputId="pdf-margin-bottom" [(ngModel)]="pdfMarginBottom" [min]="0" [max]="50" [useGrouping]="false" styleClass="margin-input" /></div>
+            <div class="margin-field" title="Izquierda"><label for="pdf-margin-left">Izq.</label><p-inputnumber inputId="pdf-margin-left" [(ngModel)]="pdfMarginLeft" [min]="0" [max]="50" [useGrouping]="false" styleClass="margin-input" /></div>
+            <div class="margin-field" title="Derecha"><label for="pdf-margin-right">Der.</label><p-inputnumber inputId="pdf-margin-right" [(ngModel)]="pdfMarginRight" [min]="0" [max]="50" [useGrouping]="false" styleClass="margin-input" /></div>
+          </div>
+        </div>
+      </div>
+      @if (pdfPreviewUrl()) {
+        <div class="preview-actions">
+          <span class="preview-label">Vista previa</span>
+          <p-button
+            label="Cerrar"
+            icon="pi pi-times"
+            [text]="true"
+            severity="secondary"
+            size="small"
+            (onClick)="closePdfPreview.emit()" />
+        </div>
+      }
+    </div>
+    @if (pdfPreviewUrl()) {
+      <div class="pdf-preview-container">
+        <iframe [src]="sanitizedPdfPreviewUrl()" title="Vista previa del certificado" class="pdf-preview-iframe"></iframe>
+      </div>
+    }
+    <app-results-table
+      [groups]="result.valid_groups"
+      (generatePdfs)="onGenerate($event)"
+      (previewPdf)="onPreview($event)" />
+  }
+
+  @if (isGeneratingPdf()) {
+    <div class="pdf-generating">
+      <i class="pi pi-spin pi-spinner"></i>
+      <span>Generando PDFs...</span>
+    </div>
+  }
+
+  <div class="step-actions">
+    <p-button
+      label="Volver"
+      icon="pi pi-arrow-left"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="navigate.emit(4)" />
+  </div>
+</div>

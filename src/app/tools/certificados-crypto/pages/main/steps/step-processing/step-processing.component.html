@@ -1,0 +1,61 @@
+<div class="step-content">
+  @if (!isProcessing() && !processingResult()) {
+    <div class="process-start">
+      <div class="process-summary">
+        <i class="pi pi-cog" style="font-size: 32px; color: #3b82f6;"></i>
+        <p><strong>{{ selectedCount() }}</strong> registros seleccionados</p>
+        <p class="process-hint">Se agruparán por ID, se validará la consistencia de datos y se calcularán los totales</p>
+      </div>
+      <p-button
+        label="Iniciar Procesamiento"
+        icon="pi pi-play"
+        (onClick)="startProcessing.emit()" />
+    </div>
+  }
+
+  @if (isProcessing()) {
+    <app-processing-progress [progress]="progress()" />
+  }
+
+  @if (processingResult(); as result) {
+    <div class="process-complete">
+      <div class="result-summary">
+        <div class="result-stat result-stat--success">
+          <span class="stat-value">{{ result.total_valid }}</span>
+          <span class="stat-label">Grupos válidos</span>
+        </div>
+        @if (result.total_invalid > 0) {
+          <div class="result-stat result-stat--error">
+            <span class="stat-value">{{ result.total_invalid }}</span>
+            <span class="stat-label">Grupos con errores</span>
+          </div>
+        }
+        <div class="result-stat">
+          <span class="stat-value">{{ result.total_processed }}</span>
+          <span class="stat-label">Registros procesados</span>
+        </div>
+      </div>
+
+      <app-validation-errors [errors]="result.validation_errors" />
+    </div>
+
+    <div class="step-actions">
+      <p-button
+        label="Volver"
+        icon="pi pi-arrow-left"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="navigate.emit(3)" />
+      @if (result.total_valid > 0) {
+        <p-button
+          label="Ver Resultados"
+          icon="pi pi-arrow-right"
+          (onClick)="navigate.emit(5)" />
+      }
+    </div>
+  }
+
+  @if (error() && !isProcessing()) {
+    <p-message severity="error" [text]="error()!" styleClass="msg-block" />
+  }
+</div>

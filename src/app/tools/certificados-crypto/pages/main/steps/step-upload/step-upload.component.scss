@@ -1,0 +1,27 @@
+.step-content {
+  padding: 16px 0;
+}
+
+:host ::ng-deep .msg-block {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.upload-area {
+  display: flex;
+  justify-content: center;
+  padding: 16px 0;
+}
+
+.empresa-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 8px 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #166534;
+}

@@ -21,6 +21,10 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
             <i class="pi pi-file-check"></i>
             <span>Certificados Crypto</span>
           </a>
+        </div>
+
+        <div class="nav-section">
+          <span class="nav-section-label">Sistema</span>
           <a class="nav-item"
              routerLink="/tools/certificados-crypto/config-empresa"
              routerLinkActive="active">
@@ -32,16 +36,6 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
              routerLinkActive="active">
             <i class="pi pi-pen-to-square"></i>
             <span>Config. Firmante</span>
-          </a>
-        </div>
-
-        <div class="nav-section">
-          <span class="nav-section-label">Sistema</span>
-          <a class="nav-item"
-             routerLink="/config/usuario"
-             routerLinkActive="active">
-            <i class="pi pi-user-edit"></i>
-            <span>Config. Usuario</span>
           </a>
         </div>
       </div>

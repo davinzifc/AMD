@@ -1,0 +1,31 @@
+<div class="step-content">
+  @if (transactions().length > 0) {
+    <app-third-party-selector
+      [transactions]="transactions()"
+      [(selectedItems)]="selectedItems" />
+
+    <div class="step-actions">
+      <p-button
+        label="Volver"
+        icon="pi pi-arrow-left"
+        severity="secondary"
+        [outlined]="true"
+        (onClick)="navigate.emit(1)" />
+      <p-button
+        label="Revisar Datos"
+        icon="pi pi-arrow-right"
+        [disabled]="selectedItems().length === 0"
+        [badge]="selectedItems().length.toString()"
+        (onClick)="navigate.emit(3)" />
+    </div>
+  } @else {
+    <div class="empty-state">
+      <p>No hay datos cargados. Vuelve al paso anterior.</p>
+      <p-button
+        label="Volver"
+        icon="pi pi-arrow-left"
+        severity="secondary"
+        (onClick)="navigate.emit(1)" />
+    </div>
+  }
+</div>

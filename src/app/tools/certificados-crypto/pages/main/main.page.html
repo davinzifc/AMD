@@ -1,0 +1,93 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Certificados Crypto</h1>
+    <p class="page-subtitle">Genera certificados tributarios a partir de archivos Excel</p>
+  </div>
+
+  <div class="stepper-card">
+    @if (activeStep() > 1) {
+      <div class="stepper-card-actions">
+        <p-button
+          label="Cargar Nuevo Excel"
+          icon="pi pi-refresh"
+          severity="secondary"
+          [outlined]="true"
+          size="small"
+          (onClick)="resetAll()" />
+      </div>
+    }
+
+    <p-stepper [value]="activeStep()" (valueChange)="onStepChange($event)" [linear]="true">
+      <p-step-list>
+        <p-step [value]="1">Cargar Excel</p-step>
+        <p-step [value]="2">Seleccionar Tercero</p-step>
+        <p-step [value]="3">Revisar Datos</p-step>
+        <p-step [value]="4">Procesamiento</p-step>
+        <p-step [value]="5">Resultados</p-step>
+      </p-step-list>
+
+      <p-step-panels>
+        <!-- Step 1: Cargar Excel -->
+        <p-step-panel [value]="1">
+          <ng-template #content let-activateCallback="activateCallback">
+            <app-step-upload
+              [loading]="reportService.loading()"
+              [error]="reportService.error()"
+              [empresaInfo]="empresaInfo()"
+              (fileRequested)="selectExcelFile(activateCallback)" />
+          </ng-template>
+        </p-step-panel>
+
+        <!-- Step 2: Seleccionar Tercero -->
+        <p-step-panel [value]="2">
+          <ng-template #content let-activateCallback="activateCallback">
+            <app-step-third-party
+              [transactions]="reportService.transactions()"
+              [(selectedItems)]="selectedThirdParties"
+              (navigate)="activateCallback($event)" />
+          </ng-template>
+        </p-step-panel>
+
+        <!-- Step 3: Revisar Datos -->
+        <p-step-panel [value]="3">
+          <ng-template #content let-activateCallback="activateCallback">
+            <app-step-review
+              [transactions]="filteredTransactions()"
+              [(selected)]="selectedTransactions"
+              (navigate)="activateCallback($event)" />
+          </ng-template>
+        </p-step-panel>
+
+        <!-- Step 4: Procesamiento -->
+        <p-step-panel [value]="4">
+          <ng-template #content let-activateCallback="activateCallback">
+            <app-step-processing
+              [selectedCount]="selectedTransactions().length"
+              [isProcessing]="reportService.isProcessing()"
+              [progress]="reportService.progress()"
+              [processingResult]="reportService.processingResult()"
+              [error]="reportService.error()"
+              (startProcessing)="startProcessing(activateCallback)"
+              (navigate)="activateCallback($event)" />
+          </ng-template>
+        </p-step-panel>
+
+        <!-- Step 5: Resultados -->
+        <p-step-panel [value]="5">
+          <ng-template #content let-activateCallback="activateCallback">
+            <app-step-results
+              [processingResult]="reportService.processingResult()"
+              [error]="reportService.error()"
+              [isGeneratingPdf]="isGeneratingPdf()"
+              [pdfSuccess]="pdfSuccess()"
+              [pdfPreviewUrl]="pdfPreviewUrl()"
+              (generatePdfs)="onGeneratePdfs($event)"
+              (previewPdf)="onPreviewPdf($event)"
+              (closePdfPreview)="closePdfPreview()"
+              (navigate)="activateCallback($event)" />
+          </ng-template>
+        </p-step-panel>
+      </p-step-panels>
+    </p-stepper>
+  </div>
+</div>
