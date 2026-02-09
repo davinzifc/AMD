@@ -1,8 +1,8 @@
 # AMD Tools - Seguimiento de Progreso
 
-## Estado Actual (2026-02-08)
+## Estado Actual (2026-02-09)
 
-**TODAS LAS 6 FASES + REQUERIMIENTOS 08-02-2026 COMPLETADOS**
+**TODAS LAS 6 FASES + REQUERIMIENTOS 08-02-2026 + 09-02-2026 COMPLETADOS**
 **Compilacion**: Angular OK, Rust OK (0 warnings)
 
 ### Para probar el flujo completo:
@@ -372,6 +372,75 @@ src/app/
 - `src/app/tools/certificados-crypto/pages/main/main.page.ts` (5-step stepper, resetAll)
 - `src/app/tools/certificados-crypto/components/results-table/results-table.component.ts` (+firmante dropdown)
 - `src/app/tools/certificados-crypto/services/crypto-report.service.ts` (reset fix)
+
+---
+
+## Requerimientos 09-02-2026 - COMPLETADOS
+
+**Fecha**: 2026-02-09
+**Estado**: COMPLETADOS
+**HUs cubiertas**: US-001 a US-010 (Rediseno Configuracion de Empresas)
+**Plan**: `/requirements/plan-09-02-2026.md`
+**Requerimiento**: `/requirements/09-02-2026.md`
+
+### Resumen del Cambio
+Reescritura completa de la pagina de Configuracion de Empresas. De formulario inline + lista de cards a interfaz profesional con tabla PrimeNG + modals.
+
+### US-001 + US-006: Tabla de Empresas
+- Reemplazo de lista de cards por PrimeNG `p-table`
+- Columnas: Logo (40x40 thumbnail), Nombre (sortable), NIT (sortable, formateado), Acciones
+- Busqueda global (nombre + NIT) con `p-iconfield`
+- Paginacion configurable (10, 25, 50 registros)
+- Sort por nombre por defecto
+- Empty state con boton "Agregar primera empresa"
+- Cache async de logos por NIT
+
+### US-002 + US-004 + US-008: Modal Crear/Editar
+- Modal unico `p-dialog` reutilizado para crear y editar
+- Titulo dinamico: "Crear Nueva Empresa" / "Editar Empresa"
+- Campos: Nombre*, NIT*, Representante legal*, Identificacion*, Logo (opcional)
+- Preview de logo 150x150px con boton X para remover
+- En edicion: carga automatica del logo existente desde cache
+- Validacion: boton deshabilitado si campos obligatorios vacios o NIT duplicado
+- Confirmacion al cerrar si hay cambios sin guardar
+
+### US-003: Validacion NIT en Tiempo Real
+- Validacion onBlur del campo NIT via `getEmpresaByNit`
+- Muestra nombre de empresa existente: "El NIT XXX ya esta registrado para la empresa 'NOMBRE'"
+- Input con borde rojo y mensaje de error
+- En edicion: ignora el NIT actual de la empresa siendo editada
+- Boton Guardar deshabilitado mientras hay error de NIT
+
+### US-007: Modal Ver Detalle
+- Segundo `p-dialog` read-only (440px)
+- Diseno business card: logo centrado (80x80), nombre, NIT formateado
+- Secciones con iconos: Representante legal, Identificacion
+- Solo boton "Cerrar"
+
+### US-009: Confirmacion de Actualizacion
+- ConfirmationService antes de cada update
+- Mensaje: "¿Estas seguro de que deseas actualizar los datos de la empresa 'NOMBRE'?"
+- Botones: "Si, actualizar" + "Cancelar"
+- Cierra modal de edicion tras confirmar exitosamente
+
+### US-010: Mensajes de Feedback
+- Toast via NotificationService para todas las acciones:
+  - Crear: "Empresa creada exitosamente"
+  - Actualizar: "Empresa actualizada correctamente"
+  - Eliminar: "Empresa eliminada correctamente"
+  - NIT duplicado: "El NIT ingresado ya existe en el sistema"
+  - Error imagen: "Solo se permiten archivos PNG o JPG" / "El tamano maximo permitido es 2MB"
+  - Campos obligatorios: warn con mensaje descriptivo
+
+### US-005: Modal Reutilizable
+- Se usa PrimeNG `p-dialog` directamente (ya cumple todos los criterios del US)
+- No se creo wrapper custom (seria sobre-ingenieria innecesaria)
+
+### Archivos modificados:
+- `src/app/tools/certificados-crypto/pages/config-empresa/config-empresa.page.ts` (reescritura completa)
+
+### Cambios en Rust: NINGUNO
+- El backend ya tenia todo lo necesario para soportar el rediseno
 
 ---
 
