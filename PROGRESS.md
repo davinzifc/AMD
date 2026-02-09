@@ -2,7 +2,7 @@
 
 ## Estado Actual (2026-02-09)
 
-**TODAS LAS 6 FASES + REQUERIMIENTOS 08-02-2026 + 09-02-2026 COMPLETADOS**
+**TODAS LAS 6 FASES + REQUERIMIENTOS 08-02-2026 + 09-02-2026 + 09-02-2026-2 COMPLETADOS**
 **Compilacion**: Angular OK, Rust OK (0 warnings)
 
 ### Para probar el flujo completo:
@@ -441,6 +441,79 @@ Reescritura completa de la pagina de Configuracion de Empresas. De formulario in
 
 ### Cambios en Rust: NINGUNO
 - El backend ya tenia todo lo necesario para soportar el rediseno
+
+---
+
+## Requerimientos 09-02-2026-2 - COMPLETADOS
+
+**Fecha**: 2026-02-09
+**Estado**: COMPLETADOS
+**HUs cubiertas**: US-011 a US-020 (Rediseno Configuracion de Firmantes)
+**Plan**: `/requirements/09-02-2026-2-plan.md`
+**Requerimiento**: `/requirements/09-02-2026-2.md`
+
+### Resumen del Cambio
+Reescritura completa de la pagina de Configuracion de Firmantes. De formulario inline + lista simple a interfaz profesional con tabla PrimeNG + modals + blur de seguridad en firma.
+
+### US-011 + US-015: Tabla de Firmantes
+- Reemplazo de lista de items por PrimeNG `p-table`
+- Columnas: Nombre Completo (sortable), Cedula/ID (sortable), Acciones
+- SIN columna de imagen de firma (requisito explicito)
+- Busqueda global (nombre + cedula) con `p-iconfield`
+- Paginacion configurable (10, 25, 50 registros)
+- Sort por nombre por defecto
+- Empty state con boton "Agregar primer firmante"
+- Tooltips en botones de accion
+
+### US-012 + US-014 + US-017: Modal Crear/Editar
+- Modal unico `p-dialog` reutilizado para crear y editar
+- Titulo dinamico: "Crear Nuevo Firmante" / "Editar Firmante"
+- Campos: Nombre completo*, Cedula/ID*, Imagen de firma (obligatoria para crear)
+- Preview de firma 300x150px con boton X para remover
+- En edicion: carga automatica de firma existente SIN blur
+- Validacion: boton deshabilitado si campos vacios o cedula duplicada
+- Confirmacion al cerrar si hay cambios sin guardar
+
+### US-013: Validacion Cedula Duplicada en Tiempo Real
+- Nueva funcion Rust `get_by_cc_id()` en firmante_service
+- Nuevo comando Tauri `get_firmante_by_cc_id`
+- Validacion onBlur del campo cedula
+- Muestra nombre del firmante existente: "La cedula XXX ya esta registrada para el firmante 'NOMBRE'"
+- Input con borde rojo y mensaje de error
+- En edicion: ignora la cedula actual del firmante
+
+### US-016: Modal Ver Detalle con Blur de Seguridad
+- `p-dialog` read-only (600px)
+- Imagen de firma con efecto blur CSS (`filter: blur(12px)`) por defecto
+- Overlay superpuesto: icono pi-eye + "Click para visualizar la firma"
+- Click sobre imagen remueve blur con transicion suave (0.4s ease-in-out)
+- Blur se restablece al cerrar y reabrir el modal
+- Sin imagen: placeholder con icono pi-image + "Sin imagen de firma" (sin blur)
+- Info rows con iconos: Nombre completo, Cedula/Identificacion
+- Solo boton "Cerrar"
+
+### US-018: Confirmacion de Actualizacion
+- ConfirmationService antes de cada update
+- Mensaje: "¿Estas seguro de que deseas actualizar los datos del firmante 'NOMBRE'?"
+- Botones: "Si, actualizar" + "Cancelar"
+
+### US-019: Mensajes de Feedback
+- Toast via NotificationService para todas las acciones
+- Crear/Actualizar/Eliminar: success
+- Cedula duplicada/formato imagen/tamano: error
+- Campos obligatorios: warn
+
+### US-020: Eliminacion de Firmante
+- Boton pi-trash en tabla con tooltip
+- ConfirmationService con mensaje y boton danger
+- Toast success tras eliminacion
+
+### Archivos modificados:
+- `src-tauri/src/services/crypto/firmante_service.rs` (+get_by_cc_id)
+- `src-tauri/src/commands/crypto/firmante_commands.rs` (+get_firmante_by_cc_id)
+- `src-tauri/src/lib.rs` (+1 comando registrado)
+- `src/app/tools/certificados-crypto/services/firmante.service.ts` (+getFirmanteByCcId)
+- `src/app/tools/certificados-crypto/pages/config-firmante/config-firmante.page.ts` (reescritura completa)
 
 ---
 

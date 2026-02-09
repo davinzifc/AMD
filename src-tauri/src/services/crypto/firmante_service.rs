@@ -160,6 +160,34 @@ pub fn list(db: &DbPool) -> Result<Vec<FirmanteListItem>, AppError> {
     Ok(firmantes)
 }
 
+pub fn get_by_cc_id(db: &DbPool, cc_id: &str) -> Result<Option<FirmanteListItem>, AppError> {
+    let conn = db.0.lock().map_err(|e| {
+        AppError::Database(rusqlite::Error::ToSqlConversionFailure(Box::new(
+            std::io::Error::new(std::io::ErrorKind::Other, e.to_string()),
+        )))
+    })?;
+
+    let mut stmt = conn.prepare(
+        "SELECT id, nombre, cc_id, firma_imagen IS NOT NULL
+         FROM crypto_firmantes WHERE cc_id = ?1",
+    )?;
+
+    let result = stmt.query_row([cc_id], |row| {
+        Ok(FirmanteListItem {
+            id: row.get(0)?,
+            nombre: row.get(1)?,
+            cc_id: row.get(2)?,
+            has_firma: row.get(3)?,
+        })
+    });
+
+    match result {
+        Ok(item) => Ok(Some(item)),
+        Err(rusqlite::Error::QueryReturnedNoRows) => Ok(None),
+        Err(e) => Err(AppError::Database(e)),
+    }
+}
+
 pub fn get_firma_imagen(db: &DbPool, id: i64) -> Result<Option<(Vec<u8>, String)>, AppError> {
     let conn = db.0.lock().map_err(|e| {
         AppError::Database(rusqlite::Error::ToSqlConversionFailure(Box::new(

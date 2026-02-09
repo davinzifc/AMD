@@ -1,12 +1,16 @@
-import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit, viewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InputText } from 'primeng/inputtext';
 import { Button } from 'primeng/button';
 import { FloatLabel } from 'primeng/floatlabel';
-import { Message } from 'primeng/message';
-import { ConfirmDialog } from 'primeng/confirmdialog';
 import { Dialog } from 'primeng/dialog';
+import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { Table, TableModule } from 'primeng/table';
+import { IconField } from 'primeng/iconfield';
+import { InputIcon } from 'primeng/inputicon';
+import { Divider } from 'primeng/divider';
+import { Tooltip } from 'primeng/tooltip';
 import { FileUploadComponent } from '../../../../shared/components/file-upload/file-upload.component';
 import { NotificationService } from '../../../../shared/services/notification.service';
 import { FirmanteService } from '../../services/firmante.service';
@@ -15,152 +19,281 @@ import { FirmanteListItem } from '../../models/firmante.model';
 @Component({
   selector: 'app-config-firmante',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, InputText, Button, FloatLabel, Message, FileUploadComponent, ConfirmDialog, Dialog],
+  imports: [
+    FormsModule,
+    InputText,
+    Button,
+    FloatLabel,
+    Dialog,
+    ConfirmDialog,
+    TableModule,
+    IconField,
+    InputIcon,
+    Divider,
+    Tooltip,
+    FileUploadComponent,
+  ],
   providers: [ConfirmationService],
   template: `
     <div class="page">
       <div class="page-header">
-        <h1>Configuracion de Firmante</h1>
-        <p class="page-subtitle">Administra los firmantes disponibles para los certificados</p>
+        <div class="page-header-text">
+          <h1>Configuracion de Firmantes</h1>
+          <p class="page-subtitle">Administra los firmantes disponibles para los certificados</p>
+        </div>
+        <p-button
+          label="Agregar Firmante"
+          icon="pi pi-plus"
+          (onClick)="openCreateModal()" />
       </div>
 
-      @if (successMessage()) {
-        <p-message severity="success" [text]="successMessage()!" styleClass="msg-block" />
-      }
-      @if (errorMessage()) {
-        <p-message severity="error" [text]="errorMessage()!" styleClass="msg-block" />
-      }
+      <div class="table-card">
+        <div class="table-toolbar">
+          <p-iconfield>
+            <p-inputicon styleClass="pi pi-search" />
+            <input
+              pInputText
+              type="text"
+              placeholder="Buscar por nombre o cedula..."
+              [(ngModel)]="filterValue"
+              (input)="onFilter()" />
+          </p-iconfield>
+          <span class="table-count">
+            {{ firmanteService.firmantes().length }} firmantes registrados
+          </span>
+        </div>
 
-      <div class="form-card">
-        <div class="form-grid">
-          <div class="form-field">
-            <p-floatlabel>
-              <input pInputText id="nombre" [(ngModel)]="form.nombre" class="w-full" />
-              <label for="nombre">Nombre completo *</label>
-            </p-floatlabel>
-          </div>
+        <p-table
+          #dt
+          [value]="firmanteService.firmantes()"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 25, 50]"
+          [globalFilterFields]="['nombre', 'cc_id']"
+          [sortField]="'nombre'"
+          [sortOrder]="1"
+          [loading]="firmanteService.loading()"
+          dataKey="id"
+          styleClass="p-datatable-sm">
 
-          <div class="form-field">
-            <p-floatlabel>
-              <input pInputText id="cc_id" [(ngModel)]="form.cc_id" class="w-full" />
-              <label for="cc_id">Cedula / Identificacion *</label>
-            </p-floatlabel>
-          </div>
+          <ng-template #header>
+            <tr>
+              <th pSortableColumn="nombre">
+                Nombre Completo <p-sortIcon field="nombre" />
+              </th>
+              <th pSortableColumn="cc_id">
+                Cedula / Identificacion <p-sortIcon field="cc_id" />
+              </th>
+              <th style="width: 150px; text-align: center">Acciones</th>
+            </tr>
+          </ng-template>
 
-          <div class="form-field form-field--full">
-            <label class="field-label">Imagen de firma</label>
-            <app-file-upload
-              accept=".png,.jpg,.jpeg"
-              label="Seleccionar imagen de firma (PNG, JPG, max 2MB)"
-              [maxSizeMb]="2"
-              (fileSelected)="onFirmaSelected($event)" />
-            @if (firmaPreview()) {
-              <div class="firma-inline-preview">
-                <div class="firma-inline-image">
-                  <img [src]="firmaPreview()" alt="Vista previa firma" />
-                </div>
-                <div class="firma-inline-actions">
+          <ng-template #body let-firmante>
+            <tr>
+              <td>
+                <span class="firmante-name-cell">{{ firmante.nombre }}</span>
+              </td>
+              <td>
+                <span class="cc-cell">{{ firmante.cc_id }}</span>
+              </td>
+              <td>
+                <div class="actions-cell">
                   <p-button
                     icon="pi pi-eye"
-                    label="Ver"
-                    [text]="true"
-                    size="small"
-                    (onClick)="openFirmaPreview(firmaPreview()!)" />
-                  <p-button
-                    icon="pi pi-times"
-                    label="Quitar"
-                    [text]="true"
-                    severity="danger"
-                    size="small"
-                    (onClick)="removeFirma()" />
-                </div>
-              </div>
-            }
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <p-button
-            [label]="isEditing() ? 'Actualizar' : 'Guardar'"
-            icon="pi pi-check"
-            [loading]="saving()"
-            [disabled]="!isFormValid()"
-            (onClick)="onSave()" />
-
-          @if (isEditing()) {
-            <p-button
-              label="Nuevo"
-              icon="pi pi-plus"
-              severity="secondary"
-              [outlined]="true"
-              (onClick)="resetForm()" />
-          }
-        </div>
-      </div>
-
-      @if (firmanteService.firmantes().length > 0) {
-        <div class="list-card">
-          <div class="list-card-header">
-            <h2>Firmantes registrados</h2>
-            <span class="list-count">{{ firmanteService.firmantes().length }}</span>
-          </div>
-          <div class="firmante-list">
-            @for (f of firmanteService.firmantes(); track f.id) {
-              <div
-                class="firmante-item"
-                [class.active]="editingId() === f.id"
-                (click)="loadFirmante(f)">
-                <div class="firmante-avatar">
-                  <i class="pi pi-user"></i>
-                </div>
-                <div class="firmante-info">
-                  <span class="firmante-name">{{ f.nombre }}</span>
-                  <span class="firmante-cc">CC {{ f.cc_id }}</span>
-                </div>
-                <div class="firmante-actions">
-                  @if (f.has_firma) {
-                    <span class="firma-indicator" title="Tiene firma">
-                      <i class="pi pi-check-circle"></i>
-                    </span>
-                    <p-button
-                      icon="pi pi-eye"
-                      [rounded]="true"
-                      [text]="true"
-                      size="small"
-                      title="Vista previa de la firma"
-                      (onClick)="openFirmaPreviewByFirmante($event, f)" />
-                  }
-                  <p-button
-                    icon="pi pi-trash"
-                    severity="danger"
                     [rounded]="true"
                     [text]="true"
                     size="small"
-                    (onClick)="confirmDelete($event, f)" />
-                  <i class="pi pi-chevron-right chevron"></i>
+                    severity="info"
+                    pTooltip="Ver informacion completa"
+                    (onClick)="openDetailModal(firmante)" />
+                  <p-button
+                    icon="pi pi-pencil"
+                    [rounded]="true"
+                    [text]="true"
+                    size="small"
+                    severity="secondary"
+                    pTooltip="Editar firmante"
+                    (onClick)="openEditModal(firmante)" />
+                  <p-button
+                    icon="pi pi-trash"
+                    [rounded]="true"
+                    [text]="true"
+                    size="small"
+                    severity="danger"
+                    pTooltip="Eliminar firmante"
+                    (onClick)="confirmDelete(firmante)" />
                 </div>
+              </td>
+            </tr>
+          </ng-template>
+
+          <ng-template #emptymessage>
+            <tr>
+              <td colspan="3">
+                <div class="empty-state">
+                  <i class="pi pi-user"></i>
+                  <p>No hay firmantes registrados</p>
+                  <p-button
+                    label="Agregar primer firmante"
+                    icon="pi pi-plus"
+                    [outlined]="true"
+                    size="small"
+                    (onClick)="openCreateModal()" />
+                </div>
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+
+      <!-- Modal Crear/Editar Firmante -->
+      <p-dialog
+        [header]="isEditing() ? 'Editar Firmante' : 'Crear Nuevo Firmante'"
+        [visible]="formModalVisible()"
+        (visibleChange)="onFormModalClose($event)"
+        [modal]="true"
+        [closable]="true"
+        [dismissableMask]="false"
+        [style]="{ width: '520px' }"
+        styleClass="firmante-form-dialog">
+
+        <div class="modal-form">
+          <div class="modal-form-grid">
+            <div class="modal-field">
+              <p-floatlabel>
+                <input pInputText id="m_nombre" [(ngModel)]="form.nombre" class="w-full" />
+                <label for="m_nombre">Nombre completo *</label>
+              </p-floatlabel>
+            </div>
+
+            <div class="modal-field">
+              <p-floatlabel>
+                <input
+                  pInputText
+                  id="m_cc_id"
+                  [(ngModel)]="form.cc_id"
+                  class="w-full"
+                  [class.cedula-error]="cedulaError()"
+                  (blur)="onCedulaBlur()" />
+                <label for="m_cc_id">Cedula / Identificacion *</label>
+              </p-floatlabel>
+              @if (cedulaChecking()) {
+                <small class="cedula-checking">Verificando cedula...</small>
+              }
+              @if (cedulaError()) {
+                <small class="cedula-error-msg">{{ cedulaError() }}</small>
+              }
+            </div>
+
+            <div class="modal-field modal-field--full">
+              <label class="field-label">Imagen de firma {{ isEditing() ? '' : '*' }}</label>
+              @if (formFirmaPreview()) {
+                <div class="firma-preview-area">
+                  <img [src]="formFirmaPreview()" alt="Vista previa firma" class="firma-preview-img" />
+                  <p-button
+                    icon="pi pi-times"
+                    [rounded]="true"
+                    [text]="true"
+                    size="small"
+                    severity="danger"
+                    styleClass="firma-remove-btn"
+                    (onClick)="removeSelectedImage()" />
+                </div>
+              } @else {
+                <app-file-upload
+                  accept=".png,.jpg,.jpeg"
+                  label="Seleccionar imagen de firma (PNG, JPG - Max 2MB)"
+                  [maxSizeMb]="2"
+                  (fileSelected)="onImageSelected($event)" />
+              }
+            </div>
+          </div>
+        </div>
+
+        <ng-template #footer>
+          <div class="modal-footer">
+            <p-button
+              label="Cancelar"
+              icon="pi pi-times"
+              severity="secondary"
+              [outlined]="true"
+              (onClick)="onFormModalClose(false)" />
+            <p-button
+              [label]="isEditing() ? 'Actualizar' : 'Crear'"
+              [icon]="isEditing() ? 'pi pi-check' : 'pi pi-plus'"
+              [loading]="saving()"
+              [disabled]="!isFormValid() || !!cedulaError()"
+              (onClick)="onSave()" />
+          </div>
+        </ng-template>
+      </p-dialog>
+
+      <!-- Modal Ver Detalle con Blur de Seguridad -->
+      <p-dialog
+        header="Informacion del Firmante"
+        [visible]="detailModalVisible()"
+        (visibleChange)="onDetailModalClose($event)"
+        [modal]="true"
+        [dismissableMask]="true"
+        [style]="{ width: '600px' }"
+        styleClass="firmante-detail-dialog">
+
+        <div class="detail-content">
+          <!-- Seccion firma con blur de seguridad -->
+          <div class="firma-section">
+            @if (detailFirmaUrl()) {
+              <div class="firma-wrapper" (click)="toggleBlur()">
+                <img
+                  [src]="detailFirmaUrl()"
+                  alt="Firma del firmante"
+                  class="firma-image"
+                  [class.blurred]="firmaBlurred()" />
+                @if (firmaBlurred()) {
+                  <div class="blur-overlay">
+                    <i class="pi pi-eye"></i>
+                    <p class="blur-message">Click para visualizar la firma</p>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="firma-placeholder">
+                <i class="pi pi-image"></i>
+                <p>Sin imagen de firma</p>
               </div>
             }
           </div>
-        </div>
-      }
 
-      <p-dialog
-        header="Vista previa de la firma"
-        [visible]="previewFirmaVisible()"
-        (visibleChange)="onFirmaPreviewVisibleChange($event)"
-        [modal]="true"
-        [dismissableMask]="true"
-        [style]="{ width: '440px' }"
-        styleClass="firma-preview-dialog">
-        @if (previewFirmaUrl()) {
-          <div class="firma-dialog-content">
-            <div class="firma-dialog-image-wrap">
-              <img [src]="previewFirmaUrl()" alt="Firma del firmante" />
+          <p-divider />
+
+          <!-- Informacion del firmante -->
+          <div class="info-section">
+            <div class="detail-row">
+              <div class="detail-row-icon"><i class="pi pi-user"></i></div>
+              <div class="detail-row-content">
+                <span class="detail-row-label">Nombre Completo</span>
+                <span class="detail-row-value">{{ detailFirmante()?.nombre }}</span>
+              </div>
             </div>
-            <span class="firma-dialog-hint">Esta imagen se utilizara en los certificados generados</span>
+            <div class="detail-row">
+              <div class="detail-row-icon"><i class="pi pi-id-card"></i></div>
+              <div class="detail-row-content">
+                <span class="detail-row-label">Cedula / Identificacion</span>
+                <span class="detail-row-value">{{ detailFirmante()?.cc_id }}</span>
+              </div>
+            </div>
           </div>
-        }
+        </div>
+
+        <ng-template #footer>
+          <div class="modal-footer">
+            <p-button
+              label="Cerrar"
+              icon="pi pi-times"
+              severity="secondary"
+              [outlined]="true"
+              (onClick)="onDetailModalClose(false)" />
+          </div>
+        </ng-template>
       </p-dialog>
 
       <p-confirmDialog />
@@ -168,7 +301,13 @@ import { FirmanteListItem } from '../../models/firmante.model';
   `,
   styles: `
     .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
       margin-bottom: 24px;
+    }
+
+    .page-header-text {
       h1 {
         font-size: 22px;
         font-weight: 600;
@@ -182,28 +321,80 @@ import { FirmanteListItem } from '../../models/firmante.model';
       }
     }
 
-    :host ::ng-deep .msg-block {
-      display: block;
-      margin-bottom: 16px;
-    }
-
-    .form-card, .list-card {
+    /* --- Table card --- */
+    .table-card {
       background: #ffffff;
       border: 1px solid #e2e8f0;
       border-radius: 8px;
-      padding: 24px;
-      margin-bottom: 16px;
+      padding: 20px;
     }
 
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    .table-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 16px;
+    }
+
+    .table-count {
+      font-size: 13px;
+      color: #64748b;
+      white-space: nowrap;
+    }
+
+    /* --- Table cell styles --- */
+    .firmante-name-cell {
+      font-size: 14px;
+      font-weight: 500;
+      color: #1e293b;
+    }
+
+    .cc-cell {
+      font-size: 13px;
+      color: #475569;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .actions-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    /* --- Empty state --- */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 48px 24px;
+      color: #94a3b8;
+
+      i { font-size: 32px; }
+      p {
+        margin: 0;
+        font-size: 14px;
+        color: #64748b;
+      }
+    }
+
+    /* --- Modal form --- */
+    .modal-form {
+      padding: 8px 0;
+    }
+
+    .modal-form-grid {
+      display: flex;
+      flex-direction: column;
       gap: 24px;
     }
 
-    .form-field--full {
-      grid-column: 1 / -1;
-    }
+    .modal-field { position: relative; }
+    .modal-field--full { width: 100%; }
+
+    .w-full { width: 100%; }
 
     .field-label {
       display: block;
@@ -213,187 +404,201 @@ import { FirmanteListItem } from '../../models/firmante.model';
       margin-bottom: 8px;
     }
 
-    .w-full {
-      width: 100%;
+    /* --- Cedula validation --- */
+    :host ::ng-deep .cedula-error {
+      border-color: #ef4444 !important;
+      &:focus { box-shadow: 0 0 0 1px #ef4444 !important; }
     }
 
-    .form-actions {
-      display: flex;
-      gap: 8px;
-      margin-top: 24px;
-      padding-top: 16px;
-      border-top: 1px solid #f1f5f9;
-    }
-
-    /* --- Inline firma preview --- */
-    .firma-inline-preview {
-      margin-top: 12px;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      background: #fafbfc;
-      padding: 12px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .firma-inline-image {
-      border: 1px solid #e2e8f0;
-      border-radius: 6px;
-      background: #ffffff;
-      padding: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      img {
-        display: block;
-        max-width: 160px;
-        max-height: 80px;
-        object-fit: contain;
-      }
-    }
-
-    .firma-inline-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    /* --- Preview dialog --- */
-    .firma-dialog-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .firma-dialog-image-wrap {
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      background: #fafbfc;
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      img {
-        max-width: 100%;
-        max-height: 200px;
-        object-fit: contain;
-        display: block;
-      }
-    }
-
-    .firma-dialog-hint {
+    .cedula-checking {
+      display: block;
+      margin-top: 4px;
       font-size: 12px;
-      color: #94a3b8;
-      text-align: center;
+      color: #64748b;
     }
 
-    /* --- List card --- */
-    .list-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-
-      h2 {
-        font-size: 16px;
-        font-weight: 600;
-        color: #0f172a;
-      }
+    .cedula-error-msg {
+      display: block;
+      margin-top: 4px;
+      font-size: 12px;
+      color: #ef4444;
     }
 
-    .list-count {
+    /* --- Firma preview in form modal --- */
+    .firma-preview-area {
+      position: relative;
       display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 22px;
-      height: 22px;
-      padding: 0 7px;
-      border-radius: 11px;
-      background: #f1f5f9;
-      font-size: 12px;
-      font-weight: 600;
-      color: #475569;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      background: #fafbfc;
     }
 
-    .firmante-list {
+    .firma-preview-img {
+      display: block;
+      max-width: 300px;
+      max-height: 150px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+
+    :host ::ng-deep .firma-remove-btn {
+      position: absolute !important;
+      top: 4px;
+      right: 4px;
+    }
+
+    /* --- Modal footer --- */
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* --- Detail modal --- */
+    .detail-content {
       display: flex;
       flex-direction: column;
-      gap: 2px;
     }
 
-    .firmante-item {
+    /* --- Firma section with blur security --- */
+    .firma-section {
       display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.15s ease;
+      justify-content: center;
+      padding: 8px 0 16px;
+    }
 
-      &:hover { background: #f8fafc; }
-      &.active {
-        background: #eff6ff;
-        .firmante-avatar { background: #3b82f6; color: #fff; }
+    .firma-wrapper {
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+      transition: background 0.2s ease;
+
+      &:hover {
+        background: rgba(0, 0, 0, 0.02);
       }
     }
 
-    .firmante-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
+    .firma-image {
+      max-width: 350px;
+      max-height: 175px;
+      width: auto;
+      height: auto;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      transition: filter 0.4s ease-in-out;
+    }
+
+    .firma-image.blurred {
+      filter: blur(12px);
+    }
+
+    .blur-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+
+      i {
+        font-size: 2rem;
+        color: #495057;
+      }
+
+      .blur-message {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 600;
+        color: #495057;
+        text-align: center;
+        white-space: nowrap;
+      }
+    }
+
+    .firma-placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 32px;
+      background: #f8fafc;
+      border: 1px dashed #e2e8f0;
+      border-radius: 8px;
+      width: 100%;
+
+      i {
+        font-size: 32px;
+        color: #cbd5e1;
+      }
+      p {
+        margin: 0;
+        font-size: 13px;
+        color: #94a3b8;
+      }
+    }
+
+    /* --- Detail info section --- */
+    .info-section {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      padding-top: 8px;
+    }
+
+    .detail-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .detail-row-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
       background: #f1f5f9;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      transition: background 0.15s ease, color 0.15s ease;
-      i { font-size: 16px; color: #64748b; }
+      i { font-size: 14px; color: #64748b; }
     }
-    .firmante-item.active .firmante-avatar i { color: #fff; }
 
-    .firmante-info {
+    .detail-row-content {
       display: flex;
       flex-direction: column;
       gap: 1px;
-      flex: 1;
-      min-width: 0;
+      padding-top: 2px;
     }
 
-    .firmante-name {
+    .detail-row-label {
+      font-size: 11px;
+      font-weight: 500;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .detail-row-value {
       font-size: 14px;
       font-weight: 500;
       color: #1e293b;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .firmante-cc {
-      font-size: 12px;
-      color: #64748b;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .firmante-actions {
-      display: flex;
-      align-items: center;
-      gap: 2px;
-      flex-shrink: 0;
-      .chevron { color: #cbd5e1; font-size: 12px; }
-    }
-
-    .firma-indicator {
-      display: flex;
-      align-items: center;
-      i { font-size: 14px; color: #22c55e; }
     }
 
     @media (max-width: 640px) {
-      .form-grid {
-        grid-template-columns: 1fr;
+      .page-header {
+        flex-direction: column;
+        gap: 12px;
+      }
+      .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
       }
     }
   `,
@@ -403,139 +608,311 @@ export class ConfigFirmantePage implements OnInit {
   private notify = inject(NotificationService);
   private confirmService = inject(ConfirmationService);
 
-  form = { nombre: '', cc_id: '' };
+  dt = viewChild<Table>('dt');
 
+  // Table
+  filterValue = '';
+
+  // Form modal
+  formModalVisible = signal(false);
   isEditing = signal(false);
-  editingId = signal<number | null>(null);
   saving = signal(false);
-  successMessage = signal<string | null>(null);
-  errorMessage = signal<string | null>(null);
-  firmaPreview = signal<string | null>(null);
-  previewFirmaVisible = signal(false);
-  previewFirmaUrl = signal<string | null>(null);
-
+  editingId = signal<number | null>(null);
+  originalCcId = signal<string | null>(null);
+  formFirmaPreview = signal<string | null>(null);
   private firmaImagenBytes: number[] | null = null;
   private firmaMime: string | null = null;
+  private formDirty = false;
+  private keepExistingFirma = false;
+
+  form = {
+    nombre: '',
+    cc_id: '',
+  };
+
+  // Cedula validation
+  cedulaError = signal<string | null>(null);
+  cedulaChecking = signal(false);
+
+  // Detail modal
+  detailModalVisible = signal(false);
+  detailFirmante = signal<FirmanteListItem | null>(null);
+  detailFirmaUrl = signal<string | null>(null);
+  firmaBlurred = signal(true);
 
   ngOnInit() {
     this.firmanteService.loadFirmantes();
   }
 
-  isFormValid(): boolean {
-    return !!(this.form.nombre.trim() && this.form.cc_id.trim());
+  // --- Table ---
+
+  onFilter() {
+    this.dt()?.filterGlobal(this.filterValue, 'contains');
   }
 
-  async onFirmaSelected(file: File) {
+  // --- Create modal ---
+
+  openCreateModal() {
+    this.resetForm();
+    this.isEditing.set(false);
+    this.formModalVisible.set(true);
+  }
+
+  // --- Edit modal ---
+
+  async openEditModal(firmante: FirmanteListItem) {
+    this.resetForm();
+    this.form.nombre = firmante.nombre;
+    this.form.cc_id = firmante.cc_id;
+    this.editingId.set(firmante.id);
+    this.originalCcId.set(firmante.cc_id);
+    this.isEditing.set(true);
+    this.keepExistingFirma = true;
+    this.formModalVisible.set(true);
+
+    // Load existing firma image (SIN blur en contexto edicion)
+    if (firmante.has_firma) {
+      try {
+        const img = await this.firmanteService.getFirmaImagen(firmante.id);
+        if (img) {
+          const url = FirmanteService.imageBytesToDataUri(img.imagen, img.mime);
+          this.formFirmaPreview.set(url);
+          this.firmaImagenBytes = img.imagen;
+          this.firmaMime = img.mime;
+        }
+      } catch {
+        // Firma not available
+      }
+    }
+  }
+
+  // --- Detail modal with blur ---
+
+  async openDetailModal(firmante: FirmanteListItem) {
+    this.detailFirmante.set(firmante);
+    this.detailFirmaUrl.set(null);
+    this.firmaBlurred.set(true);
+    this.detailModalVisible.set(true);
+
+    if (firmante.has_firma) {
+      try {
+        const img = await this.firmanteService.getFirmaImagen(firmante.id);
+        if (img) {
+          this.detailFirmaUrl.set(
+            FirmanteService.imageBytesToDataUri(img.imagen, img.mime)
+          );
+        }
+      } catch {
+        // Firma not available
+      }
+    }
+  }
+
+  toggleBlur() {
+    this.firmaBlurred.set(false);
+  }
+
+  onDetailModalClose(visible: boolean) {
+    this.detailModalVisible.set(visible);
+    if (!visible) {
+      this.detailFirmante.set(null);
+      this.detailFirmaUrl.set(null);
+      this.firmaBlurred.set(true);
+    }
+  }
+
+  // --- Form modal close ---
+
+  onFormModalClose(visible: boolean) {
+    if (!visible && this.formDirty) {
+      this.confirmService.confirm({
+        message: 'Tienes cambios sin guardar. ¿Deseas salir sin guardar?',
+        header: 'Cambios sin guardar',
+        icon: 'pi pi-exclamation-triangle',
+        acceptLabel: 'Si, salir',
+        rejectLabel: 'Cancelar',
+        accept: () => {
+          this.formModalVisible.set(false);
+          this.resetForm();
+        },
+      });
+    } else {
+      this.formModalVisible.set(visible);
+      if (!visible) {
+        this.resetForm();
+      }
+    }
+  }
+
+  // --- Cedula validation ---
+
+  async onCedulaBlur() {
+    const ccId = this.form.cc_id.trim();
+    if (!ccId) {
+      this.cedulaError.set(null);
+      return;
+    }
+
+    if (this.isEditing() && ccId === this.originalCcId()) {
+      this.cedulaError.set(null);
+      return;
+    }
+
+    this.cedulaChecking.set(true);
+    try {
+      const existing = await this.firmanteService.getFirmanteByCcId(ccId);
+      if (existing) {
+        this.cedulaError.set(
+          `La cedula ${ccId} ya esta registrada para el firmante "${existing.nombre}"`
+        );
+      } else {
+        this.cedulaError.set(null);
+      }
+    } catch {
+      this.cedulaError.set(null);
+    } finally {
+      this.cedulaChecking.set(false);
+    }
+  }
+
+  // --- Image handling ---
+
+  async onImageSelected(file: File) {
+    const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+    if (!validTypes.includes(file.type)) {
+      this.notify.error('Formato no valido', 'Solo se permiten archivos PNG o JPG');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      this.notify.error('Archivo muy grande', 'El tamano maximo permitido es 2MB');
+      return;
+    }
+
     const data = await FirmanteService.fileToImageData(file);
     this.firmaImagenBytes = data.firma_imagen;
     this.firmaMime = data.firma_mime;
-    this.firmaPreview.set(FirmanteService.imageBytesToDataUri(data.firma_imagen, data.firma_mime));
+    this.formFirmaPreview.set(FirmanteService.imageBytesToDataUri(data.firma_imagen, data.firma_mime));
+    this.keepExistingFirma = false;
+    this.formDirty = true;
   }
 
-  removeFirma() {
+  removeSelectedImage() {
     this.firmaImagenBytes = null;
     this.firmaMime = null;
-    this.firmaPreview.set(null);
+    this.formFirmaPreview.set(null);
+    this.keepExistingFirma = false;
+    this.formDirty = true;
   }
 
-  openFirmaPreview(dataUrl: string) {
-    this.previewFirmaUrl.set(dataUrl);
-    this.previewFirmaVisible.set(true);
-  }
+  // --- Form validation ---
 
-  onFirmaPreviewVisibleChange(visible: boolean) {
-    this.previewFirmaVisible.set(visible);
-    if (!visible) this.previewFirmaUrl.set(null);
-  }
-
-  async openFirmaPreviewByFirmante(event: Event, firmante: FirmanteListItem) {
-    event.stopPropagation();
-    if (!firmante.has_firma) return;
-    try {
-      const img = await this.firmanteService.getFirmaImagen(firmante.id);
-      if (img) {
-        const url = FirmanteService.imageBytesToDataUri(img.imagen, img.mime);
-        this.openFirmaPreview(url);
-      }
-    } catch {
-      this.notify.error('Error', 'No se pudo cargar la imagen de la firma');
+  isFormValid(): boolean {
+    const hasBasicFields = !!(this.form.nombre.trim() && this.form.cc_id.trim());
+    if (this.isEditing()) {
+      return hasBasicFields;
     }
+    // For create, firma is required
+    return hasBasicFields && !!this.firmaImagenBytes;
   }
 
-  async loadFirmante(item: FirmanteListItem) {
-    this.form.nombre = item.nombre;
-    this.form.cc_id = item.cc_id;
-    this.editingId.set(item.id);
-    this.isEditing.set(true);
-    this.clearMessages();
-
-    // Load firma image if exists
-    if (item.has_firma) {
-      try {
-        const img = await this.firmanteService.getFirmaImagen(item.id);
-        if (img) {
-          this.firmaImagenBytes = img.imagen;
-          this.firmaMime = img.mime;
-          this.firmaPreview.set(FirmanteService.imageBytesToDataUri(img.imagen, img.mime));
-        }
-      } catch {
-        // Non-critical, just skip preview
-      }
-    } else {
-      this.removeFirma();
-    }
-  }
-
-  resetForm() {
-    this.form = { nombre: '', cc_id: '' };
-    this.isEditing.set(false);
-    this.editingId.set(null);
-    this.removeFirma();
-    this.clearMessages();
-  }
+  // --- Save ---
 
   async onSave() {
-    this.saving.set(true);
-    this.clearMessages();
+    if (!this.isFormValid()) {
+      this.notify.warn('Campos obligatorios', 'Por favor, completa todos los campos obligatorios');
+      return;
+    }
 
+    if (this.cedulaError()) {
+      this.notify.error('Cedula duplicada', 'La cedula/identificacion ingresada ya existe en el sistema');
+      return;
+    }
+
+    if (this.isEditing()) {
+      this.confirmUpdate();
+    } else {
+      await this.createFirmante();
+    }
+  }
+
+  private confirmUpdate() {
+    this.confirmService.confirm({
+      message: `¿Estas seguro de que deseas actualizar los datos del firmante "${this.form.nombre}"?`,
+      header: 'Confirmar actualizacion',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Si, actualizar',
+      rejectLabel: 'Cancelar',
+      accept: () => this.updateFirmante(),
+    });
+  }
+
+  private async createFirmante() {
+    this.saving.set(true);
     try {
       const firmaData = this.firmaImagenBytes
         ? { firma_imagen: this.firmaImagenBytes, firma_mime: this.firmaMime! }
         : {};
 
-      if (this.isEditing() && this.editingId()) {
-        await this.firmanteService.updateFirmante(this.editingId()!, {
-          nombre: this.form.nombre,
-          cc_id: this.form.cc_id,
-          ...firmaData,
-        });
-        this.successMessage.set('Firmante actualizado correctamente');
-        this.notify.success('Firmante actualizado');
-      } else {
-        await this.firmanteService.createFirmante({
-          nombre: this.form.nombre,
-          cc_id: this.form.cc_id,
-          ...firmaData,
-        });
-        this.successMessage.set('Firmante creado correctamente');
-        this.notify.success('Firmante creado');
-        this.resetForm();
-      }
+      await this.firmanteService.createFirmante({
+        nombre: this.form.nombre,
+        cc_id: this.form.cc_id,
+        ...firmaData,
+      });
+
+      this.notify.success('Firmante creado exitosamente');
+      this.formModalVisible.set(false);
+      this.resetForm();
     } catch (err) {
-      this.errorMessage.set(String(err));
-      this.notify.error('Error', String(err));
+      const msg = String(err);
+      if (msg.toLowerCase().includes('cedula') || msg.toLowerCase().includes('cc_id')) {
+        this.notify.error('Cedula duplicada', 'La cedula/identificacion ingresada ya existe en el sistema');
+      } else {
+        this.notify.error('Error al crear firmante', msg);
+      }
     } finally {
       this.saving.set(false);
     }
   }
 
-  confirmDelete(event: Event, firmante: FirmanteListItem) {
-    event.stopPropagation();
+  private async updateFirmante() {
+    this.saving.set(true);
+    try {
+      const id = this.editingId()!;
+      const dto: any = {
+        nombre: this.form.nombre,
+        cc_id: this.form.cc_id,
+      };
+
+      // Only send firma if user selected a new image
+      if (this.firmaImagenBytes && !this.keepExistingFirma) {
+        dto.firma_imagen = this.firmaImagenBytes;
+        dto.firma_mime = this.firmaMime;
+      }
+
+      await this.firmanteService.updateFirmante(id, dto);
+      this.notify.success('Firmante actualizado correctamente');
+      this.formModalVisible.set(false);
+      this.resetForm();
+    } catch (err) {
+      const msg = String(err);
+      if (msg.toLowerCase().includes('cedula') || msg.toLowerCase().includes('cc_id')) {
+        this.notify.error('Cedula duplicada', 'La cedula/identificacion ingresada ya existe en el sistema');
+      } else {
+        this.notify.error('Error al actualizar firmante', msg);
+      }
+    } finally {
+      this.saving.set(false);
+    }
+  }
+
+  // --- Delete ---
+
+  confirmDelete(firmante: FirmanteListItem) {
     this.confirmService.confirm({
-      message: `Eliminar firmante "${firmante.nombre}"?`,
+      message: `¿Eliminar al firmante "${firmante.nombre}" (${firmante.cc_id})? Esta accion no se puede deshacer.`,
       header: 'Confirmar eliminacion',
       icon: 'pi pi-exclamation-triangle',
-      acceptLabel: 'Eliminar',
+      acceptLabel: 'Si, eliminar',
       rejectLabel: 'Cancelar',
       acceptButtonStyleClass: 'p-button-danger',
       accept: () => this.deleteFirmante(firmante.id),
@@ -545,17 +922,24 @@ export class ConfigFirmantePage implements OnInit {
   private async deleteFirmante(id: number) {
     try {
       await this.firmanteService.deleteFirmante(id);
-      if (this.editingId() === id) {
-        this.resetForm();
-      }
-      this.notify.success('Firmante eliminado');
+      this.notify.success('Firmante eliminado correctamente');
     } catch (err) {
-      this.notify.error('Error', String(err));
+      this.notify.error('Error al eliminar', String(err));
     }
   }
 
-  private clearMessages() {
-    this.successMessage.set(null);
-    this.errorMessage.set(null);
+  // --- Reset ---
+
+  private resetForm() {
+    this.form = { nombre: '', cc_id: '' };
+    this.editingId.set(null);
+    this.originalCcId.set(null);
+    this.firmaImagenBytes = null;
+    this.firmaMime = null;
+    this.formFirmaPreview.set(null);
+    this.cedulaError.set(null);
+    this.cedulaChecking.set(false);
+    this.keepExistingFirma = false;
+    this.formDirty = false;
   }
 }

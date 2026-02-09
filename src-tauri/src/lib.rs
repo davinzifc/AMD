@@ -45,6 +45,7 @@ pub fn run() {
             firmante_commands::delete_firmante,
             firmante_commands::list_firmantes,
             firmante_commands::get_firma_imagen,
+            firmante_commands::get_firmante_by_cc_id,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

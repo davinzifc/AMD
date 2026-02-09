@@ -39,6 +39,14 @@ pub fn list_firmantes(db: State<'_, DbPool>) -> Result<Vec<FirmanteListItem>, St
     firmante_service::list(&db).map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+pub fn get_firmante_by_cc_id(
+    db: State<'_, DbPool>,
+    cc_id: String,
+) -> Result<Option<FirmanteListItem>, String> {
+    firmante_service::get_by_cc_id(&db, &cc_id).map_err(|e| e.to_string())
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FirmaImagenResult {
     pub imagen: Vec<u8>,

@@ -51,6 +51,10 @@ export class FirmanteService {
     await this.loadFirmantes();
   }
 
+  async getFirmanteByCcId(ccId: string): Promise<FirmanteListItem | null> {
+    return invoke<FirmanteListItem | null>('get_firmante_by_cc_id', { ccId });
+  }
+
   async getFirmaImagen(id: number): Promise<{ imagen: number[]; mime: string } | null> {
     return invoke<{ imagen: number[]; mime: string } | null>('get_firma_imagen', { id });
   }
