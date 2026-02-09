@@ -10,7 +10,9 @@
     "dev": "tauri dev",
     "tauri": "tauri",
     "build:desktop": "tauri build",
-    "build:debug": "tauri build --debug"
+    "build:debug": "tauri build --debug",
+    "build:mac": "tauri build --target universal-apple-darwin",
+    "build:mac-arm": "tauri build --target aarch64-apple-darwin"
   },
   "prettier": {
     "overrides": [
