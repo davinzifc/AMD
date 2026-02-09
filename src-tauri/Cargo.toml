@@ -1,6 +1,6 @@
 [package]
 name = "amd-tools"
-version = "0.1.0"
+version = "0.1.0-beta.1"
 description = "AMD Tools - Herramientas contables de escritorio"
 authors = ["AMD Tools Team"]
 license = ""
