@@ -53,9 +53,16 @@ export class CryptoMainPage implements OnInit {
 
   onStepChange(event: number | undefined) {
     if (event !== undefined) {
+      const prevStep = this.activeStep();
       this.activeStep.set(event);
       if (event === 2) {
         this.selectedThirdParties.set([]);
+      }
+      if (event === 3) {
+        this.selectedTransactions.set([]);
+      }
+      if (event < 4 && prevStep >= 4) {
+        this.reportService.resetProcessing();
       }
     }
   }
