@@ -2,12 +2,15 @@
   <div class="page-header">
     <div class="page-header-text">
       <h1>Configuracion de Firmantes</h1>
-      <p class="page-subtitle">Administra los firmantes disponibles para los certificados</p>
+      <p class="page-subtitle">
+        Administra los firmantes disponibles para los certificados
+      </p>
     </div>
     <p-button
       label="Agregar Firmante"
       icon="pi pi-plus"
-      (onClick)="openCreateModal()" />
+      (onClick)="openCreateModal()"
+    />
   </div>
 
   <div class="table-card">
@@ -19,94 +22,101 @@
           type="text"
           placeholder="Buscar por nombre o cedula..."
           [(ngModel)]="filterValue"
-          (input)="onFilter()" />
+          (input)="onFilter()"
+        />
       </p-iconfield>
       <span class="table-count">
         {{ firmanteService.firmantes().length }} firmantes registrados
       </span>
     </div>
 
-    <p-table
-      #dt
-      [value]="firmanteService.firmantes()"
-      [paginator]="true"
-      [rows]="10"
-      [rowsPerPageOptions]="[10, 25, 50]"
-      [globalFilterFields]="['nombre', 'cc_id']"
-      [sortField]="'nombre'"
-      [sortOrder]="1"
-      [loading]="firmanteService.loading()"
-      dataKey="id"
-      styleClass="p-datatable-sm">
+    <div class="table-shell">
+      <p-table
+        #dt
+        [value]="firmanteService.firmantes()"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        [globalFilterFields]="['nombre', 'cc_id']"
+        [sortField]="'nombre'"
+        [sortOrder]="1"
+        [loading]="firmanteService.loading()"
+        dataKey="id"
+        styleClass="p-datatable-sm p-datatable-gridlines"
+      >
+        <ng-template #header>
+          <tr>
+            <th pSortableColumn="nombre">
+              Nombre Completo <p-sortIcon field="nombre" />
+            </th>
+            <th pSortableColumn="cc_id">
+              Cedula / Identificacion <p-sortIcon field="cc_id" />
+            </th>
+            <th style="width: 150px; text-align: center">Acciones</th>
+          </tr>
+        </ng-template>
 
-      <ng-template #header>
-        <tr>
-          <th pSortableColumn="nombre">
-            Nombre Completo <p-sortIcon field="nombre" />
-          </th>
-          <th pSortableColumn="cc_id">
-            Cedula / Identificacion <p-sortIcon field="cc_id" />
-          </th>
-          <th style="width: 150px; text-align: center">Acciones</th>
-        </tr>
-      </ng-template>
+        <ng-template #body let-firmante>
+          <tr>
+            <td>
+              <span class="firmante-name-cell">{{ firmante.nombre }}</span>
+            </td>
+            <td>
+              <span class="cc-cell">{{ firmante.cc_id }}</span>
+            </td>
+            <td>
+              <div class="actions-cell">
+                <p-button
+                  icon="pi pi-eye"
+                  [rounded]="true"
+                  [text]="true"
+                  size="small"
+                  severity="info"
+                  pTooltip="Ver informacion completa"
+                  (onClick)="openDetailModal(firmante)"
+                />
+                <p-button
+                  icon="pi pi-pencil"
+                  [rounded]="true"
+                  [text]="true"
+                  size="small"
+                  severity="secondary"
+                  pTooltip="Editar firmante"
+                  (onClick)="openEditModal(firmante)"
+                />
+                <p-button
+                  icon="pi pi-trash"
+                  [rounded]="true"
+                  [text]="true"
+                  size="small"
+                  severity="danger"
+                  pTooltip="Eliminar firmante"
+                  (onClick)="confirmDelete(firmante)"
+                />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
 
-      <ng-template #body let-firmante>
-        <tr>
-          <td>
-            <span class="firmante-name-cell">{{ firmante.nombre }}</span>
-          </td>
-          <td>
-            <span class="cc-cell">{{ firmante.cc_id }}</span>
-          </td>
-          <td>
-            <div class="actions-cell">
-              <p-button
-                icon="pi pi-eye"
-                [rounded]="true"
-                [text]="true"
-                size="small"
-                severity="info"
-                pTooltip="Ver informacion completa"
-                (onClick)="openDetailModal(firmante)" />
-              <p-button
-                icon="pi pi-pencil"
-                [rounded]="true"
-                [text]="true"
-                size="small"
-                severity="secondary"
-                pTooltip="Editar firmante"
-                (onClick)="openEditModal(firmante)" />
-              <p-button
-                icon="pi pi-trash"
-                [rounded]="true"
-                [text]="true"
-                size="small"
-                severity="danger"
-                pTooltip="Eliminar firmante"
-                (onClick)="confirmDelete(firmante)" />
-            </div>
-          </td>
-        </tr>
-      </ng-template>
-
-      <ng-template #emptymessage>
-        <tr>
-          <td colspan="3">
-            <div class="empty-state">
-              <i class="pi pi-user"></i>
-              <p>No hay firmantes registrados</p>
-              <p-button
-                label="Agregar primer firmante"
-                icon="pi pi-plus"
-                [outlined]="true"
-                size="small"
-                (onClick)="openCreateModal()" />
-            </div>
-          </td>
-        </tr>
-      </ng-template>
-    </p-table>
+        <ng-template #emptymessage>
+          <tr>
+            <td colspan="3">
+              <div class="empty-state">
+                <i class="pi pi-user"></i>
+                <p>No hay firmantes registrados</p>
+                <p-button
+                  label="Agregar primer firmante"
+                  icon="pi pi-plus"
+                  [outlined]="true"
+                  size="small"
+                  (onClick)="openCreateModal()"
+                />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
   </div>
 
   <!-- Modal Crear/Editar Firmante -->
@@ -118,13 +128,18 @@
     [closable]="true"
     [dismissableMask]="false"
     [style]="{ width: '520px' }"
-    styleClass="firmante-form-dialog">
-
+    styleClass="firmante-form-dialog"
+  >
     <div class="modal-form">
       <div class="modal-form-grid">
         <div class="modal-field">
           <p-floatlabel>
-            <input pInputText id="m_nombre" [(ngModel)]="form.nombre" class="w-full" />
+            <input
+              pInputText
+              id="m_nombre"
+              [(ngModel)]="form.nombre"
+              class="w-full"
+            />
             <label for="m_nombre">Nombre completo *</label>
           </p-floatlabel>
         </div>
@@ -137,7 +152,8 @@
               [(ngModel)]="form.cc_id"
               class="w-full"
               [class.cedula-error]="cedulaError()"
-              (blur)="onCedulaBlur()" />
+              (blur)="onCedulaBlur()"
+            />
             <label for="m_cc_id">Cedula / Identificacion *</label>
           </p-floatlabel>
           @if (cedulaChecking()) {
@@ -149,10 +165,16 @@
         </div>
 
         <div class="modal-field modal-field--full">
-          <label class="field-label">Imagen de firma {{ isEditing() ? '' : '*' }}</label>
+          <label class="field-label"
+            >Imagen de firma {{ isEditing() ? "" : "*" }}</label
+          >
           @if (formFirmaPreview()) {
             <div class="firma-preview-area">
-              <img [src]="formFirmaPreview()" alt="Vista previa firma" class="firma-preview-img" />
+              <img
+                [src]="formFirmaPreview()"
+                alt="Vista previa firma"
+                class="firma-preview-img"
+              />
               <p-button
                 icon="pi pi-times"
                 [rounded]="true"
@@ -160,14 +182,16 @@
                 size="small"
                 severity="danger"
                 styleClass="firma-remove-btn"
-                (onClick)="removeSelectedImage()" />
+                (onClick)="removeSelectedImage()"
+              />
             </div>
           } @else {
             <app-file-upload
               accept=".png,.jpg,.jpeg"
               label="Seleccionar imagen de firma (PNG, JPG - Max 2MB)"
               [maxSizeMb]="2"
-              (fileSelected)="onImageSelected($event)" />
+              (fileSelected)="onImageSelected($event)"
+            />
           }
         </div>
       </div>
@@ -180,13 +204,15 @@
           icon="pi pi-times"
           severity="secondary"
           [outlined]="true"
-          (onClick)="onFormModalClose(false)" />
+          (onClick)="onFormModalClose(false)"
+        />
         <p-button
           [label]="isEditing() ? 'Actualizar' : 'Crear'"
           [icon]="isEditing() ? 'pi pi-check' : 'pi pi-plus'"
           [loading]="saving()"
           [disabled]="!isFormValid() || !!cedulaError()"
-          (onClick)="onSave()" />
+          (onClick)="onSave()"
+        />
       </div>
     </ng-template>
   </p-dialog>
@@ -199,8 +225,8 @@
     [modal]="true"
     [dismissableMask]="true"
     [style]="{ width: '600px' }"
-    styleClass="firmante-detail-dialog">
-
+    styleClass="firmante-detail-dialog"
+  >
     <div class="detail-content">
       <!-- Seccion firma con blur de seguridad -->
       <div class="firma-section">
@@ -210,7 +236,8 @@
               [src]="detailFirmaUrl()"
               alt="Firma del firmante"
               class="firma-image"
-              [class.blurred]="firmaBlurred()" />
+              [class.blurred]="firmaBlurred()"
+            />
             @if (firmaBlurred()) {
               <div class="blur-overlay">
                 <i class="pi pi-eye"></i>
@@ -254,7 +281,8 @@
           icon="pi pi-times"
           severity="secondary"
           [outlined]="true"
-          (onClick)="onDetailModalClose(false)" />
+          (onClick)="onDetailModalClose(false)"
+        />
       </div>
     </ng-template>
   </p-dialog>

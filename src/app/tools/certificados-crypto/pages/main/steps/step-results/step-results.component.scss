@@ -1,5 +1,8 @@
 .step-content {
   padding: 16px 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
 }
 
 :host ::ng-deep .msg-block {

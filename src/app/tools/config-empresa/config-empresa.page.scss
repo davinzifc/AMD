@@ -25,6 +25,7 @@
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   padding: 20px;
+  min-width: 0;
 }
 
 .table-toolbar {
@@ -309,5 +310,14 @@
   .table-toolbar {
     flex-direction: column;
     align-items: stretch;
+    gap: 8px;
+  }
+
+  :host ::ng-deep .table-toolbar .p-iconfield {
+    width: 100%;
+  }
+
+  :host ::ng-deep .table-toolbar .p-inputtext {
+    width: 100%;
   }
 }

@@ -1,5 +1,7 @@
 .step-content {
   padding: 16px 0;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .step-actions {
@@ -9,6 +11,7 @@
   margin-top: 20px;
   padding-top: 16px;
   border-top: 1px solid #f1f5f9;
+  gap: 12px;
 }
 
 .empty-state {
@@ -19,4 +22,16 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
+}
+
+@media (max-width: 640px) {
+  .step-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  :host ::ng-deep .step-actions .p-button {
+    width: 100%;
+    justify-content: center;
+  }
 }

@@ -37,6 +37,39 @@ a {
 // Ensure tables scroll horizontally on small screens
 .p-datatable-wrapper {
   overflow-x: auto;
+  max-width: 100%;
+}
+
+.table-shell {
+  width: 100%;
+  max-width: 100%;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-shell .p-datatable-wrapper {
+  overflow-x: auto;
+}
+
+.table-shell .p-datatable,
+.table-shell table {
+  width: 100%;
+  max-width: 100%;
+}
+
+.table-shell .p-datatable-scrollable {
+  overflow-x: auto;
+}
+
+.table-shell .p-datatable-table,
+.table-shell .p-datatable-scrollable-table {
+  min-width: 100%;
+  width: 100%;
+}
+
+.p-datatable-scrollable-body {
+  overflow-x: auto;
 }
 
 // Toast z-index above sidebar

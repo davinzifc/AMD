@@ -30,3 +30,21 @@
   padding-bottom: 8px;
   border-bottom: 1px solid #e2e8f0;
 }
+
+:host ::ng-deep .p-stepper,
+:host ::ng-deep .p-stepper-panels,
+:host ::ng-deep .p-stepper-content {
+  min-width: 0;
+}
+
+// Evitar display:grid en el panel del step para que el overflow/scroll de las tablas funcione (steps 3 y 5)
+:host ::ng-deep .p-steppanel .p-motion {
+  display: block;
+  grid-template-rows: unset;
+}
+
+@media (max-width: 640px) {
+  .stepper-card {
+    padding: 16px;
+  }
+}
