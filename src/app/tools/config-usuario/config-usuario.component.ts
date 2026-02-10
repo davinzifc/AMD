@@ -1,7 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InputText } from 'primeng/inputtext';
-import { FloatLabel } from 'primeng/floatlabel';
 import { Button } from 'primeng/button';
 import { Message } from 'primeng/message';
 import { UserConfigService } from './user-config.service';
@@ -9,7 +8,7 @@ import { UserConfigService } from './user-config.service';
 @Component({
   selector: 'app-config-usuario',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, InputText, FloatLabel, Button, Message],
+  imports: [FormsModule, InputText, Button, Message],
   templateUrl: './config-usuario.component.html',
   styleUrl: './config-usuario.component.scss',
 })

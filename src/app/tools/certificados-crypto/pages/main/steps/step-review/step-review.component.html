@@ -1,4 +1,8 @@
 <div class="step-content">
+  <div class="section-header">
+    <h3 class="section-title">Revisar datos</h3>
+    <p class="section-desc">Verifica y selecciona las transacciones válidas</p>
+  </div>
   @if (transactions().length > 0) {
     <app-data-table
       [transactions]="transactions()"

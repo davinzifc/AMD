@@ -1,27 +1,27 @@
 .step-content {
-  padding: 16px 0;
+  padding: var(--space-4) 0;
 }
 
 :host ::ng-deep .msg-block {
   display: block;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 .step-actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid #f1f5f9;
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--surface-muted);
 }
 
 .process-start {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
-  padding: 24px 0;
+  gap: var(--space-6);
+  padding: var(--space-6) 0;
 }
 
 .process-summary {
@@ -29,52 +29,57 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  color: #334155;
-  font-size: 15px;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--text-lg);
+}
+
+.process-icon {
+  font-size: var(--text-stat);
+  color: var(--accent);
 }
 
 .process-hint {
-  font-size: 12px;
-  color: #94a3b8;
+  font-size: var(--text-sm);
+  color: var(--text-placeholder);
   max-width: 400px;
   line-height: 1.5;
 }
 
 .process-complete {
-  padding: 16px 0;
+  padding: var(--space-4) 0;
 }
 
 .result-summary {
   display: flex;
   justify-content: center;
-  gap: 32px;
-  padding: 16px 0;
+  gap: var(--space-8);
+  padding: var(--space-4) 0;
 }
 
 .result-stat {
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .stat-value {
-  font-size: 28px;
+  font-size: var(--text-stat);
   font-weight: 700;
-  color: #1e293b;
-  font-family: 'SF Mono', 'Cascadia Code', monospace;
+  color: var(--text-body);
+  font-family: var(--font-mono);
 }
 
 .result-stat--success .stat-value {
-  color: #16a34a;
+  color: var(--success);
 }
 
 .result-stat--error .stat-value {
-  color: #dc2626;
+  color: var(--error);
 }
 
 .stat-label {
-  font-size: 12px;
-  color: #64748b;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
 }

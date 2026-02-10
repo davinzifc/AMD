@@ -1,5 +1,5 @@
 .step-content {
-  padding: 16px 0;
+  padding: var(--space-4) 0;
   min-width: 0;
   max-width: 100%;
 }
@@ -8,20 +8,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
-  padding-top: 16px;
-  border-top: 1px solid #f1f5f9;
-  gap: 12px;
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--surface-muted);
+  gap: var(--space-3);
 }
 
 .empty-state {
   text-align: center;
-  padding: 32px;
-  color: #64748b;
+  padding: var(--space-8);
+  color: var(--text-muted);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 @media (max-width: 640px) {

@@ -1,26 +1,26 @@
 .header {
   height: var(--header-height);
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--surface-card);
+  border-bottom: 1px solid var(--border-default);
   display: flex;
   align-items: center;
-  padding: 0 20px;
+  padding: 0 var(--space-5);
 }
 
 .menu-toggle {
   display: none;
   background: none;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  padding: 6px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
   cursor: pointer;
-  color: #475569;
-  font-size: 16px;
-  transition: all 0.15s ease;
+  color: var(--text-secondary);
+  font-size: var(--text-md);
+  transition: all var(--transition-fast);
 
   &:hover {
-    background: #f1f5f9;
-    color: #1e293b;
+    background: var(--surface-muted);
+    color: var(--text-body);
   }
 }
 

@@ -2,7 +2,6 @@ import { Component, ChangeDetectionStrategy, inject, signal, OnInit, viewChild }
 import { FormsModule } from '@angular/forms';
 import { InputText } from 'primeng/inputtext';
 import { Button } from 'primeng/button';
-import { FloatLabel } from 'primeng/floatlabel';
 import { Dialog } from 'primeng/dialog';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
@@ -21,7 +20,6 @@ import { EmpresaService, Empresa, UpdateEmpresaDto } from '../../shared/services
     FormsModule,
     InputText,
     Button,
-    FloatLabel,
     Dialog,
     ConfirmDialog,
     TableModule,

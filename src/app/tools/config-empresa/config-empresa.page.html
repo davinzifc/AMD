@@ -1,4 +1,4 @@
-<div class="page">
+<div class="page config-empresa-page">
   <div class="page-header">
     <div class="page-header-text">
       <h1>Configuracion de Empresas</h1>
@@ -6,14 +6,16 @@
         Administra los datos de las empresas para los certificados
       </p>
     </div>
-    <p-button
-      label="Agregar Empresa"
-      icon="pi pi-plus"
-      (onClick)="openCreateModal()"
-    />
+    <div class="page-header-actions">
+      <p-button
+        label="Agregar Empresa"
+        icon="pi pi-plus"
+        (onClick)="openCreateModal()"
+      />
+    </div>
   </div>
 
-  <div class="table-card">
+  <div class="page-card table-card">
     <div class="table-toolbar">
       <p-iconfield>
         <p-inputicon styleClass="pi pi-search" />
@@ -131,7 +133,6 @@
 
   <!-- Modal Crear/Editar Empresa -->
   <p-dialog
-    [header]="isEditing() ? 'Editar Empresa' : 'Crear Nueva Empresa'"
     [visible]="formModalVisible()"
     (visibleChange)="onFormModalClose($event)"
     [modal]="true"
@@ -140,32 +141,41 @@
     [style]="{ width: '520px' }"
     styleClass="empresa-form-dialog"
   >
+    <ng-template #header>
+      <div class="dlg-header">
+        <div class="dlg-header-icon">
+          <i class="pi pi-building"></i>
+        </div>
+        <div class="dlg-header-text">
+          <span class="dlg-title">{{
+            isEditing() ? 'Editar Empresa' : 'Crear Nueva Empresa'
+          }}</span>
+          <span class="dlg-subtitle">Datos legales y tributarios</span>
+        </div>
+      </div>
+    </ng-template>
     <div class="modal-form">
-      <div class="modal-form-grid">
-        <div class="modal-field">
-          <p-floatlabel>
-            <input
-              pInputText
-              id="m_nombre"
-              [(ngModel)]="form.nombre"
-              class="w-full"
-            />
-            <label for="m_nombre">Nombre de la empresa *</label>
-          </p-floatlabel>
+      <div class="modal-form-grid form-grid">
+        <div class="modal-field form-field">
+          <label class="field-label" for="m_nombre">Nombre de la empresa *</label>
+          <input
+            pInputText
+            id="m_nombre"
+            [(ngModel)]="form.nombre"
+            class="w-full"
+          />
         </div>
 
-        <div class="modal-field">
-          <p-floatlabel>
-            <input
-              pInputText
-              id="m_nit"
-              [(ngModel)]="form.nit"
-              class="w-full"
-              [class.nit-error]="nitError()"
-              (blur)="onNitBlur()"
-            />
-            <label for="m_nit">NIT *</label>
-          </p-floatlabel>
+        <div class="modal-field form-field">
+          <label class="field-label" for="m_nit">NIT *</label>
+          <input
+            pInputText
+            id="m_nit"
+            [(ngModel)]="form.nit"
+            class="w-full"
+            [class.nit-error]="nitError()"
+            (blur)="onNitBlur()"
+          />
           @if (nitChecking()) {
             <small class="nit-checking">Verificando NIT...</small>
           }
@@ -174,31 +184,27 @@
           }
         </div>
 
-        <div class="modal-field">
-          <p-floatlabel>
-            <input
-              pInputText
-              id="m_rep_nombre"
-              [(ngModel)]="form.representante_nombre"
-              class="w-full"
-            />
-            <label for="m_rep_nombre">Nombre del representante legal *</label>
-          </p-floatlabel>
+        <div class="modal-field form-field">
+          <label class="field-label" for="m_rep_nombre">Nombre del representante legal *</label>
+          <input
+            pInputText
+            id="m_rep_nombre"
+            [(ngModel)]="form.representante_nombre"
+            class="w-full"
+          />
         </div>
 
-        <div class="modal-field">
-          <p-floatlabel>
-            <input
-              pInputText
-              id="m_rep_id"
-              [(ngModel)]="form.representante_id"
-              class="w-full"
-            />
-            <label for="m_rep_id">Identificacion del representante *</label>
-          </p-floatlabel>
+        <div class="modal-field form-field">
+          <label class="field-label" for="m_rep_id">Identificacion del representante *</label>
+          <input
+            pInputText
+            id="m_rep_id"
+            [(ngModel)]="form.representante_id"
+            class="w-full"
+          />
         </div>
 
-        <div class="modal-field modal-field--full">
+        <div class="modal-field modal-field--full form-field">
           <label class="field-label">Logo de la empresa (opcional)</label>
           @if (formLogoPreview()) {
             <div class="logo-preview-area">

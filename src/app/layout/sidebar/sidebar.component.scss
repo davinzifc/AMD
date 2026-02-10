@@ -1,92 +1,92 @@
 .sidebar {
   width: var(--sidebar-width);
   height: 100vh;
-  background: #0f172a;
-  color: #94a3b8;
+  background: var(--surface-sidebar);
+  color: var(--text-on-dark-muted);
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #1e293b;
+  border-right: 1px solid var(--border-dark);
   position: fixed;
   left: 0;
   top: 0;
   z-index: 100;
-  transition: width 0.2s ease;
+  transition: width var(--transition-normal);
 }
 
 .sidebar-brand {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  border-bottom: 1px solid #1e293b;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border-dark);
 }
 
 .brand-icon {
   width: 32px;
   height: 32px;
-  background: #3b82f6;
-  border-radius: 6px;
+  background: var(--accent);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   font-weight: 700;
-  font-size: 16px;
+  font-size: var(--text-md);
   flex-shrink: 0;
 }
 
 .brand-text {
-  font-size: 16px;
+  font-size: var(--text-lg);
   font-weight: 600;
-  color: #f1f5f9;
-  letter-spacing: -0.3px;
+  color: var(--text-on-dark);
+  letter-spacing: var(--tracking-tight);
 }
 
 .sidebar-nav {
   flex: 1;
-  padding: 12px 0;
+  padding: var(--space-3) 0;
   overflow-y: auto;
 }
 
 .nav-section {
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .nav-section-label {
   display: block;
-  padding: 8px 20px 6px;
-  font-size: 11px;
+  padding: var(--space-2) var(--space-5) var(--space-2);
+  font-size: var(--text-xs);
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #475569;
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-on-dark-muted);
 }
 
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 20px;
-  font-size: 13px;
-  color: #94a3b8;
+  gap: var(--space-3);
+  padding: 9px var(--space-5);
+  font-size: var(--text-base);
+  color: var(--text-on-dark-muted);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all var(--transition-fast);
   border-left: 3px solid transparent;
   text-decoration: none;
 
   &:hover {
-    background: #1e293b;
-    color: #e2e8f0;
+    background: var(--border-dark);
+    color: var(--text-on-dark);
   }
 
   &.active {
-    background: #1e293b;
-    color: #f1f5f9;
-    border-left-color: #3b82f6;
+    background: var(--border-dark);
+    color: var(--text-on-dark);
+    border-left-color: var(--accent);
   }
 
   i {
-    font-size: 15px;
+    font-size: var(--text-lg);
     width: 20px;
     text-align: center;
   }

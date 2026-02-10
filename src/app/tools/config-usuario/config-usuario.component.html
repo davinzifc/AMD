@@ -4,21 +4,21 @@
     <p class="page-subtitle">Datos personales para los certificados generados</p>
   </div>
 
-  <div class="form-card">
+  <div class="page-card form-card">
     <div class="form-section">
       <h3 class="section-title">Datos del Firmante</h3>
       <p class="section-desc">Esta informacion aparecera en la firma de los certificados.</p>
 
       <div class="form-grid">
-        <p-floatlabel>
+        <div class="form-field">
+          <label class="field-label" for="nombre">Nombre completo</label>
           <input pInputText id="nombre" [(ngModel)]="nombre" class="w-full" />
-          <label for="nombre">Nombre completo</label>
-        </p-floatlabel>
+        </div>
 
-        <p-floatlabel>
+        <div class="form-field">
+          <label class="field-label" for="cedula">Cedula de ciudadania</label>
           <input pInputText id="cedula" [(ngModel)]="cedula" class="w-full" />
-          <label for="cedula">Cedula de ciudadania</label>
-        </p-floatlabel>
+        </div>
       </div>
     </div>
 

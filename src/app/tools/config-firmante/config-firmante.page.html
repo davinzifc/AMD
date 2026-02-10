@@ -6,14 +6,16 @@
         Administra los firmantes disponibles para los certificados
       </p>
     </div>
-    <p-button
-      label="Agregar Firmante"
-      icon="pi pi-plus"
-      (onClick)="openCreateModal()"
-    />
+    <div class="page-header-actions">
+      <p-button
+        label="Agregar Firmante"
+        icon="pi pi-plus"
+        (onClick)="openCreateModal()"
+      />
+    </div>
   </div>
 
-  <div class="table-card">
+  <div class="page-card table-card">
     <div class="table-toolbar">
       <p-iconfield>
         <p-inputicon styleClass="pi pi-search" />
@@ -121,7 +123,6 @@
 
   <!-- Modal Crear/Editar Firmante -->
   <p-dialog
-    [header]="isEditing() ? 'Editar Firmante' : 'Crear Nuevo Firmante'"
     [visible]="formModalVisible()"
     (visibleChange)="onFormModalClose($event)"
     [modal]="true"
@@ -130,32 +131,41 @@
     [style]="{ width: '520px' }"
     styleClass="firmante-form-dialog"
   >
+    <ng-template #header>
+      <div class="dlg-header">
+        <div class="dlg-header-icon">
+          <i class="pi pi-pen-to-square"></i>
+        </div>
+        <div class="dlg-header-text">
+          <span class="dlg-title">{{
+            isEditing() ? 'Editar Firmante' : 'Crear Nuevo Firmante'
+          }}</span>
+          <span class="dlg-subtitle">Información del firmante</span>
+        </div>
+      </div>
+    </ng-template>
     <div class="modal-form">
-      <div class="modal-form-grid">
-        <div class="modal-field">
-          <p-floatlabel>
-            <input
-              pInputText
-              id="m_nombre"
-              [(ngModel)]="form.nombre"
-              class="w-full"
-            />
-            <label for="m_nombre">Nombre completo *</label>
-          </p-floatlabel>
+      <div class="modal-form-grid form-grid">
+        <div class="modal-field form-field">
+          <label class="field-label" for="m_nombre">Nombre completo *</label>
+          <input
+            pInputText
+            id="m_nombre"
+            [(ngModel)]="form.nombre"
+            class="w-full"
+          />
         </div>
 
-        <div class="modal-field">
-          <p-floatlabel>
-            <input
-              pInputText
-              id="m_cc_id"
-              [(ngModel)]="form.cc_id"
-              class="w-full"
-              [class.cedula-error]="cedulaError()"
-              (blur)="onCedulaBlur()"
-            />
-            <label for="m_cc_id">Cedula / Identificacion *</label>
-          </p-floatlabel>
+        <div class="modal-field form-field">
+          <label class="field-label" for="m_cc_id">Cedula / Identificacion *</label>
+          <input
+            pInputText
+            id="m_cc_id"
+            [(ngModel)]="form.cc_id"
+            class="w-full"
+            [class.cedula-error]="cedulaError()"
+            (blur)="onCedulaBlur()"
+          />
           @if (cedulaChecking()) {
             <small class="cedula-checking">Verificando cedula...</small>
           }
@@ -164,7 +174,7 @@
           }
         </div>
 
-        <div class="modal-field modal-field--full">
+        <div class="modal-field modal-field--full form-field">
           <label class="field-label"
             >Imagen de firma {{ isEditing() ? "" : "*" }}</label
           >

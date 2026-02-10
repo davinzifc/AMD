@@ -1,4 +1,8 @@
 <div class="step-content">
+  <div class="section-header">
+    <h3 class="section-title">Seleccionar terceros</h3>
+    <p class="section-desc">Elige los terceros que serán incluidos en el certificado</p>
+  </div>
   @if (transactions().length > 0) {
     <app-third-party-selector
       [transactions]="transactions()"

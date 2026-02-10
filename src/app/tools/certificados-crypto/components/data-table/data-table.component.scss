@@ -9,15 +9,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 12px;
-  gap: 12px;
+  margin-bottom: var(--space-3);
+  gap: var(--space-3);
   flex-wrap: wrap;
   min-width: 0;
 }
 
 .table-count {
-  font-size: 13px;
-  color: #64748b;
+  font-size: var(--text-base);
+  color: var(--text-muted);
   white-space: nowrap;
 }
 
@@ -33,26 +33,26 @@
 }
 
 .cell-muted {
-  color: #94a3b8;
-  font-size: 12px;
+  color: var(--text-placeholder);
+  font-size: var(--text-sm);
 }
 
 .cell-mono {
-  font-family: "SF Mono", "Cascadia Code", "Fira Code", monospace;
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
 }
 
 .cell-number {
   text-align: right;
-  font-family: "SF Mono", "Cascadia Code", "Fira Code", monospace;
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
   font-variant-numeric: tabular-nums;
 }
 
 .cell-empty {
   text-align: center;
-  color: #94a3b8;
-  padding: 32px !important;
+  color: var(--text-placeholder);
+  padding: var(--space-8) !important;
 }
 
 :host ::ng-deep {
@@ -71,29 +71,29 @@
   }
 
   .p-datatable .p-datatable-thead > tr > th {
-    font-size: 12px;
+    font-size: var(--text-sm);
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.3px;
-    color: #475569;
-    background: #f8fafc;
-    border-color: #e2e8f0;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-secondary);
+    background: var(--surface-page);
+    border-color: var(--border-default);
   }
 
   .p-datatable .p-datatable-tbody > tr > td {
-    font-size: 13px;
-    border-color: #f1f5f9;
-    padding: 8px 12px;
+    font-size: var(--text-base);
+    border-color: var(--surface-muted);
+    padding: var(--space-2) var(--space-3);
     overflow-wrap: break-word;
     min-width: 0;
   }
 
   .p-datatable .p-datatable-tbody > tr:hover {
-    background: #f8fafc;
+    background: var(--surface-page);
   }
 
   .p-datatable .p-datatable-tbody > tr.p-highlight {
-    background: #eff6ff;
+    background: var(--accent-surface);
   }
 }
 

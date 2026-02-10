@@ -1,8 +1,12 @@
 <div class="step-content">
+  <div class="section-header">
+    <h3 class="section-title">Procesamiento</h3>
+    <p class="section-desc">Consolidación y validación de registros seleccionados</p>
+  </div>
   @if (!isProcessing() && !processingResult()) {
     <div class="process-start">
       <div class="process-summary">
-        <i class="pi pi-cog" style="font-size: 32px; color: #3b82f6;"></i>
+        <i class="pi pi-cog process-icon"></i>
         <p><strong>{{ selectedCount() }}</strong> registros seleccionados</p>
         <p class="process-hint">Se agruparán por ID, se validará la consistencia de datos y se calcularán los totales</p>
       </div>
