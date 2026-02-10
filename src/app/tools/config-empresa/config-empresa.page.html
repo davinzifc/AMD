@@ -1,0 +1,271 @@
+<div class="page">
+  <div class="page-header">
+    <div class="page-header-text">
+      <h1>Configuracion de Empresas</h1>
+      <p class="page-subtitle">Administra los datos de las empresas para los certificados</p>
+    </div>
+    <p-button
+      label="Agregar Empresa"
+      icon="pi pi-plus"
+      (onClick)="openCreateModal()" />
+  </div>
+
+  <div class="table-card">
+    <div class="table-toolbar">
+      <p-iconfield>
+        <p-inputicon styleClass="pi pi-search" />
+        <input
+          pInputText
+          type="text"
+          placeholder="Buscar por nombre o NIT..."
+          [(ngModel)]="filterValue"
+          (input)="onFilter()" />
+      </p-iconfield>
+      <span class="table-count">
+        {{ empresaService.empresas().length }} empresas registradas
+      </span>
+    </div>
+
+    <p-table
+      #dt
+      [value]="empresaService.empresas()"
+      [paginator]="true"
+      [rows]="10"
+      [rowsPerPageOptions]="[10, 25, 50]"
+      [globalFilterFields]="['nombre', 'nit']"
+      [sortField]="'nombre'"
+      [sortOrder]="1"
+      [loading]="empresaService.loading()"
+      dataKey="nit"
+      styleClass="p-datatable-sm">
+
+      <ng-template #header>
+        <tr>
+          <th style="width: 70px">Logo</th>
+          <th pSortableColumn="nombre">
+            Nombre <p-sortIcon field="nombre" />
+          </th>
+          <th pSortableColumn="nit">
+            NIT <p-sortIcon field="nit" />
+          </th>
+          <th style="width: 150px; text-align: center">Acciones</th>
+        </tr>
+      </ng-template>
+
+      <ng-template #body let-empresa>
+        <tr>
+          <td>
+            <div class="logo-cell">
+              @if (logoCache().get(empresa.nit); as logoUrl) {
+                <img [src]="logoUrl" alt="Logo" class="logo-thumbnail" />
+              } @else {
+                <div class="logo-placeholder">
+                  <i class="pi pi-building"></i>
+                </div>
+              }
+            </div>
+          </td>
+          <td>
+            <span class="empresa-name-cell">{{ empresa.nombre }}</span>
+          </td>
+          <td>
+            <span class="nit-cell">{{ empresa.nit | formatNit }}</span>
+          </td>
+          <td>
+            <div class="actions-cell">
+              <p-button
+                icon="pi pi-eye"
+                [rounded]="true"
+                [text]="true"
+                size="small"
+                severity="info"
+                pTooltip="Ver detalle"
+                (onClick)="openDetailModal(empresa)" />
+              <p-button
+                icon="pi pi-pencil"
+                [rounded]="true"
+                [text]="true"
+                size="small"
+                severity="secondary"
+                pTooltip="Editar"
+                (onClick)="openEditModal(empresa)" />
+              <p-button
+                icon="pi pi-trash"
+                [rounded]="true"
+                [text]="true"
+                size="small"
+                severity="danger"
+                pTooltip="Eliminar"
+                (onClick)="confirmDelete(empresa)" />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="4">
+            <div class="empty-state">
+              <i class="pi pi-building"></i>
+              <p>No hay empresas registradas</p>
+              <p-button
+                label="Agregar primera empresa"
+                icon="pi pi-plus"
+                [outlined]="true"
+                size="small"
+                (onClick)="openCreateModal()" />
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <!-- Modal Crear/Editar Empresa -->
+  <p-dialog
+    [header]="isEditing() ? 'Editar Empresa' : 'Crear Nueva Empresa'"
+    [visible]="formModalVisible()"
+    (visibleChange)="onFormModalClose($event)"
+    [modal]="true"
+    [closable]="true"
+    [dismissableMask]="false"
+    [style]="{ width: '520px' }"
+    styleClass="empresa-form-dialog">
+
+    <div class="modal-form">
+      <div class="modal-form-grid">
+        <div class="modal-field">
+          <p-floatlabel>
+            <input pInputText id="m_nombre" [(ngModel)]="form.nombre" class="w-full" />
+            <label for="m_nombre">Nombre de la empresa *</label>
+          </p-floatlabel>
+        </div>
+
+        <div class="modal-field">
+          <p-floatlabel>
+            <input
+              pInputText
+              id="m_nit"
+              [(ngModel)]="form.nit"
+              class="w-full"
+              [class.nit-error]="nitError()"
+              (blur)="onNitBlur()" />
+            <label for="m_nit">NIT *</label>
+          </p-floatlabel>
+          @if (nitChecking()) {
+            <small class="nit-checking">Verificando NIT...</small>
+          }
+          @if (nitError()) {
+            <small class="nit-error-msg">{{ nitError() }}</small>
+          }
+        </div>
+
+        <div class="modal-field">
+          <p-floatlabel>
+            <input pInputText id="m_rep_nombre" [(ngModel)]="form.representante_nombre" class="w-full" />
+            <label for="m_rep_nombre">Nombre del representante legal *</label>
+          </p-floatlabel>
+        </div>
+
+        <div class="modal-field">
+          <p-floatlabel>
+            <input pInputText id="m_rep_id" [(ngModel)]="form.representante_id" class="w-full" />
+            <label for="m_rep_id">Identificacion del representante *</label>
+          </p-floatlabel>
+        </div>
+
+        <div class="modal-field modal-field--full">
+          <label class="field-label">Logo de la empresa (opcional)</label>
+          @if (formLogoPreview()) {
+            <div class="logo-preview-area">
+              <img [src]="formLogoPreview()" alt="Preview logo" class="logo-preview-img" />
+              <p-button
+                icon="pi pi-times"
+                [rounded]="true"
+                [text]="true"
+                size="small"
+                severity="danger"
+                styleClass="logo-remove-btn"
+                (onClick)="removeSelectedImage()" />
+            </div>
+          } @else {
+            <app-file-upload
+              accept=".png,.jpg,.jpeg"
+              label="Seleccionar imagen (PNG, JPG - Max 2MB)"
+              [maxSizeMb]="2"
+              (fileSelected)="onImageSelected($event)" />
+          }
+        </div>
+      </div>
+    </div>
+
+    <ng-template #footer>
+      <div class="modal-footer">
+        <p-button
+          label="Cancelar"
+          icon="pi pi-times"
+          severity="secondary"
+          [outlined]="true"
+          (onClick)="onFormModalClose(false)" />
+        <p-button
+          [label]="isEditing() ? 'Actualizar' : 'Crear'"
+          [icon]="isEditing() ? 'pi pi-check' : 'pi pi-plus'"
+          [loading]="saving()"
+          [disabled]="!isFormValid() || !!nitError()"
+          (onClick)="onSave()" />
+      </div>
+    </ng-template>
+  </p-dialog>
+
+  <!-- Modal Ver Detalle -->
+  <p-dialog
+    header=""
+    [visible]="detailModalVisible()"
+    (visibleChange)="onDetailModalClose($event)"
+    [modal]="true"
+    [dismissableMask]="true"
+    [style]="{ width: '440px' }"
+    [showHeader]="false"
+    styleClass="empresa-detail-dialog">
+
+    <div class="detail-card">
+      <div class="detail-card-header">
+        @if (detailLogoUrl()) {
+          <div class="detail-logo-container">
+            <img [src]="detailLogoUrl()" alt="Logo" />
+          </div>
+        } @else {
+          <div class="detail-logo-placeholder">
+            <i class="pi pi-building"></i>
+          </div>
+        }
+        <h3 class="detail-company-name">{{ detailEmpresa()?.nombre }}</h3>
+        <span class="detail-nit">NIT {{ detailEmpresa()?.nit | formatNit }}</span>
+      </div>
+
+      <div class="detail-card-body">
+        <div class="detail-separator"></div>
+        <div class="detail-row">
+          <div class="detail-row-icon"><i class="pi pi-user"></i></div>
+          <div class="detail-row-content">
+            <span class="detail-row-label">Representante legal</span>
+            <span class="detail-row-value">{{ detailEmpresa()?.representante_nombre }}</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-row-icon"><i class="pi pi-id-card"></i></div>
+          <div class="detail-row-content">
+            <span class="detail-row-label">Identificacion</span>
+            <span class="detail-row-value">{{ detailEmpresa()?.representante_id }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="detail-card-footer">
+        <p-button label="Cerrar" [text]="true" size="small" (onClick)="onDetailModalClose(false)" />
+      </div>
+    </div>
+  </p-dialog>
+
+  <p-confirmDialog />
+</div>

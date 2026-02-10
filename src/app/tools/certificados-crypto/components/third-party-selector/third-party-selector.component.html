@@ -1,0 +1,53 @@
+<div class="selector-container">
+  <div class="selector-toolbar">
+    <div class="search-box">
+      <i class="pi pi-search"></i>
+      <input
+        pInputText
+        type="text"
+        [ngModel]="filterText()"
+        (ngModelChange)="filterText.set($event)"
+        placeholder="Buscar por ID o nombre..."
+        class="search-input" />
+    </div>
+    <span class="selector-count">
+      {{ selectedItems().length }} de {{ uniqueThirdParties().length }} terceros seleccionados
+    </span>
+  </div>
+
+  <p-table
+    [value]="filteredParties()"
+    [selection]="selectedItems()"
+    (selectionChange)="onSelectionChange($event)"
+    dataKey="id"
+    [paginator]="filteredParties().length > 20"
+    [rows]="20"
+    [rowsPerPageOptions]="[10, 20, 50]">
+
+    <ng-template #header>
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox />
+        </th>
+        <th pSortableColumn="id">ID <p-sortIcon field="id" /></th>
+        <th pSortableColumn="third_name">Nombre del Tercero <p-sortIcon field="third_name" /></th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-party>
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="party" />
+        </td>
+        <td class="cell-id">{{ party.id }}</td>
+        <td>{{ party.third_name }}</td>
+      </tr>
+    </ng-template>
+
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="3" class="empty-msg">No se encontraron terceros.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

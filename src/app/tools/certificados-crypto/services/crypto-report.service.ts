@@ -1,7 +1,7 @@
 import { Injectable, signal } from '@angular/core';
 import { invoke } from '@tauri-apps/api/core';
 import { listen, UnlistenFn } from '@tauri-apps/api/event';
-import { Empresa } from './empresa.service';
+import { Empresa } from '../../../shared/services/empresa.service';
 import { RawTransaction } from '../models/raw-transaction.model';
 import { ExcelUploadResult } from '../models/excel-upload-result.model';
 import { ProcessingResult, ProgressPayload } from '../models/processing.model';

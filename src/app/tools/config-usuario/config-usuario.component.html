@@ -1,0 +1,37 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Configuracion de Usuario</h1>
+    <p class="page-subtitle">Datos personales para los certificados generados</p>
+  </div>
+
+  <div class="form-card">
+    <div class="form-section">
+      <h3 class="section-title">Datos del Firmante</h3>
+      <p class="section-desc">Esta informacion aparecera en la firma de los certificados.</p>
+
+      <div class="form-grid">
+        <p-floatlabel>
+          <input pInputText id="nombre" [(ngModel)]="nombre" class="w-full" />
+          <label for="nombre">Nombre completo</label>
+        </p-floatlabel>
+
+        <p-floatlabel>
+          <input pInputText id="cedula" [(ngModel)]="cedula" class="w-full" />
+          <label for="cedula">Cedula de ciudadania</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    @if (saved()) {
+      <p-message severity="success" text="Configuracion guardada correctamente" styleClass="msg-block" />
+    }
+
+    <div class="form-actions">
+      <p-button
+        label="Guardar"
+        icon="pi pi-save"
+        [disabled]="!nombre.trim() || !cedula.trim()"
+        (onClick)="save()" />
+    </div>
+  </div>
+</div>

@@ -8,10 +8,8 @@ import { NotificationService } from './shared/services/notification.service';
   selector: 'app-root',
   imports: [RouterOutlet, Toast],
   providers: [MessageService],
-  template: `
-    <p-toast position="top-right" />
-    <router-outlet />
-  `,
+  templateUrl: './app.html',
+  styleUrl: './app.scss',
 })
 export class App {
   private messageService = inject(MessageService);

@@ -1,0 +1,301 @@
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.page-header-text {
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #0f172a;
+    letter-spacing: -0.3px;
+  }
+  .page-subtitle {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #64748b;
+  }
+}
+
+/* --- Table card --- */
+.table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 16px;
+}
+
+.table-count {
+  font-size: 13px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+/* --- Table cell styles --- */
+.firmante-name-cell {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.cc-cell {
+  font-size: 13px;
+  color: #475569;
+  font-variant-numeric: tabular-nums;
+}
+
+.actions-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+/* --- Empty state --- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 24px;
+  color: #94a3b8;
+
+  i { font-size: 32px; }
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #64748b;
+  }
+}
+
+/* --- Modal form --- */
+.modal-form {
+  padding: 8px 0;
+}
+
+.modal-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.modal-field { position: relative; }
+.modal-field--full { width: 100%; }
+
+.w-full { width: 100%; }
+
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+/* --- Cedula validation --- */
+:host ::ng-deep .cedula-error {
+  border-color: #ef4444 !important;
+  &:focus { box-shadow: 0 0 0 1px #ef4444 !important; }
+}
+
+.cedula-checking {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.cedula-error-msg {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #ef4444;
+}
+
+/* --- Firma preview in form modal --- */
+.firma-preview-area {
+  position: relative;
+  display: inline-flex;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fafbfc;
+}
+
+.firma-preview-img {
+  display: block;
+  max-width: 300px;
+  max-height: 150px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+:host ::ng-deep .firma-remove-btn {
+  position: absolute !important;
+  top: 4px;
+  right: 4px;
+}
+
+/* --- Modal footer --- */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* --- Detail modal --- */
+.detail-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- Firma section with blur security --- */
+.firma-section {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0 16px;
+}
+
+.firma-wrapper {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.02);
+  }
+}
+
+.firma-image {
+  max-width: 350px;
+  max-height: 175px;
+  width: auto;
+  height: auto;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  transition: filter 0.4s ease-in-out;
+}
+
+.firma-image.blurred {
+  filter: blur(12px);
+}
+
+.blur-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+
+  i {
+    font-size: 2rem;
+    color: #495057;
+  }
+
+  .blur-message {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+    text-align: center;
+    white-space: nowrap;
+  }
+}
+
+.firma-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px;
+  background: #f8fafc;
+  border: 1px dashed #e2e8f0;
+  border-radius: 8px;
+  width: 100%;
+
+  i {
+    font-size: 32px;
+    color: #cbd5e1;
+  }
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: #94a3b8;
+  }
+}
+
+/* --- Detail info section --- */
+.info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.detail-row-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  i { font-size: 14px; color: #64748b; }
+}
+
+.detail-row-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-top: 2px;
+}
+
+.detail-row-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.detail-row-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+@media (max-width: 640px) {
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

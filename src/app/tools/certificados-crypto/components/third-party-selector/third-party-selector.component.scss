@@ -1,0 +1,56 @@
+.selector-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.selector-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  i { color: #94a3b8; font-size: 14px; }
+}
+
+.search-input {
+  width: 280px;
+  font-size: 13px;
+}
+
+.selector-count {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.cell-id {
+  font-family: 'SF Mono', 'Cascadia Code', monospace;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.empty-msg {
+  text-align: center;
+  padding: 32px;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}

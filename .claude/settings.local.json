@@ -20,7 +20,8 @@
       "Bash(npm ls:*)",
       "Bash(find:*)",
       "Bash(chmod:*)",
-      "Skill(rust-best-practices)"
+      "Skill(rust-best-practices)",
+      "Bash(npm run build:*)"
     ]
   }
 }

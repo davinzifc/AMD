@@ -1,0 +1,62 @@
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.table-count {
+  font-size: 13px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.cell-muted {
+  color: #94a3b8;
+  font-size: 12px;
+}
+
+.cell-mono {
+  font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+  font-size: 12px;
+}
+
+.cell-number {
+  text-align: right;
+  font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cell-empty {
+  text-align: center;
+  color: #94a3b8;
+  padding: 32px !important;
+}
+
+:host ::ng-deep {
+  .p-datatable .p-datatable-thead > tr > th {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    color: #475569;
+    background: #f8fafc;
+    border-color: #e2e8f0;
+  }
+
+  .p-datatable .p-datatable-tbody > tr > td {
+    font-size: 13px;
+    border-color: #f1f5f9;
+    padding: 8px 12px;
+  }
+
+  .p-datatable .p-datatable-tbody > tr:hover {
+    background: #f8fafc;
+  }
+
+  .p-datatable .p-datatable-tbody > tr.p-highlight {
+    background: #eff6ff;
+  }
+}

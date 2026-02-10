@@ -7,6 +7,8 @@ import {
   Firmante,
 } from '../models/firmante.model';
 
+export type { Firmante, FirmanteListItem, CreateFirmanteDto, UpdateFirmanteDto } from '../models/firmante.model';
+
 @Injectable({ providedIn: 'root' })
 export class FirmanteService {
   private readonly _firmantes = signal<FirmanteListItem[]>([]);

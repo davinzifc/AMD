@@ -1,0 +1,313 @@
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.page-header-text {
+  h1 {
+    font-size: 22px;
+    font-weight: 600;
+    color: #0f172a;
+    letter-spacing: -0.3px;
+  }
+  .page-subtitle {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #64748b;
+  }
+}
+
+/* --- Table card --- */
+.table-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 16px;
+}
+
+.table-count {
+  font-size: 13px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+/* --- Table cell styles --- */
+.logo-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-thumbnail {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #fafbfc;
+}
+
+.logo-placeholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  i { font-size: 16px; color: #94a3b8; }
+}
+
+.empresa-name-cell {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.nit-cell {
+  font-size: 13px;
+  color: #475569;
+  font-variant-numeric: tabular-nums;
+}
+
+.actions-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+/* --- Empty state --- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 24px;
+  color: #94a3b8;
+
+  i { font-size: 32px; }
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #64748b;
+  }
+}
+
+/* --- Modal form --- */
+.modal-form {
+  padding: 8px 0;
+}
+
+.modal-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.modal-field { position: relative; }
+.modal-field--full { width: 100%; }
+
+.w-full { width: 100%; }
+
+.field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+/* --- NIT validation --- */
+:host ::ng-deep .nit-error {
+  border-color: #ef4444 !important;
+  &:focus { box-shadow: 0 0 0 1px #ef4444 !important; }
+}
+
+.nit-checking {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.nit-error-msg {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #ef4444;
+}
+
+/* --- Logo preview in modal --- */
+.logo-preview-area {
+  position: relative;
+  display: inline-flex;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
+  background: #fafbfc;
+}
+
+.logo-preview-img {
+  display: block;
+  max-width: 150px;
+  max-height: 150px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+:host ::ng-deep .logo-remove-btn {
+  position: absolute !important;
+  top: 4px;
+  right: 4px;
+}
+
+/* --- Modal footer --- */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* --- Detail dialog --- */
+:host ::ng-deep .empresa-detail-dialog {
+  .p-dialog-content { padding: 0 !important; }
+}
+
+.detail-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-card-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 24px 20px;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  text-align: center;
+}
+
+.detail-logo-container {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  margin-bottom: 14px;
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+}
+
+.detail-logo-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  i { font-size: 28px; color: #94a3b8; }
+}
+
+.detail-company-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
+  letter-spacing: -0.3px;
+  margin-bottom: 4px;
+}
+
+.detail-nit {
+  font-size: 13px;
+  color: #64748b;
+  font-variant-numeric: tabular-nums;
+}
+
+.detail-separator {
+  height: 1px;
+  background: #f1f5f9;
+  margin-bottom: 16px;
+}
+
+.detail-card-body {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.detail-row-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  i { font-size: 14px; color: #64748b; }
+}
+
+.detail-row-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding-top: 2px;
+}
+
+.detail-row-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+
+.detail-row-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.detail-card-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 24px 16px;
+  border-top: 1px solid #f1f5f9;
+}
+
+@media (max-width: 640px) {
+  .page-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .table-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

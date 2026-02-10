@@ -1,0 +1,20 @@
+<div
+  class="upload-zone"
+  [class.upload-zone--loading]="loading()"
+  (click)="onClick()"
+  role="button"
+  tabindex="0"
+  (keydown.enter)="onClick()"
+  (keydown.space)="onClick()">
+
+  @if (loading()) {
+    <div class="upload-loading">
+      <i class="pi pi-spin pi-spinner" aria-hidden="true"></i>
+      <span>Procesando archivo...</span>
+    </div>
+  } @else {
+    <i class="pi pi-file-excel upload-icon" aria-hidden="true"></i>
+    <p class="upload-label">Seleccionar archivo Excel</p>
+    <p class="upload-hint">Formato: NIT-nombre.xlsx</p>
+  }
+</div>

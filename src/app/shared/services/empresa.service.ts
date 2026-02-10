@@ -1,30 +1,8 @@
 import { Injectable, signal } from '@angular/core';
 import { invoke } from '@tauri-apps/api/core';
+import { Empresa, CreateEmpresaDto, UpdateEmpresaDto } from '../models/empresa.model';
 
-export interface Empresa {
-  id?: number;
-  nombre: string;
-  nit: string;
-  imagen_path?: string;
-  representante_nombre: string;
-  representante_id: string;
-}
-
-export interface CreateEmpresaDto {
-  nombre: string;
-  nit: string;
-  imagen_path?: string;
-  representante_nombre: string;
-  representante_id: string;
-}
-
-export interface UpdateEmpresaDto {
-  nombre?: string;
-  nit?: string;
-  imagen_path?: string;
-  representante_nombre?: string;
-  representante_id?: string;
-}
+export type { Empresa, CreateEmpresaDto, UpdateEmpresaDto } from '../models/empresa.model';
 
 @Injectable({ providedIn: 'root' })
 export class EmpresaService {

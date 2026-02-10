@@ -1,0 +1,112 @@
+.results-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.results-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.results-count {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  min-width: 0;
+}
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 4px;
+}
+
+.firmante-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.year-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #334155;
+}
+
+.cell-id {
+  font-family: 'SF Mono', 'Cascadia Code', monospace;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cell-date {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.cell-number {
+  text-align: right;
+  font-family: 'SF Mono', 'Cascadia Code', monospace;
+  font-size: 12px;
+}
+
+.cell-number--price {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.cell-retencion {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.expansion-cell {
+  padding: 0 !important;
+}
+
+.empty-msg {
+  text-align: center;
+  padding: 32px;
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.details-option {
+  padding: 8px 0;
+}
+
+.details-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #475569;
+  cursor: pointer;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}

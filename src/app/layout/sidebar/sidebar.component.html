@@ -1,0 +1,34 @@
+<nav class="sidebar" [class.collapsed]="collapsed()">
+  <div class="sidebar-brand">
+    <span class="brand-icon">A</span>
+    <span class="brand-text">AMD Tools</span>
+  </div>
+
+  <div class="sidebar-nav">
+    <div class="nav-section">
+      <span class="nav-section-label">Herramientas</span>
+      <a class="nav-item"
+         routerLink="/tools/certificados-crypto"
+         routerLinkActive="active">
+        <i class="pi pi-file-check"></i>
+        <span>Certificados Crypto</span>
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <span class="nav-section-label">Sistema</span>
+      <a class="nav-item"
+         routerLink="/tools/config-empresa"
+         routerLinkActive="active">
+        <i class="pi pi-building"></i>
+        <span>Config. Empresa</span>
+      </a>
+      <a class="nav-item"
+         routerLink="/tools/config-firmante"
+         routerLinkActive="active">
+        <i class="pi pi-pen-to-square"></i>
+        <span>Config. Firmante</span>
+      </a>
+    </div>
+  </div>
+</nav>

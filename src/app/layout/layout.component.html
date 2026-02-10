@@ -1,0 +1,14 @@
+<div class="layout">
+  <app-sidebar [collapsed]="sidebarCollapsed()" />
+
+  <div class="layout-main">
+    <app-header (toggleSidebar)="toggleSidebar()" />
+    <main class="layout-content">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+@if (sidebarCollapsed()) {
+  <div class="sidebar-overlay" (click)="sidebarCollapsed.set(true)"></div>
+}

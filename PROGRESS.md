@@ -2,7 +2,7 @@
 
 ## Estado Actual (2026-02-09)
 
-**TODAS LAS 6 FASES + REQUERIMIENTOS 08-02-2026 + 09-02-2026 + 09-02-2026-2 COMPLETADOS**
+**TODAS LAS 6 FASES + REQUERIMIENTOS 08-02-2026 + 09-02-2026 + 09-02-2026-2 + REFACTORIZACION 09-02-2026 COMPLETADOS**
 **Compilacion**: Angular OK, Rust OK (0 warnings)
 
 ### Para probar el flujo completo:
@@ -553,6 +553,79 @@ Reescritura completa de la pagina de Configuracion de Firmantes. De formulario i
 - `src-tauri/src/lib.rs` (+1 comando registrado)
 - `src/app/tools/certificados-crypto/services/firmante.service.ts` (+getFirmanteByCcId)
 - `src/app/tools/certificados-crypto/pages/config-firmante/config-firmante.page.ts` (reescritura completa)
+
+---
+
+## Refactorizacion 09-02-2026 - COMPLETADA
+
+**Fecha**: 2026-02-09
+**Estado**: COMPLETADA
+**Plan**: `/requirements/refactorizacion/09-02-2026.md`
+
+### Resumen del Cambio
+
+Refactorizacion estructural completa del frontend Angular: split de single-file components a multi-file, movimiento de servicios/modelos compartidos a `shared/`, y separacion de config-empresa y config-firmante como features independientes.
+
+### Fase 1: Split de 13 componentes single-file a multi-file
+
+- Extraido `template:` → `.html` y `styles:` → `.scss` de 13 componentes
+- Actualizado decorator a `templateUrl` + `styleUrl`
+- Componentes: App, Layout, Header, Sidebar, FileUpload, ConfigUsuario, DataTable, ExcelUploadZone, ProcessingProgress, ResultsTable, ThirdPartySelector, TransactionDetail, ValidationErrors
+
+### Fase 2: Mover servicios y modelos a shared/
+
+- Creado `shared/models/empresa.model.ts` (extraido de empresa.service.ts)
+- Movido `firmante.model.ts` → `shared/models/firmante.model.ts`
+- Movido `empresa.service.ts` → `shared/services/empresa.service.ts`
+- Movido `firmante.service.ts` → `shared/services/firmante.service.ts`
+- Actualizado todos los imports en archivos dependientes
+- Re-export de tipos con `export type` para compatibilidad
+
+### Fase 3: Mover config-empresa y config-firmante a tools/
+
+- Movido de `certificados-crypto/pages/config-empresa/` → `tools/config-empresa/`
+- Movido de `certificados-crypto/pages/config-firmante/` → `tools/config-firmante/`
+- Split a multi-file (`.ts`, `.html`, `.scss`) en nueva ubicacion
+- Creado `config-empresa.routes.ts` y `config-firmante.routes.ts` con lazy loading
+- Eliminados directorios y archivos antiguos
+
+### Fase 4: Actualizar routing y navegacion
+
+- `app.routes.ts`: agregadas 2 nuevas rutas lazy-loaded (`tools/config-empresa`, `tools/config-firmante`)
+- `certificados-crypto.routes.ts`: simplificado a solo `CryptoMainPage`
+- `sidebar.component.html`: actualizado links de navegacion a nuevas rutas
+
+### Verificacion
+
+- `npm run build` → 0 errores (solo warnings de ESM en dependencias externas)
+- `cargo check` → 0 errores, 0 warnings
+
+### Estructura final
+
+```
+src/app/
+  app.ts / app.html / app.scss
+  app.routes.ts                         (4 rutas lazy)
+  layout/
+    layout.component.ts/.html/.scss
+    header/header.component.ts/.html/.scss
+    sidebar/sidebar.component.ts/.html/.scss
+  shared/
+    components/file-upload/file-upload.component.ts/.html/.scss
+    models/empresa.model.ts, firmante.model.ts
+    pipes/colombian-currency.pipe.ts, format-nit.pipe.ts
+    services/notification.service.ts, empresa.service.ts, firmante.service.ts
+  tools/
+    config-empresa/config-empresa.page.ts/.html/.scss + routes.ts
+    config-firmante/config-firmante.page.ts/.html/.scss + routes.ts
+    config-usuario/config-usuario.component.ts/.html/.scss
+    certificados-crypto/
+      certificados-crypto.routes.ts (solo CryptoMainPage)
+      components/ (7 componentes, todos multi-file)
+      models/ (excel-upload-result, processing, raw-transaction)
+      pages/main/ (sin cambios)
+      services/ (crypto-report, pdf-generator)
+```
 
 ---
 

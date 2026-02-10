@@ -1,0 +1,27 @@
+<div class="progress-container">
+  <p-progressbar [value]="progress()?.percentage ?? 0" [showValue]="false" />
+
+  <div class="progress-info">
+    <div class="stage-label">
+      <i class="pi pi-cog pi-spin"></i>
+      <span>{{ progress()?.stage ?? 'Iniciando...' }}</span>
+    </div>
+
+    @if (progress()?.current_id) {
+      <div class="detail-label">
+        <span class="detail-id">ID: {{ progress()!.current_id }}</span>
+        @if (progress()!.current_order_code) {
+          <span class="detail-sep">&middot;</span>
+          <span class="detail-code">{{ progress()!.current_order_code }}</span>
+        }
+      </div>
+    }
+
+    <div class="progress-counter">
+      @if (progress()?.total && progress()!.total > 0) {
+        {{ progress()!.current }} / {{ progress()!.total }}
+      }
+      <span class="progress-pct">{{ progress()?.percentage ?? 0 }}%</span>
+    </div>
+  </div>
+</div>

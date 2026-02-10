@@ -1,4 +1,4 @@
-import { Empresa } from '../services/empresa.service';
+import { Empresa } from '../../../shared/models/empresa.model';
 import { RawTransaction } from './raw-transaction.model';
 
 export interface ExcelUploadResult {

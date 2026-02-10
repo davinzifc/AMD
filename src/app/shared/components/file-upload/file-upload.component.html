@@ -1,0 +1,27 @@
+<div
+  class="upload-zone"
+  [class.dragover]="isDragover()"
+  (dragover)="onDragOver($event)"
+  (dragleave)="isDragover.set(false)"
+  (drop)="onDrop($event)"
+  (click)="fileInput.click()">
+
+  <input
+    #fileInput
+    type="file"
+    [accept]="accept()"
+    (change)="onFileSelected($event)"
+    hidden />
+
+  <div class="upload-content">
+    <i class="pi pi-cloud-upload upload-icon"></i>
+    <p class="upload-label">{{ label() }}</p>
+    <p class="upload-hint">Arrastra un archivo o haz clic para seleccionar</p>
+    @if (selectedFileName()) {
+      <div class="selected-file">
+        <i class="pi pi-file"></i>
+        <span>{{ selectedFileName() }}</span>
+      </div>
+    }
+  </div>
+</div>

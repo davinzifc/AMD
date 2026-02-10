@@ -1,0 +1,28 @@
+<div class="detail-container">
+  <div class="detail-header">
+    <i class="pi pi-list"></i>
+    <span>Detalle de movimientos ({{ transactions().length }})</span>
+  </div>
+  <table class="detail-table">
+    <thead>
+      <tr>
+        <th>Fecha</th>
+        <th>Codigo Orden</th>
+        <th class="th-right">Cantidad</th>
+        <th class="th-right">TRM</th>
+        <th class="th-right">Valor COP</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (tx of transactions(); track tx.order_code) {
+        <tr>
+          <td>{{ tx.date }}</td>
+          <td class="cell-code">{{ tx.order_code }}</td>
+          <td class="cell-num">{{ formatNumber(tx.amount) }}</td>
+          <td class="cell-num">{{ formatNumber(tx.trm) }}</td>
+          <td class="cell-num cell-num--bold">{{ formatNumber(tx.total_price) }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

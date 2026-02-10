@@ -19,6 +19,20 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'tools/config-empresa',
+        loadChildren: () =>
+          import('./tools/config-empresa/config-empresa.routes').then(
+            (m) => m.CONFIG_EMPRESA_ROUTES
+          ),
+      },
+      {
+        path: 'tools/config-firmante',
+        loadChildren: () =>
+          import('./tools/config-firmante/config-firmante.routes').then(
+            (m) => m.CONFIG_FIRMANTE_ROUTES
+          ),
+      },
+      {
         path: 'config/usuario',
         loadComponent: () =>
           import('./tools/config-usuario/config-usuario.component').then(
