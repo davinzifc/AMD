@@ -73,7 +73,6 @@
       [paginator]="groups().length > 20"
       [rows]="20"
       [rowsPerPageOptions]="[10, 20, 50]"
-      [expandedRowKeys]="expandedRows"
       styleClass="p-datatable-sm p-datatable-gridlines"
     >
       <ng-template #header>
@@ -98,7 +97,7 @@
         </tr>
       </ng-template>
 
-      <ng-template #body let-group let-expanded="expanded">
+      <ng-template #body let-group>
         <tr>
           <td>
             <p-tableCheckbox [value]="group" />
@@ -107,12 +106,14 @@
             @if (group.has_multiple_transactions) {
               <p-button
                 type="button"
-                [pRowToggler]="group"
+                icon="pi pi-eye"
                 [text]="true"
                 [rounded]="true"
-                [plain]="true"
-                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+                severity="info"
                 size="small"
+                pTooltip="Ver movimientos"
+                tooltipPosition="top"
+                (onClick)="showDetail(group)"
               />
             }
           </td>
@@ -125,14 +126,6 @@
             {{ formatNumber(group.total_price) }}
           </td>
           <td class="cell-retencion">{{ group.retencion }}</td>
-        </tr>
-      </ng-template>
-
-      <ng-template #rowexpansion let-group>
-        <tr>
-          <td colspan="9" class="expansion-cell">
-            <app-transaction-detail [transactions]="group.transactions" />
-          </td>
         </tr>
       </ng-template>
 
@@ -155,3 +148,105 @@
     </div>
   }
 </div>
+
+<p-dialog
+  [(visible)]="detailDialogVisible"
+  [modal]="true"
+  [style]="{ width: '780px' }"
+  [dismissableMask]="true"
+  [closable]="true"
+  [draggable]="false"
+  styleClass="detail-dialog"
+>
+  <ng-template #header>
+    <div class="dlg-header">
+      <div class="dlg-header-icon">
+        <i class="pi pi-list"></i>
+      </div>
+      <div class="dlg-header-text">
+        <span class="dlg-title">{{ selectedDetailGroup()?.third_name }}</span>
+        <span class="dlg-subtitle">Detalle de movimientos</span>
+      </div>
+    </div>
+  </ng-template>
+
+  @if (selectedDetailGroup(); as group) {
+    <div class="dlg-body">
+      <!-- Context pills -->
+      <div class="dlg-context">
+        <div class="dlg-pill">
+          <span class="dlg-pill-label">ID</span>
+          <span class="dlg-pill-value dlg-mono">{{ group.id }}</span>
+        </div>
+        <div class="dlg-pill">
+          <span class="dlg-pill-label">Ciudad</span>
+          <span class="dlg-pill-value">{{ group.city }}</span>
+        </div>
+        <div class="dlg-pill">
+          <span class="dlg-pill-label">Periodo</span>
+          <span class="dlg-pill-value">{{ group.date_range }}</span>
+        </div>
+        <div class="dlg-pill">
+          <span class="dlg-pill-label">Retención</span>
+          <span class="dlg-pill-value">{{ group.retencion }}</span>
+        </div>
+      </div>
+
+      <!-- Summary metrics -->
+      <div class="dlg-metrics">
+        <div class="dlg-metric">
+          <span class="dlg-metric-value">{{ group.transactions.length }}</span>
+          <span class="dlg-metric-label">Movimientos</span>
+        </div>
+        <div class="dlg-metric-sep"></div>
+        <div class="dlg-metric">
+          <span class="dlg-metric-value dlg-mono">{{ formatNumber(group.total_amount) }}</span>
+          <span class="dlg-metric-label">Cantidad total</span>
+        </div>
+        <div class="dlg-metric-sep"></div>
+        <div class="dlg-metric">
+          <span class="dlg-metric-value dlg-mono dlg-accent">{{ formatNumber(group.total_price) }}</span>
+          <span class="dlg-metric-label">Valor COP total</span>
+        </div>
+      </div>
+
+      <!-- Transaction table -->
+      <div class="dlg-table-shell">
+        <table class="dlg-table">
+          <thead>
+            <tr>
+              <th class="dlg-th">#</th>
+              <th class="dlg-th">Fecha</th>
+              <th class="dlg-th">Código Orden</th>
+              <th class="dlg-th dlg-th--right">Cantidad</th>
+              <th class="dlg-th dlg-th--right">TRM</th>
+              <th class="dlg-th dlg-th--right">Valor COP</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (tx of group.transactions; track tx.order_code; let i = $index) {
+              <tr class="dlg-row">
+                <td class="dlg-td dlg-td--index">{{ i + 1 }}</td>
+                <td class="dlg-td">{{ tx.date }}</td>
+                <td class="dlg-td dlg-td--code">{{ tx.order_code }}</td>
+                <td class="dlg-td dlg-td--num">{{ formatNumber(tx.amount) }}</td>
+                <td class="dlg-td dlg-td--num">{{ formatNumber(tx.trm) }}</td>
+                <td class="dlg-td dlg-td--num dlg-td--bold">{{ formatNumber(tx.total_price) }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr class="dlg-totals-row">
+              <td class="dlg-td" colspan="3">
+                <span class="dlg-totals-label">TOTAL</span>
+              </td>
+              <td class="dlg-td dlg-td--num dlg-td--bold">{{ formatNumber(group.total_amount) }}</td>
+              <td class="dlg-td"></td>
+              <td class="dlg-td dlg-td--num dlg-td--total">{{ formatNumber(group.total_price) }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  }
+</p-dialog>
