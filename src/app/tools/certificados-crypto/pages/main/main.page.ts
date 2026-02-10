@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, inject, signal, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, computed, OnInit } from '@angular/core';
 import { Stepper, StepList, StepPanels, StepPanel, Step } from 'primeng/stepper';
 import { Button } from 'primeng/button';
 import { formatNit } from '../../../../shared/pipes/format-nit.pipe';
@@ -24,7 +24,7 @@ import { StepResultsComponent } from './steps/step-results/step-results.componen
   templateUrl: './main.page.html',
   styleUrl: './main.page.scss',
 })
-export class CryptoMainPage {
+export class CryptoMainPage implements OnInit {
   reportService = inject(CryptoReportService);
   private pdfService = inject(PdfGeneratorService);
   private notify = inject(NotificationService);
@@ -35,6 +35,10 @@ export class CryptoMainPage {
   isGeneratingPdf = signal(false);
   pdfSuccess = signal<string | null>(null);
   pdfPreviewUrl = signal<string | null>(null);
+
+  ngOnInit() {
+    this.resetAll();
+  }
 
   empresaInfo = computed(() => {
     const emp = this.reportService.empresa();
