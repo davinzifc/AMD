@@ -1,34 +1,7 @@
-.upload-zone {
-  border: 2px dashed var(--text-placeholder);
-  border-radius: var(--radius-lg);
-  padding: var(--space-8);
-  text-align: center;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  background: var(--surface-card);
-
-  &:hover, &.dragover {
-    border-color: var(--accent);
-    background: var(--accent-surface);
-  }
-}
-
-.upload-icon {
-  font-size: var(--text-stat);
-  color: var(--text-placeholder);
-  margin-bottom: var(--space-2);
-}
-
-.upload-label {
-  font-size: var(--text-md);
-  font-weight: 500;
-  color: var(--text-secondary);
-  margin-bottom: var(--space-1);
-}
-
-.upload-hint {
-  font-size: var(--text-sm);
-  color: var(--text-placeholder);
+.upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .selected-file {

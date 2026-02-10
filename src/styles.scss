@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import 'primeicons/primeicons.css';
 
 :root {
@@ -51,7 +52,7 @@
   --warning-text: #92400e;
 
   /* ── Tipografía ── */
-  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
     'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
 
@@ -86,6 +87,32 @@
   /* ── Transiciones ── */
   --transition-fast: 150ms ease;
   --transition-normal: 200ms ease;
+}
+
+.dark-mode {
+  --surface-page: #0b1220;
+  --surface-card: #101826;
+  --surface-raised: #0f172a;
+  --surface-muted: #162033;
+  --surface-sidebar: #0b1220;
+
+  --text-primary: #e2e8f0;
+  --text-body: #cbd5f5;
+  --text-secondary: #94a3b8;
+  --text-muted: #7c8aa5;
+  --text-placeholder: #64748b;
+  --text-on-dark: #e2e8f0;
+  --text-on-dark-muted: #94a3b8;
+
+  --border-default: #1f2a44;
+  --border-subtle: #182235;
+  --border-dark: #1f2a44;
+  --border-focus: #60a5fa;
+
+  --accent: #60a5fa;
+  --accent-hover: #3b82f6;
+  --accent-surface: #0f1d33;
+  --accent-border: #1d2d4d;
 }
 
 * {
@@ -224,8 +251,9 @@ a {
   background: var(--surface-card);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-lg);
-  padding: var(--space-6);
+  padding: 0;
   min-width: 0;
+  overflow: hidden;
 }
 
 .table-toolbar {
@@ -233,7 +261,9 @@ a {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  margin-bottom: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: var(--surface-page);
+  border-bottom: 1px solid var(--border-default);
 }
 
 .table-count {
@@ -410,15 +440,90 @@ a {
 .p-dialog .p-dialog-header {
   border-bottom: 1px solid var(--border-subtle);
   padding: var(--space-4) var(--space-5);
+  background: var(--surface-card);
+  color: var(--text-primary);
 }
 
 .p-dialog .p-dialog-content {
   padding: var(--space-5);
+  background: var(--surface-card);
+  color: var(--text-body);
 }
 
 .p-dialog .p-dialog-footer {
   border-top: 1px solid var(--border-subtle);
   padding: var(--space-3) var(--space-5);
+  background: var(--surface-card);
+}
+
+.p-dialog {
+  background: var(--surface-card);
+  color: var(--text-body);
+  border: 1px solid var(--border-default);
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-close {
+  color: var(--text-muted);
+}
+
+.p-dialog .p-dialog-header .p-dialog-header-close:hover {
+  background: var(--surface-muted);
+  color: var(--text-primary);
+}
+
+/* Paginator */
+.p-paginator,
+.p-datatable .p-paginator,
+.p-datatable .p-paginator-bottom,
+.p-datatable .p-paginator-top {
+  background: var(--surface-page);
+  border-top: 1px solid var(--border-default);
+  color: var(--text-muted);
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page {
+  color: var(--text-muted);
+  border: 1px solid transparent;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page:not(.p-highlight):hover {
+  background: var(--surface-muted);
+  color: var(--text-primary);
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+  background: var(--accent-surface);
+  border: 1px solid var(--accent-border);
+  color: var(--accent);
+}
+
+.p-paginator .p-paginator-first,
+.p-paginator .p-paginator-prev,
+.p-paginator .p-paginator-next,
+.p-paginator .p-paginator-last {
+  color: var(--text-muted);
+}
+
+.p-paginator .p-paginator-first:not(.p-disabled):hover,
+.p-paginator .p-paginator-prev:not(.p-disabled):hover,
+.p-paginator .p-paginator-next:not(.p-disabled):hover,
+.p-paginator .p-paginator-last:not(.p-disabled):hover {
+  background: var(--surface-muted);
+  color: var(--text-primary);
+}
+
+.p-paginator .p-dropdown {
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+}
+
+.p-paginator .p-dropdown .p-dropdown-label,
+.p-paginator .p-dropdown .p-dropdown-trigger {
+  color: var(--text-body);
+}
+
+.p-paginator .p-paginator-current {
+  color: var(--text-muted);
 }
 
 .p-datatable .p-datatable-thead > tr > th {
@@ -428,13 +533,40 @@ a {
   color: var(--text-muted);
   background: var(--surface-page);
   border-color: var(--border-default);
+  padding: var(--space-3) var(--space-4);
+  border-right: 1px solid var(--border-default);
+}
+
+.p-datatable .p-datatable-thead > tr > th .p-sortable-column-icon,
+.p-datatable .p-datatable-thead > tr > th .p-sortable-column-badge {
+  color: var(--text-placeholder);
+}
+
+.p-datatable .p-datatable-thead > tr > th.p-sortable-column:not(.p-highlight):hover {
+  background: var(--surface-muted);
 }
 
 .p-datatable .p-datatable-tbody > tr > td {
   font-size: var(--text-base);
+  color: var(--text-body);
   border-color: var(--border-subtle);
+  padding: var(--space-3) var(--space-4);
+  border-right: 1px solid var(--border-default);
 }
 
 .p-datatable .p-datatable-tbody > tr:hover {
   background: var(--surface-muted);
+}
+
+.p-datatable .p-datatable-tbody > tr:nth-child(even) {
+  background: var(--surface-page);
+}
+
+.p-datatable .p-datatable-tbody > tr:nth-child(odd) {
+  background: var(--surface-card);
+}
+
+.p-datatable .p-datatable-thead > tr > th:last-child,
+.p-datatable .p-datatable-tbody > tr > td:last-child {
+  border-right: none;
 }

@@ -1,4 +1,4 @@
-<div class="results-container">
+<div class="results-container table-card">
   <div class="results-toolbar table-toolbar">
     <div class="toolbar-left">
       <span class="results-count table-count">
@@ -23,7 +23,7 @@
           [options]="firmanteService.firmantes()"
           optionLabel="nombre"
           placeholder="Seleccionar firmante"
-          [style]="{ width: '220px' }"
+          styleClass="toolbar-select"
           [showClear]="true"
         />
       </div>
@@ -36,7 +36,7 @@
           [min]="2000"
           [max]="2099"
           placeholder="2024"
-          [style]="{ width: '100px' }"
+          styleClass="toolbar-number"
         />
       </div>
       <div class="toolbar-actions">
