@@ -63,7 +63,12 @@
             <td>
               <div class="logo-cell">
                 @if (logoCache().get(empresa.nit); as logoUrl) {
-                  <img [src]="logoUrl" alt="Logo" class="logo-thumbnail" />
+                  <img
+                    [src]="logoUrl"
+                    alt="Logo"
+                    class="logo-thumbnail"
+                    style="background-color: #fff !important"
+                  />
                 } @else {
                   <div class="logo-placeholder">
                     <i class="pi pi-building"></i>
@@ -75,7 +80,7 @@
               <span class="empresa-name-cell">{{ empresa.nombre }}</span>
             </td>
             <td>
-              <span class="nit-cell">{{ empresa.nit | formatNit }}</span>
+              <span class="numeric-cell">{{ empresa.nit | formatNit }}</span>
             </td>
             <td>
               <div class="actions-cell">
@@ -149,8 +154,9 @@
         </div>
         <div class="dlg-header-text">
           <span class="dlg-title">{{
-            isEditing() ? 'Editar Empresa' : 'Crear Nueva Empresa'
-          }}</span>
+            isEditing() ? "Editar Empresa" : "Crear Nueva Empresa"
+          }}</span
+          ><br />
           <span class="dlg-subtitle">Datos legales y tributarios</span>
         </div>
       </div>
@@ -158,7 +164,9 @@
     <div class="modal-form">
       <div class="modal-form-grid form-grid">
         <div class="modal-field form-field">
-          <label class="field-label" for="m_nombre">Nombre de la empresa *</label>
+          <label class="field-label" for="m_nombre"
+            >Nombre de la empresa *</label
+          >
           <input
             pInputText
             id="m_nombre"
@@ -186,7 +194,9 @@
         </div>
 
         <div class="modal-field form-field">
-          <label class="field-label" for="m_rep_nombre">Nombre del representante legal *</label>
+          <label class="field-label" for="m_rep_nombre"
+            >Nombre del representante legal *</label
+          >
           <input
             pInputText
             id="m_rep_nombre"
@@ -196,7 +206,9 @@
         </div>
 
         <div class="modal-field form-field">
-          <label class="field-label" for="m_rep_id">Identificacion del representante *</label>
+          <label class="field-label" for="m_rep_id"
+            >Identificacion del representante *</label
+          >
           <input
             pInputText
             id="m_rep_id"
@@ -270,8 +282,15 @@
     <div class="detail-card">
       <div class="detail-card-header">
         @if (detailLogoUrl()) {
-          <div class="detail-logo-container">
-            <img [src]="detailLogoUrl()" alt="Logo" />
+          <div
+            class="detail-logo-container"
+            style="background-color: #fff !important"
+          >
+            <img
+              [src]="detailLogoUrl()"
+              alt="Logo"
+              style="background-color: #fff !important"
+            />
           </div>
         } @else {
           <div class="detail-logo-placeholder">

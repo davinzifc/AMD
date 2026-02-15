@@ -118,7 +118,7 @@
               />
             }
           </td>
-          <td class="cell-id">{{ group.id }}</td>
+          <td class="cell-id">{{ group.id | formatNit }}</td>
           <td>{{ group.third_name }}</td>
           <td>{{ group.city }}</td>
           <td class="cell-date">{{ group.date_range }}</td>
@@ -201,12 +201,16 @@
         </div>
         <div class="dlg-metric-sep"></div>
         <div class="dlg-metric">
-          <span class="dlg-metric-value dlg-mono">{{ formatNumber(group.total_amount) }}</span>
+          <span class="dlg-metric-value dlg-mono">{{
+            formatNumber(group.total_amount)
+          }}</span>
           <span class="dlg-metric-label">Cantidad total</span>
         </div>
         <div class="dlg-metric-sep"></div>
         <div class="dlg-metric">
-          <span class="dlg-metric-value dlg-mono dlg-accent">{{ formatNumber(group.total_price) }}</span>
+          <span class="dlg-metric-value dlg-mono dlg-accent">{{
+            formatNumber(group.total_price)
+          }}</span>
           <span class="dlg-metric-label">Valor COP total</span>
         </div>
       </div>
@@ -225,14 +229,22 @@
             </tr>
           </thead>
           <tbody>
-            @for (tx of group.transactions; track tx.order_code; let i = $index) {
+            @for (
+              tx of group.transactions;
+              track tx.order_code;
+              let i = $index
+            ) {
               <tr class="dlg-row">
                 <td class="dlg-td dlg-td--index">{{ i + 1 }}</td>
                 <td class="dlg-td">{{ tx.date }}</td>
                 <td class="dlg-td dlg-td--code">{{ tx.order_code }}</td>
-                <td class="dlg-td dlg-td--num">{{ formatNumber(tx.amount) }}</td>
+                <td class="dlg-td dlg-td--num">
+                  {{ formatNumber(tx.amount) }}
+                </td>
                 <td class="dlg-td dlg-td--num">{{ formatNumber(tx.trm) }}</td>
-                <td class="dlg-td dlg-td--num dlg-td--bold">{{ formatNumber(tx.total_price) }}</td>
+                <td class="dlg-td dlg-td--num dlg-td--bold">
+                  {{ formatNumber(tx.total_price) }}
+                </td>
               </tr>
             }
           </tbody>
@@ -241,9 +253,13 @@
               <td class="dlg-td" colspan="3">
                 <span class="dlg-totals-label">TOTAL</span>
               </td>
-              <td class="dlg-td dlg-td--num dlg-td--bold">{{ formatNumber(group.total_amount) }}</td>
+              <td class="dlg-td dlg-td--num dlg-td--bold">
+                {{ formatNumber(group.total_amount) }}
+              </td>
               <td class="dlg-td"></td>
-              <td class="dlg-td dlg-td--num dlg-td--total">{{ formatNumber(group.total_price) }}</td>
+              <td class="dlg-td dlg-td--num dlg-td--total">
+                {{ formatNumber(group.total_price) }}
+              </td>
             </tr>
           </tfoot>
         </table>

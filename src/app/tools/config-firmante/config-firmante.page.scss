@@ -74,7 +74,9 @@
   padding: var(--space-12) var(--space-6);
   color: var(--text-placeholder);
 
-  i { font-size: var(--text-stat); }
+  i {
+    font-size: var(--text-stat);
+  }
   p {
     margin: 0;
     font-size: var(--text-md);
@@ -93,10 +95,16 @@
   gap: var(--space-6);
 }
 
-.modal-field { position: relative; }
-.modal-field--full { width: 100%; }
+.modal-field {
+  position: relative;
+}
+.modal-field--full {
+  width: 100%;
+}
 
-.w-full { width: 100%; }
+.w-full {
+  width: 100%;
+}
 
 .field-label {
   display: block;
@@ -110,7 +118,9 @@
 /* --- Cedula validation --- */
 :host ::ng-deep .cedula-error {
   border-color: var(--error) !important;
-  &:focus { box-shadow: 0 0 0 1px var(--error) !important; }
+  &:focus {
+    box-shadow: 0 0 0 1px var(--error) !important;
+  }
 }
 
 .cedula-checking {
@@ -270,7 +280,10 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  i { font-size: var(--text-md); color: var(--text-muted); }
+  i {
+    font-size: var(--text-md);
+    color: var(--text-muted);
+  }
 }
 
 .detail-row-content {
@@ -312,4 +325,12 @@
   :host ::ng-deep .table-toolbar .p-inputtext {
     width: 100%;
   }
+}
+
+.p-inputtext {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--surface-page);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--text-base);
 }

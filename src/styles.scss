@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-@import 'primeicons/primeicons.css';
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import "primeicons/primeicons.css";
 
 :root {
   /* ── Estructura ── */
@@ -52,9 +52,10 @@
   --warning-text: #92400e;
 
   /* ── Tipografía ── */
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, sans-serif;
-  --font-mono: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+  --font-sans:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "SF Mono", "Cascadia Code", "Fira Code", monospace;
 
   --text-xs: 11px;
   --text-sm: 12px;
@@ -108,6 +109,7 @@
   --border-subtle: #182235;
   --border-dark: #1f2a44;
   --border-focus: #60a5fa;
+  --p-inputtext-focus-border-color: #60a5fa !important;
 
   --accent: #60a5fa;
   --accent-hover: #3b82f6;
@@ -121,7 +123,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   font-family: var(--font-sans);
   font-size: var(--text-base);
@@ -384,12 +387,12 @@ a {
 }
 
 /* PrimeNG global ledger tone */
-.p-inputtext {
+/*.p-inputtext {
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
   background: var(--surface-card);
   font-size: var(--text-md);
-}
+}*/
 
 .p-inputtext:focus {
   border-color: var(--border-focus);
@@ -546,7 +549,10 @@ a {
   color: var(--text-placeholder);
 }
 
-.p-datatable .p-datatable-thead > tr > th.p-sortable-column:not(.p-highlight):hover {
+.p-datatable
+  .p-datatable-thead
+  > tr
+  > th.p-sortable-column:not(.p-highlight):hover {
   background: var(--surface-muted);
 }
 
@@ -573,4 +579,11 @@ a {
 .p-datatable .p-datatable-thead > tr > th:last-child,
 .p-datatable .p-datatable-tbody > tr > td:last-child {
   border-right: none;
+}
+
+.numeric-cell {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }

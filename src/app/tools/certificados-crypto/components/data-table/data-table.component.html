@@ -71,9 +71,11 @@
           <td class="cell-mono">{{ tx.id }}</td>
           <td>{{ tx.third_name }}</td>
           <td>{{ tx.city }}</td>
-          <td class="cell-number">{{ tx.total_price | colombianCurrency }}</td>
-          <td class="cell-number">{{ tx.trm | colombianCurrency }}</td>
-          <td class="cell-number">{{ tx.amount | colombianCurrency: 6 }}</td>
+          <td class="cell-number">
+            {{ tx.total_price | colombianCurrency: 2 }}
+          </td>
+          <td class="cell-number">{{ tx.trm | colombianCurrency: 2 }}</td>
+          <td class="cell-number">{{ tx.amount | colombianCurrency: 2 }}</td>
           <td>{{ tx.date }}</td>
         </tr>
       </ng-template>

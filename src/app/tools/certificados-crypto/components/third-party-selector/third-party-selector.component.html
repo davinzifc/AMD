@@ -46,7 +46,7 @@
           <td>
             <p-tableCheckbox [value]="party" />
           </td>
-          <td class="cell-id">{{ party.id }}</td>
+          <td class="cell-id numeric-cell">{{ party.id | formatNit }}</td>
           <td>{{ party.third_name }}</td>
         </tr>
       </ng-template>

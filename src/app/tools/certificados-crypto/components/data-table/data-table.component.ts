@@ -1,4 +1,11 @@
-import { Component, ChangeDetectionStrategy, input, model, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  input,
+  model,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Table, TableModule } from 'primeng/table';
 import { InputText } from 'primeng/inputtext';
@@ -10,7 +17,14 @@ import { RawTransaction } from '../../models/raw-transaction.model';
 @Component({
   selector: 'app-data-table',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule, TableModule, InputText, IconField, InputIcon, ColombianCurrencyPipe],
+  imports: [
+    FormsModule,
+    TableModule,
+    InputText,
+    IconField,
+    InputIcon,
+    ColombianCurrencyPipe,
+  ],
   templateUrl: './data-table.component.html',
   styleUrl: './data-table.component.scss',
 })
@@ -23,5 +37,12 @@ export class DataTableComponent {
 
   onFilter() {
     this.dt().filterGlobal(this.filterValue, 'contains');
+  }
+
+  formatNumber(value: number): string {
+    const rounded = Math.round(value * 100) / 100;
+    const parts = rounded.toFixed(2).split('.');
+    const intPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    return `${intPart},${parts[1]}`;
   }
 }

@@ -1,4 +1,13 @@
-import { Component, ChangeDetectionStrategy, inject, input, output, signal, computed, OnInit } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  input,
+  output,
+  signal,
+  computed,
+  OnInit,
+} from '@angular/core';
 import { TableModule } from 'primeng/table';
 import { Button } from 'primeng/button';
 import { InputNumber } from 'primeng/inputnumber';
@@ -9,11 +18,21 @@ import { FormsModule } from '@angular/forms';
 import { ProcessedGroup } from '../../models/processing.model';
 import { FirmanteService } from '../../../../shared/services/firmante.service';
 import { FirmanteListItem } from '../../../../shared/models/firmante.model';
+import { FormatNitPipe } from '../../../../shared/pipes/format-nit.pipe';
 
 @Component({
   selector: 'app-results-table',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TableModule, Button, InputNumber, Select, Dialog, Tooltip, FormsModule],
+  imports: [
+    TableModule,
+    Button,
+    InputNumber,
+    Select,
+    Dialog,
+    Tooltip,
+    FormsModule,
+    FormatNitPipe,
+  ],
   templateUrl: './results-table.component.html',
   styleUrl: './results-table.component.scss',
 })
@@ -21,8 +40,18 @@ export class ResultsTableComponent implements OnInit {
   firmanteService = inject(FirmanteService);
 
   groups = input.required<ProcessedGroup[]>();
-  generatePdfs = output<{ selectedIds: string[]; year: string; includeDetails: boolean; firmanteId: number }>();
-  previewPdf = output<{ selectedIds: string[]; year: string; includeDetails: boolean; firmanteId: number }>();
+  generatePdfs = output<{
+    selectedIds: string[];
+    year: string;
+    includeDetails: boolean;
+    firmanteId: number;
+  }>();
+  previewPdf = output<{
+    selectedIds: string[];
+    year: string;
+    includeDetails: boolean;
+    firmanteId: number;
+  }>();
 
   selectedGroups = signal<ProcessedGroup[]>([]);
   selectedDetailGroup = signal<ProcessedGroup | null>(null);
@@ -36,7 +65,7 @@ export class ResultsTableComponent implements OnInit {
   }
 
   includeDetailsOption = computed(() => {
-    return this.groups().some(g => g.has_multiple_transactions);
+    return this.groups().some((g) => g.has_multiple_transactions);
   });
 
   formatNumber(value: number): string {
@@ -60,9 +89,14 @@ export class ResultsTableComponent implements OnInit {
   }
 
   onPreview() {
-    if (!this.yearValue || this.selectedGroups().length === 0 || !this.selectedFirmante) return;
+    if (
+      !this.yearValue ||
+      this.selectedGroups().length === 0 ||
+      !this.selectedFirmante
+    )
+      return;
     this.previewPdf.emit({
-      selectedIds: this.selectedGroups().map(g => g.id),
+      selectedIds: this.selectedGroups().map((g) => g.id),
       year: this.yearValue.toString(),
       includeDetails: this.includeDetails,
       firmanteId: this.selectedFirmante.id,
@@ -70,9 +104,14 @@ export class ResultsTableComponent implements OnInit {
   }
 
   onGenerate() {
-    if (!this.yearValue || this.selectedGroups().length === 0 || !this.selectedFirmante) return;
+    if (
+      !this.yearValue ||
+      this.selectedGroups().length === 0 ||
+      !this.selectedFirmante
+    )
+      return;
     this.generatePdfs.emit({
-      selectedIds: this.selectedGroups().map(g => g.id),
+      selectedIds: this.selectedGroups().map((g) => g.id),
       year: this.yearValue.toString(),
       includeDetails: this.includeDetails,
       firmanteId: this.selectedFirmante.id,

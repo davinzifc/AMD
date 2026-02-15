@@ -1,4 +1,11 @@
-import { Component, ChangeDetectionStrategy, inject, signal, OnInit, viewChild } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  signal,
+  OnInit,
+  viewChild,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { InputText } from 'primeng/inputtext';
 import { Button } from 'primeng/button';
@@ -14,6 +21,7 @@ import { FileUploadComponent } from '../../shared/components/file-upload/file-up
 import { NotificationService } from '../../shared/services/notification.service';
 import { FirmanteService } from '../../shared/services/firmante.service';
 import { FirmanteListItem } from '../../shared/models/firmante.model';
+import { FormatNitPipe } from '../../shared/pipes/format-nit.pipe';
 
 @Component({
   selector: 'app-config-firmante',
@@ -30,6 +38,7 @@ import { FirmanteListItem } from '../../shared/models/firmante.model';
     Divider,
     Tooltip,
     FileUploadComponent,
+    FormatNitPipe,
   ],
   providers: [ConfirmationService],
   templateUrl: './config-firmante.page.html',
@@ -131,7 +140,7 @@ export class ConfigFirmantePage implements OnInit {
         const img = await this.firmanteService.getFirmaImagen(firmante.id);
         if (img) {
           this.detailFirmaUrl.set(
-            FirmanteService.imageBytesToDataUri(img.imagen, img.mime)
+            FirmanteService.imageBytesToDataUri(img.imagen, img.mime),
           );
         }
       } catch {
@@ -195,7 +204,7 @@ export class ConfigFirmantePage implements OnInit {
       const existing = await this.firmanteService.getFirmanteByCcId(ccId);
       if (existing) {
         this.cedulaError.set(
-          `La cedula ${ccId} ya esta registrada para el firmante "${existing.nombre}"`
+          `La cedula ${ccId} ya esta registrada para el firmante "${existing.nombre}"`,
         );
       } else {
         this.cedulaError.set(null);
@@ -212,18 +221,26 @@ export class ConfigFirmantePage implements OnInit {
   async onImageSelected(file: File) {
     const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
     if (!validTypes.includes(file.type)) {
-      this.notify.error('Formato no valido', 'Solo se permiten archivos PNG o JPG');
+      this.notify.error(
+        'Formato no valido',
+        'Solo se permiten archivos PNG o JPG',
+      );
       return;
     }
     if (file.size > 2 * 1024 * 1024) {
-      this.notify.error('Archivo muy grande', 'El tamano maximo permitido es 2MB');
+      this.notify.error(
+        'Archivo muy grande',
+        'El tamano maximo permitido es 2MB',
+      );
       return;
     }
 
     const data = await FirmanteService.fileToImageData(file);
     this.firmaImagenBytes = data.firma_imagen;
     this.firmaMime = data.firma_mime;
-    this.formFirmaPreview.set(FirmanteService.imageBytesToDataUri(data.firma_imagen, data.firma_mime));
+    this.formFirmaPreview.set(
+      FirmanteService.imageBytesToDataUri(data.firma_imagen, data.firma_mime),
+    );
     this.keepExistingFirma = false;
     this.formDirty = true;
   }
@@ -239,7 +256,9 @@ export class ConfigFirmantePage implements OnInit {
   // --- Form validation ---
 
   isFormValid(): boolean {
-    const hasBasicFields = !!(this.form.nombre.trim() && this.form.cc_id.trim());
+    const hasBasicFields = !!(
+      this.form.nombre.trim() && this.form.cc_id.trim()
+    );
     if (this.isEditing()) {
       return hasBasicFields;
     }
@@ -251,12 +270,18 @@ export class ConfigFirmantePage implements OnInit {
 
   async onSave() {
     if (!this.isFormValid()) {
-      this.notify.warn('Campos obligatorios', 'Por favor, completa todos los campos obligatorios');
+      this.notify.warn(
+        'Campos obligatorios',
+        'Por favor, completa todos los campos obligatorios',
+      );
       return;
     }
 
     if (this.cedulaError()) {
-      this.notify.error('Cedula duplicada', 'La cedula/identificacion ingresada ya existe en el sistema');
+      this.notify.error(
+        'Cedula duplicada',
+        'La cedula/identificacion ingresada ya existe en el sistema',
+      );
       return;
     }
 
@@ -296,8 +321,14 @@ export class ConfigFirmantePage implements OnInit {
       this.resetForm();
     } catch (err) {
       const msg = String(err);
-      if (msg.toLowerCase().includes('cedula') || msg.toLowerCase().includes('cc_id')) {
-        this.notify.error('Cedula duplicada', 'La cedula/identificacion ingresada ya existe en el sistema');
+      if (
+        msg.toLowerCase().includes('cedula') ||
+        msg.toLowerCase().includes('cc_id')
+      ) {
+        this.notify.error(
+          'Cedula duplicada',
+          'La cedula/identificacion ingresada ya existe en el sistema',
+        );
       } else {
         this.notify.error('Error al crear firmante', msg);
       }
@@ -327,8 +358,14 @@ export class ConfigFirmantePage implements OnInit {
       this.resetForm();
     } catch (err) {
       const msg = String(err);
-      if (msg.toLowerCase().includes('cedula') || msg.toLowerCase().includes('cc_id')) {
-        this.notify.error('Cedula duplicada', 'La cedula/identificacion ingresada ya existe en el sistema');
+      if (
+        msg.toLowerCase().includes('cedula') ||
+        msg.toLowerCase().includes('cc_id')
+      ) {
+        this.notify.error(
+          'Cedula duplicada',
+          'La cedula/identificacion ingresada ya existe en el sistema',
+        );
       } else {
         this.notify.error('Error al actualizar firmante', msg);
       }

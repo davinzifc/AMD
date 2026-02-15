@@ -179,6 +179,7 @@
 
 /* ── Detail dialog ── */
 :host ::ng-deep .detail-dialog {
+  overflow: hidden;
   .p-dialog-header {
     padding: 0;
     border-bottom: 1px solid var(--border-default);
@@ -206,7 +207,10 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  i { font-size: var(--text-lg); color: var(--accent); }
+  i {
+    font-size: var(--text-lg);
+    color: var(--accent);
+  }
 }
 
 .dlg-header-text {
@@ -256,8 +260,13 @@
   padding: 0 var(--space-4);
   border-right: 1px solid var(--border-default);
 
-  &:first-child { padding-left: 0; }
-  &:last-child { border-right: none; padding-right: 0; }
+  &:first-child {
+    padding-left: 0;
+  }
+  &:last-child {
+    border-right: none;
+    padding-right: 0;
+  }
 }
 
 .dlg-pill-label {

@@ -74,20 +74,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  i { font-size: var(--text-md); color: var(--text-placeholder); }
+  i {
+    font-size: var(--text-md);
+    color: var(--text-placeholder);
+  }
 }
 
 .empresa-name-cell {
   font-size: var(--text-md);
   font-weight: 500;
   color: var(--text-primary);
-}
-
-.nit-cell {
-  font-size: var(--text-sm);
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-variant-numeric: tabular-nums;
 }
 
 .actions-cell {
@@ -106,7 +102,9 @@
   padding: var(--space-12) var(--space-4);
   color: var(--text-placeholder);
 
-  i { font-size: var(--text-stat); }
+  i {
+    font-size: var(--text-stat);
+  }
   p {
     margin: 0;
     font-size: var(--text-base);
@@ -125,10 +123,16 @@
   gap: var(--space-6);
 }
 
-.modal-field { position: relative; }
-.modal-field--full { width: 100%; }
+.modal-field {
+  position: relative;
+}
+.modal-field--full {
+  width: 100%;
+}
 
-.w-full { width: 100%; }
+.w-full {
+  width: 100%;
+}
 
 .field-label {
   display: block;
@@ -142,7 +146,9 @@
 /* --- NIT validation --- */
 :host ::ng-deep .nit-error {
   border-color: var(--error) !important;
-  &:focus { box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important; }
+  &:focus {
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2) !important;
+  }
 }
 
 .nit-checking {
@@ -192,7 +198,9 @@
 
 /* --- Detail dialog --- */
 :host ::ng-deep .empresa-detail-dialog {
-  .p-dialog-content { padding: 0 !important; }
+  .p-dialog-content {
+    padding: 0 !important;
+  }
 }
 
 .detail-card {
@@ -237,7 +245,10 @@
   align-items: center;
   justify-content: center;
   margin-bottom: var(--space-1);
-  i { font-size: var(--text-stat); color: var(--text-placeholder); }
+  i {
+    font-size: var(--text-stat);
+    color: var(--text-placeholder);
+  }
 }
 
 .detail-company-name {
@@ -283,7 +294,10 @@
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  i { font-size: var(--text-md); color: var(--text-muted); }
+  i {
+    font-size: var(--text-md);
+    color: var(--text-muted);
+  }
 }
 
 .detail-row-content {
@@ -350,7 +364,7 @@
   .p-inputtext {
     border: 1px solid var(--border-default);
     border-radius: var(--radius-md);
-    background: var(--surface-card);
+    background: var(--surface-page);
     padding: var(--space-2) var(--space-3);
     font-size: var(--text-base);
   }
