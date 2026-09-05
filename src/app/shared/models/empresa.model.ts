@@ -5,6 +5,8 @@ export interface Empresa {
   imagen_path?: string;
   representante_nombre: string;
   representante_id: string;
+  tipo_documento: string;
+  genero_representante: string;
 }
 
 export interface CreateEmpresaDto {
@@ -13,6 +15,8 @@ export interface CreateEmpresaDto {
   imagen_path?: string;
   representante_nombre: string;
   representante_id: string;
+  tipo_documento: string;
+  genero_representante: string;
 }
 
 export interface UpdateEmpresaDto {
@@ -21,4 +25,6 @@ export interface UpdateEmpresaDto {
   imagen_path?: string;
   representante_nombre?: string;
   representante_id?: string;
+  tipo_documento?: string;
+  genero_representante?: string;
 }

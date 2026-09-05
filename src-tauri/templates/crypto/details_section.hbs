@@ -1,7 +1,10 @@
-<div class="details-section">
+<div class="details-section cert-page">
   <div class="header">
+    {{#if empresa_imagen}}
+      <img src="{{empresa_imagen}}" alt="Logo" />
+    {{/if}}
     <h1>Detalle de Movimientos</h1>
-    <h2>{{third_name}} ({{id}})</h2>
+    <h2>{{id_formatted}} - {{third_name}}</h2>
   </div>
   <div class="info-row">
     <span><strong>Ciudad:</strong> {{city}}</span>

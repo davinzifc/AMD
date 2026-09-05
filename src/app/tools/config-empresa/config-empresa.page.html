@@ -206,6 +206,20 @@
         </div>
 
         <div class="modal-field form-field">
+          <label class="field-label" for="m_tipo_doc"
+            >Tipo de documento *</label
+          >
+          <p-select
+            id="m_tipo_doc"
+            [(ngModel)]="form.tipo_documento"
+            [options]="tipoDocumentoOptions"
+            optionLabel="label"
+            optionValue="value"
+            [style]="{ width: '100%', background: 'var(--surface-page)' }"
+          />
+        </div>
+
+        <div class="modal-field form-field">
           <label class="field-label" for="m_rep_id"
             >Identificacion del representante *</label
           >
@@ -214,6 +228,18 @@
             id="m_rep_id"
             [(ngModel)]="form.representante_id"
             class="w-full"
+          />
+        </div>
+
+        <div class="modal-field form-field">
+          <label class="field-label" for="m_genero">Genero del representante *</label>
+          <p-select
+            id="m_genero"
+            [(ngModel)]="form.genero_representante"
+            [options]="generoOptions"
+            optionLabel="label"
+            optionValue="value"
+            [style]="{ width: '100%', background: 'var(--surface-page)' }"
           />
         </div>
 
@@ -317,9 +343,31 @@
         <div class="detail-row">
           <div class="detail-row-icon"><i class="pi pi-id-card"></i></div>
           <div class="detail-row-content">
+            <span class="detail-row-label">Tipo de documento</span>
+            <span class="detail-row-value">{{
+              detailEmpresa()?.tipo_documento === 'CE'
+                ? 'Cédula de extranjería'
+                : 'Cédula de ciudadanía'
+            }}</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-row-icon"><i class="pi pi-hashtag"></i></div>
+          <div class="detail-row-content">
             <span class="detail-row-label">Identificacion</span>
             <span class="detail-row-value">{{
               detailEmpresa()?.representante_id
+            }}</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-row-icon"><i class="pi pi-users"></i></div>
+          <div class="detail-row-content">
+            <span class="detail-row-label">Genero del representante</span>
+            <span class="detail-row-value">{{
+              detailEmpresa()?.genero_representante === 'F'
+                ? 'Mujer'
+                : 'Hombre'
             }}</span>
           </div>
         </div>

@@ -8,6 +8,7 @@ import { ConfirmationService } from 'primeng/api';
 import { Table, TableModule } from 'primeng/table';
 import { IconField } from 'primeng/iconfield';
 import { InputIcon } from 'primeng/inputicon';
+import { Select } from 'primeng/select';
 import { FileUploadComponent } from '../../shared/components/file-upload/file-upload.component';
 import { FormatNitPipe, formatNit } from '../../shared/pipes/format-nit.pipe';
 import { NotificationService } from '../../shared/services/notification.service';
@@ -25,6 +26,7 @@ import { EmpresaService, Empresa, UpdateEmpresaDto } from '../../shared/services
     TableModule,
     IconField,
     InputIcon,
+    Select,
     FormatNitPipe,
     FileUploadComponent,
   ],
@@ -52,12 +54,24 @@ export class ConfigEmpresaPage implements OnInit {
   private selectedImageData: { base64: string; mime: string } | null = null;
   private formDirty = false;
 
+  tipoDocumentoOptions = [
+    { label: 'Cédula de ciudadanía', value: 'CC' },
+    { label: 'Cédula de extranjería', value: 'CE' },
+  ];
+
+  generoOptions = [
+    { label: 'Hombre', value: 'M' },
+    { label: 'Mujer', value: 'F' },
+  ];
+
   form = {
     nombre: '',
     nit: '',
     imagen_path: '',
     representante_nombre: '',
     representante_id: '',
+    tipo_documento: 'CC',
+    genero_representante: 'M',
   };
 
   // NIT validation
@@ -116,6 +130,8 @@ export class ConfigEmpresaPage implements OnInit {
     this.form.imagen_path = empresa.imagen_path ?? '';
     this.form.representante_nombre = empresa.representante_nombre;
     this.form.representante_id = empresa.representante_id;
+    this.form.tipo_documento = empresa.tipo_documento || 'CC';
+    this.form.genero_representante = empresa.genero_representante || 'M';
     this.originalNit.set(empresa.nit);
     this.isEditing.set(true);
     this.formModalVisible.set(true);
@@ -320,6 +336,8 @@ export class ConfigEmpresaPage implements OnInit {
         imagen_path: imagenPath,
         representante_nombre: this.form.representante_nombre,
         representante_id: this.form.representante_id,
+        tipo_documento: this.form.tipo_documento,
+        genero_representante: this.form.genero_representante,
       });
 
       this.notify.success('Empresa creada exitosamente');
@@ -358,6 +376,8 @@ export class ConfigEmpresaPage implements OnInit {
         imagen_path: imagenPath,
         representante_nombre: this.form.representante_nombre,
         representante_id: this.form.representante_id,
+        tipo_documento: this.form.tipo_documento,
+        genero_representante: this.form.genero_representante,
       };
 
       if (this.form.nit !== currentNit) {
@@ -415,6 +435,8 @@ export class ConfigEmpresaPage implements OnInit {
       imagen_path: '',
       representante_nombre: '',
       representante_id: '',
+      tipo_documento: 'CC',
+      genero_representante: 'M',
     };
     this.originalNit.set(null);
     this.selectedImageData = null;

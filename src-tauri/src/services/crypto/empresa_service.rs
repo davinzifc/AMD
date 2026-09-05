@@ -34,14 +34,16 @@ pub fn create(db: &DbPool, dto: CreateEmpresaDto) -> Result<Empresa, AppError> {
     }
 
     conn.execute(
-        "INSERT INTO crypto_empresas (nombre, nit, imagen_path, representante_nombre, representante_id)
-         VALUES (?1, ?2, ?3, ?4, ?5)",
+        "INSERT INTO crypto_empresas (nombre, nit, imagen_path, representante_nombre, representante_id, tipo_documento, genero_representante)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)",
         params![
             dto.nombre,
             dto.nit,
             dto.imagen_path,
             dto.representante_nombre,
             dto.representante_id,
+            dto.tipo_documento,
+            dto.genero_representante,
         ],
     )?;
 
@@ -54,6 +56,8 @@ pub fn create(db: &DbPool, dto: CreateEmpresaDto) -> Result<Empresa, AppError> {
         imagen_path: dto.imagen_path,
         representante_nombre: dto.representante_nombre,
         representante_id: dto.representante_id,
+        tipo_documento: dto.tipo_documento,
+        genero_representante: dto.genero_representante,
     })
 }
 
@@ -63,7 +67,7 @@ pub fn get_by_nit(db: &DbPool, nit: &str) -> Result<Option<Empresa>, AppError> {
     ))))?;
 
     let mut stmt = conn.prepare(
-        "SELECT id, nombre, nit, imagen_path, representante_nombre, representante_id
+        "SELECT id, nombre, nit, imagen_path, representante_nombre, representante_id, tipo_documento, genero_representante
          FROM crypto_empresas WHERE nit = ?1"
     )?;
 
@@ -75,6 +79,8 @@ pub fn get_by_nit(db: &DbPool, nit: &str) -> Result<Option<Empresa>, AppError> {
             imagen_path: row.get(3)?,
             representante_nombre: row.get(4)?,
             representante_id: row.get(5)?,
+            tipo_documento: row.get(6)?,
+            genero_representante: row.get(7)?,
         })
     });
 
@@ -124,6 +130,14 @@ pub fn update(db: &DbPool, nit: &str, dto: UpdateEmpresaDto) -> Result<Empresa, 
         updates.push("representante_id = ?");
         values.push(Box::new(rep_id.clone()));
     }
+    if let Some(ref tipo_doc) = dto.tipo_documento {
+        updates.push("tipo_documento = ?");
+        values.push(Box::new(tipo_doc.clone()));
+    }
+    if let Some(ref genero) = dto.genero_representante {
+        updates.push("genero_representante = ?");
+        values.push(Box::new(genero.clone()));
+    }
 
     if updates.is_empty() {
         return get_by_nit(db, nit)?
@@ -171,7 +185,7 @@ pub fn list(db: &DbPool) -> Result<Vec<Empresa>, AppError> {
     ))))?;
 
     let mut stmt = conn.prepare(
-        "SELECT id, nombre, nit, imagen_path, representante_nombre, representante_id
+        "SELECT id, nombre, nit, imagen_path, representante_nombre, representante_id, tipo_documento, genero_representante
          FROM crypto_empresas ORDER BY nombre"
     )?;
 
@@ -183,6 +197,8 @@ pub fn list(db: &DbPool) -> Result<Vec<Empresa>, AppError> {
             imagen_path: row.get(3)?,
             representante_nombre: row.get(4)?,
             representante_id: row.get(5)?,
+            tipo_documento: row.get(6)?,
+            genero_representante: row.get(7)?,
         })
     })?
     .collect::<Result<Vec<_>, _>>()?;

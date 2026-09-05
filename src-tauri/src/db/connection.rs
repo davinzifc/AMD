@@ -51,6 +51,8 @@ fn run_migrations(conn: &Connection) -> Result<(), AppError> {
     let migrations: Vec<(&str, &str)> = vec![
         ("v001_create_empresas", include_str!("migrations/v001_create_empresas.sql")),
         ("v002_create_firmantes", include_str!("migrations/v002_create_firmantes.sql")),
+        ("v003_add_tipo_documento", include_str!("migrations/v003_add_tipo_documento.sql")),
+        ("v004_add_genero_representante", include_str!("migrations/v004_add_genero_representante.sql")),
     ];
 
     for (name, sql) in migrations {

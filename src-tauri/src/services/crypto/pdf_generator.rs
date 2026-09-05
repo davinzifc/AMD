@@ -83,6 +83,12 @@ fn build_template_data(
     // Representante legal de la empresa (siempre el registrado en la empresa) — para el cuerpo del texto
     let representante_legal_nombre = empresa.representante_nombre.clone();
     let representante_legal_id = empresa.representante_id.clone();
+    let representante_legal_id_type = match empresa.tipo_documento.as_str() {
+        "CE" => "Cédula de extranjería".to_string(),
+        _ => "Cédula de ciudadanía".to_string(),
+    };
+    let representante_legal_genero = empresa.genero_representante.clone();
+    let identificado_a = if empresa.genero_representante == "F" { "identificada" } else { "identificado" };
 
     // Quien firma: firmante si existe, si no el representante legal — para la sección de firma + imagen
     let (firma_nombre, firma_id) = if let Some(f) = firmante {
@@ -106,18 +112,23 @@ fn build_template_data(
         .or_else(|| empresa.imagen_path.clone());
 
     json!({
-        "empresa_nombre": empresa.nombre,
+        "empresa_nombre": empresa.nombre.to_ascii_uppercase(),
+        "representante_legal_id_type": representante_legal_id_type,
+        "representante_legal_genero": representante_legal_genero,
+        "identificado_a": identificado_a,
         "empresa_nit": empresa.nit,
         "empresa_nit_formatted": format_nit(&empresa.nit),
         "empresa_imagen": empresa_imagen,
-        "representante_legal_nombre": representante_legal_nombre,
+        "representante_legal_nombre": representante_legal_nombre.to_ascii_uppercase(),
         "representante_legal_id": representante_legal_id,
+        "representante_legal_id_formatted": format_nit(&representante_legal_id),
         "firma_nombre": firma_nombre,
         "firma_id": firma_id,
         "firmante_imagen": firmante_imagen,
         "year": year,
         "id": group.id,
-        "third_name": group.third_name,
+        "id_formatted": format_nit(&group.id),
+        "third_name": group.third_name.to_ascii_uppercase(),
         "city": group.city,
         "date_range": group.date_range,
         "total_amount": format_colombian(group.total_amount),

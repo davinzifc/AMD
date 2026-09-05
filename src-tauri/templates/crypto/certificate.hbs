@@ -73,6 +73,7 @@
       text-align: left;
       font-weight: 600;
       font-size: 12px;
+      text-align: center;
       color: #475569;
     }
     .cert-page table.summary td {
@@ -86,7 +87,7 @@
       font-variant-numeric: tabular-nums;
     }
     .cert-page .closing { margin-top: 28px; page-break-inside: avoid; }
-    .cert-page .closing p { margin-bottom: 4px; }
+    .cert-page .closing p { margin-bottom: 4px; font-size: 10px; text-align: justify; color: #64748b; }
     .cert-page .signature { margin-top: 28px; page-break-inside: avoid; }
     .cert-page .signature-image { margin-bottom: 6px; }
     .cert-page .signature-image img {
@@ -135,6 +136,7 @@
       text-align: left;
       font-weight: 600;
       font-size: 11px;
+      text-align: center;
       color: #475569;
     }
     .details-section table.details td {
@@ -178,11 +180,17 @@
 
     <div class="body-text">
       <p>
-        La empresa <strong>{{empresa_nombre}}</strong>, identificada con NIT <strong>{{empresa_nit_formatted}}</strong>,
-        y representada legalmente por <strong>{{representante_legal_nombre}}</strong>, identificado(a) con cédula de ciudadanía
-        No. <strong>{{representante_legal_id}}</strong>, certifica que se realizó un pago a
-        <strong>{{third_name}}</strong>, identificado(a) con documento No. <strong>{{id}}</strong>,
-        {{#if city}}en la ciudad de <strong>{{city}}</strong>,{{/if}} correspondiente al periodo <strong>{{date_range}}</strong>.
+        Mediante el presente documento y obrando en mi calidad de Contadora Pública titulada mediante resolución expedida por 
+        el Ministerio de Educación Nacional a través de la Junta Central de Contadores, bajo la Matrícula Profesional <b>{{firma_id}}</b>, 
+        certifico que:
+      </p>
+      <p>
+        De acuerdo con los registros contables y los soportes internos de <b>{{empresa_nombre}}</b>, identificada con NIT No. <b>{{empresa_nit_formatted}}</b>,
+        cuyo representante legal es <b>{{representante_legal_nombre}}</b>, {{identificado_a}} con <b>{{representante_legal_id_type}}</b> No.
+        <b>{{representante_legal_id_formatted}}</b>, se realizó la siguiente operación de compra de criptoactivos con el tercero que se indica a continuación:
+      </p>
+      <p>
+        <b>{{third_name}}</b>, identificado(a) con [TIPO DE DOCUMENTO TERCERO] No. <b>{{id_formatted}}</b>{{#if city}}, residente en la ciudad de <b>{{city}}</b>{{/if}}.
       </p>
       <p>
         A continuación se detalla el resumen de la operación:
@@ -193,6 +201,7 @@
       <table class="summary">
         <thead>
           <tr>
+            <th>Fecha</th>
             <th>Cantidad Adquirida</th>
             <th>Valor Total COP</th>
             <th>Retención</th>
@@ -200,6 +209,7 @@
         </thead>
         <tbody>
           <tr>
+            <td>{{date_range}}</td>
             <td class="number">{{total_amount}}</td>
             <td class="number">{{total_price}}</td>
             <td>{{retencion}}</td>
@@ -209,8 +219,13 @@
     </div>
 
     <div class="closing">
-      <p>Se expide el presente certificado a solicitud del interesado.</p>
-      <p>Atentamente,</p>
+      <p>
+        Este certificado se expide a solicitud de la parte interesada para ser utilizado como soporte en la elaboración de su declaración 
+        de renta y/o demás obligaciones tributarias correspondientes al año gravable {{year}}. La información aquí consignada proviene de 
+        los registros contables y de los soportes internos de {{empresa_nombre}}, conservados conforme a la normativa comercial y tributaria 
+        vigente en la República de Colombia. En los casos en que se haya practicado retención en la fuente, esta se realizó de acuerdo con la 
+        normatividad tributaria aplicable para el período correspondiente y su valor se indica expresamente en este certificado.
+      </p>
     </div>
 
     <div class="signature {{#unless firmante_imagen}}signature--no-image{{/unless}}">
